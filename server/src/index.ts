@@ -10,7 +10,7 @@ const server = new Server(
 
 server.auth(({ userId, token }) => {
     // Allow only local users until we will have a proper authentication
-    return process.env.NODE_ENV === 'development'
+    return true // process.env.NODE_ENV === 'development'
 })
 
 server.listen()
