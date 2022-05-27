@@ -1,13 +1,3 @@
-/* .split {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-} */
-
 .split-flex {
     display: flex;
     flex-direction: row;
@@ -20,9 +10,12 @@
 
 .gutter {
     background-color: rgb(201, 201, 201);
-    width: 10px;
-    cursor: col-resize;
     background-repeat: no-repeat;
     background-position: 50%;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+}
+
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+    width: 10px;
 }

@@ -9,7 +9,7 @@ export default function Panes() {
         <Split
             className="split-flex"
             direction="horizontal"
-            sizes={[25, 75]}
+            sizes={[50, 50]}
         >
             {mapIds.map(mapId =>
                 <Map

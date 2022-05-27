@@ -4,10 +4,14 @@
     "type": "module",
     "scripts": {
         "dev": "nodemon",
+        "db": "mongod --dbpath=\"./data/db\"",
+        "mongo": "mongo",
         "start": "ts-node --esm src/index.ts"
     },
     "dependencies": {
         "@logux/server": "^0.11.0",
+        "@types/mongoose": "^5.11.97",
+        "mongoose": "^6.3.4",
         "typescript": "^4.6.4"
     },
     "devDependencies": {
