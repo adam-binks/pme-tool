@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@logux/server": "^0.11.0",
+        "@typegoose/typegoose": "^9.8.1",
         "@types/mongoose": "^5.11.97",
         "mongoose": "^6.3.4",
         "typescript": "^4.6.4"

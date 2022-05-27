@@ -1,6 +1,6 @@
 import { Server } from '@logux/server'
 import mongoose from 'mongoose'
-import { Map } from './schema.js'
+import { MapModel, MapSchemaModel } from './schema.js'
 
 const server = new Server(
     Server.loadOptions(process, {
@@ -15,15 +15,15 @@ server.auth(({ userId, token }) => {
     return true // process.env.NODE_ENV === 'development'
 })
 
-// async function dbtest() {
-//     await mongoose.connect('mongodb://127.0.0.1:27017')
+async function dbtest() {
+    await mongoose.connect('mongodb://127.0.0.1:27017')
 
-//     const testMap = new Map({ name: "test", nodes: [], schema: { properties: [] } })
-//     console.log(testMap.name)
-//     await testMap.save()
-// }
+    const testSchema = await MapSchemaModel.create({ properties: [] })
+    const testMap = await MapModel.create({ name: "test", nodes: [], mapSchema: testSchema._id })
+    console.log(testMap.name)
+}
 
-// dbtest().catch(err => console.error(err))
+dbtest().catch(err => console.error(err))
 
-mongoose.connect('mongodb://127.0.0.1:27017')
-    .then(() => server.listen())
+// mongoose.connect('mongodb://127.0.0.1:27017')
+//     .then(() => server.listen())
