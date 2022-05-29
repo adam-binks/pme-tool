@@ -15,15 +15,23 @@ server.auth(({ userId, token }) => {
     return true // process.env.NODE_ENV === 'development'
 })
 
-async function dbtest() {
-    await mongoose.connect('mongodb://127.0.0.1:27017')
+// async function dbtest() {
+//     await mongoose.connect('mongodb://127.0.0.1:27017')
 
-    const testSchema = await MapSchemaModel.create({ properties: [] })
-    const testMap = await MapModel.create({ name: "test", nodes: [], mapSchema: testSchema._id })
-    console.log(testMap.name)
-}
+//     const testSchema = await MapSchemaModel.create({ properties: [] })
+//     const testMap = await MapModel.create({ name: "test", nodes: [], mapSchema: testSchema._id })
+//     console.log(testMap.name)
+// }
+// dbtest().catch(err => console.error(err))
 
-dbtest().catch(err => console.error(err))
+server.channel('map/:id', {
+    access(ctx) {
+        return true // todo - restrict access
+    },
+    async load(ctx) {
+        
+    }
+})
 
-// mongoose.connect('mongodb://127.0.0.1:27017')
-//     .then(() => server.listen())
+mongoose.connect('mongodb://127.0.0.1:27017')
+    .then(() => server.listen())
