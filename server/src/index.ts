@@ -23,13 +23,16 @@ server.auth(({ userId, token }) => {
 //     console.log(testMap.name)
 // }
 // dbtest().catch(err => console.error(err))
-
-server.channel('map/:id', {
+interface MapParams {
+    id: string
+}
+server.channel<MapParams>('map/:id', {
     access(ctx) {
         return true // todo - restrict access
     },
     async load(ctx) {
-        
+        const map = await MapModel.findById(ctx.params.id)?.populate('nodes')?.populate('schema')
+        return { type: 'map/load', map }
     }
 })
 

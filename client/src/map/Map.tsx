@@ -3,6 +3,7 @@ import { useDrop } from "react-dnd";
 import { ItemTypes } from "../ItemTypes";
 import Node from "./Node";
 import styles from './Map.module.css';
+import { useSubscription } from '@logux/redux';
 
 interface MapProps {
     id: string
@@ -23,6 +24,11 @@ export default function Map({ id }: MapProps) {
     //     }),
     //     [moveBox],
     // )
+
+    const isSubscribing = useSubscription([`map/${id}`])
+    if (isSubscribing) {
+        return <p>Loading...</p>
+    }
 
     return (
         <div className={styles.Map}>
