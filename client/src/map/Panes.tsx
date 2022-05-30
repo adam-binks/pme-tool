@@ -1,22 +1,32 @@
-import React from "react";
 import Split from "react-split";
+import { useAppSelector } from "../app/hooks";
 import Map from "./Map";
 import "./Panes.css"
 
 export default function Panes() {
-    const mapIds = ["e9f434dcb93153863e12595f", "62492c1c34443ef55f952dfe"]
+    const panes = useAppSelector(state => state.panes)
+
+    console.log("rendering panes")
+
+    if (panes.length === 0) {
+        return (<p>Open a map!</p>)
+    }
     return (
-        <Split
-            className="split-flex"
-            direction="horizontal"
-            sizes={[50, 50]}
-        >
-            {mapIds.map(mapId =>
-                <Map
-                    id={mapId}
-                    key={mapId}
-                />
-            )}
-        </Split>
+        <>
+            <Split
+                className="split-flex"
+                direction="horizontal"
+                aria-roledescription={`Split screen into ${panes.length}`}
+            >
+                {panes.map((pane, paneIndex) =>
+                    <Map
+                        id={pane.id}
+                        key={pane.id}
+                        paneIndex={paneIndex}
+                    />
+                )}
+            </Split>
+            <p>Num panes: {panes.length}</p>
+        </>
     )
 }

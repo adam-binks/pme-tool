@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppSelector } from "../app/hooks";
 import styles from "./Node.module.css";
 

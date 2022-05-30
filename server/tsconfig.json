@@ -2,6 +2,7 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "module": "es2022",
+        "target": "es6",
         "moduleResolution": "node",
 
         // these two are for typegoose

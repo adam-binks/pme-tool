@@ -1,8 +1,8 @@
 import { Server } from '@logux/server'
 import mongoose from 'mongoose'
-import { MapModel, MapSchemaModel } from './schema.js'
-import { objectId } from './helpers.js'
-import { loadMap, renameMap } from './tmp/mapActionsCopy.js'
+import { MapModel } from './schema.js'
+import { objectId, createBlankMap, getMapById } from './helpers.js'
+import { createMap, loadMap, renameMap } from './tmp/mapActionsCopy.js'
 
 const server = new Server(
     Server.loadOptions(process, {
@@ -21,15 +21,27 @@ interface MapParams {
     id: string
 }
 server.channel<MapParams>('map/:id', {
-    access(ctx) {
+    access() {
         return true // todo - restrict access
     },
     async load(ctx) {
-        const map = await MapModel.findById(objectId(ctx.params.id))
-            .lean()//?.populate('nodes')?.populate('schema')
+        const map = await getMapById(ctx.params.id)
+            .lean()?.populate('nodes')?.populate('mapSchema')
 
-        console.log(`map: ${map}`)
-        ctx.sendBack(loadMap({map: {_id: map?._id, name: map?.name, nodes: map?.nodes, mapSchema: map?.mapSchema}}))
+        ctx.sendBack(loadMap({ map: { _id: map?._id, name: map?.name, nodes: map?.nodes, mapSchema: map?.mapSchema } }))
+    }
+})
+
+server.type(createMap, {
+    access() {
+        return true
+    },
+    async process(ctx, action) {
+        const mapExists = await getMapById(action.id)
+        if (!mapExists) {
+            const map = await createBlankMap(action.id)
+            await map.save()
+        }
     }
 })
 
@@ -40,10 +52,9 @@ server.type(renameMap, {
     async process(ctx, action, meta) {
         let map = await MapModel.findById(objectId(action.id))
         if (!map) {
-            const schema = await MapSchemaModel.create({properties: []})
-            map = await MapModel.create({_id: action.id, name: "New map", nodes: [], mapSchema: schema._id})
+            map = await createBlankMap(action.id)
         }
-        map.name = action.name
+        map.name = action.name ? action.name : " "
         await map.save()
     }
 })

@@ -1,16 +1,16 @@
-import React from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../ItemTypes";
 import Node from "./Node";
 import styles from './Map.module.css';
 import { useSubscription } from '@logux/redux';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { renameMap } from "../common/mapActions";
+import { closePane, renameMap } from "../common/mapActions";
 
 interface MapProps {
-    id: string
+    id: string,
+    paneIndex: number,
 }
-export default function Map({ id }: MapProps) {
+export default function Map({ id, paneIndex }: MapProps) {
     const map = useAppSelector(state => state.maps.find(map => map._id === id))
     const dispatch = useAppDispatch()
 
@@ -49,6 +49,7 @@ export default function Map({ id }: MapProps) {
         >
             <p>Map {id}</p>
             <input value={map?.name} onChange={(e) => dispatch.sync(renameMap({ id, name: e.target.value }))} />
+            <button onClick={() => dispatch(closePane({paneIndex}))}>Close pane</button>
 
             {nodeIds.map(nodeId =>
                 <Node

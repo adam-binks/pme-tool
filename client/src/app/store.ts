@@ -3,10 +3,12 @@ import { CrossTabClient, IndexedStore, badge, badgeEn, log, confirm } from '@log
 import { badgeStyles } from '@logux/client/badge/styles';
 import { createStoreCreator } from '@logux/redux';
 import { mapReducer } from '../reducers/mapSlice';
+import { panesReducer } from '../reducers/paneSlice';
 
 
 const reducer = combineReducers({
-    maps: mapReducer
+    maps: mapReducer,
+    panes: panesReducer,
 })
 
 const client = new CrossTabClient({

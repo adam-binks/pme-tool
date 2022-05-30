@@ -1,5 +1,5 @@
 import { Action } from "@logux/core"
-import { loadMap, renameMap } from "../common/mapActions"
+import { createMap, loadMap, renameMap } from "../common/mapActions"
 
 export interface Map {
     _id: string,
