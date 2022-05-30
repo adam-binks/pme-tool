@@ -1,6 +1,9 @@
 import { Server } from '@logux/server'
 import mongoose from 'mongoose'
 import { MapModel, MapSchemaModel } from './schema.js'
+import { objectId } from './helpers.js'
+import { renameMap } from '../../client/src/common/mapActions.js'
+// const { renameUser } = actions
 
 const server = new Server(
     Server.loadOptions(process, {
@@ -31,8 +34,17 @@ server.channel<MapParams>('map/:id', {
         return true // todo - restrict access
     },
     async load(ctx) {
-        const map = await MapModel.findById(ctx.params.id)?.populate('nodes')?.populate('schema')
+        const map = await MapModel.findById(objectId(ctx.params.id))?.populate('nodes')?.populate('schema')
         return { type: 'map/load', map }
+    }
+})
+
+server.type(renameMap, {
+    access(ctx, action, meta) {
+        return true
+    },
+    async process(ctx, action, meta) {
+
     }
 })
 

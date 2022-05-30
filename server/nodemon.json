@@ -1,10 +1,11 @@
 {
-  "ignore": [
-    "node_modules"
-  ],
-  "watch": [
-    "src"
-  ],
-  "exec": "npm start",
-  "ext": "ts"
+    "ignore": [
+        "node_modules"
+    ],
+    "watch": [
+        "src",
+        "../client/common"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
 }

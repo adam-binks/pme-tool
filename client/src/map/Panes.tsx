@@ -4,7 +4,7 @@ import Map from "./Map";
 import "./Panes.css"
 
 export default function Panes() {
-    const mapIds = ["id_one", "id_two"]
+    const mapIds = ["e9f434dcb93153863e12595f", "62492c1c34443ef55f952dfe"]
     return (
         <Split
             className="split-flex"

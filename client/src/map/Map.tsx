@@ -4,12 +4,14 @@ import { ItemTypes } from "../ItemTypes";
 import Node from "./Node";
 import styles from './Map.module.css';
 import { useSubscription } from '@logux/redux';
+import { useAppDispatch } from "../app/hooks";
 
 interface MapProps {
     id: string
 }
 export default function Map({ id }: MapProps) {
     const nodeIds = ["one", "two"]
+    const dispatch = useAppDispatch()
 
     // const [, drop] = useDrop(
     //     () => ({
@@ -27,15 +29,22 @@ export default function Map({ id }: MapProps) {
 
     const isSubscribing = useSubscription([`map/${id}`])
     if (isSubscribing) {
-        return <p>Loading...</p>
+        return <div className={styles.Map}>
+            <p>Loading... {id}</p>
+        </div>
     }
-
     return (
-        <div className={styles.Map}>
+        <div 
+            className={styles.Map}
+            // onDoubleClick={}
+        >
             <p>Map {id}</p>
-            {nodeIds.map(id =>
+            <input onChange={(e) => dispatch.sync({type: 'map/rename', id, name: e.target.value})}/>
+
+            {nodeIds.map(nodeId =>
                 <Node
-                    id={id}
+                    id={nodeId}
+                    key={nodeId}
                 />
             )}
         </div>
