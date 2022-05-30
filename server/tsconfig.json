@@ -2,7 +2,7 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "module": "es2022",
-        "moduleResolution": "Node",
+        "moduleResolution": "node",
 
         // these two are for typegoose
         "experimentalDecorators": true,

@@ -6,7 +6,7 @@
         "dev": "nodemon",
         "db": "mongod --dbpath=\"./data/db\"",
         "mongo": "mongo",
-        "start": "ts-node --esm src/index.ts"
+        "start": "copy ..\\client\\src\\common\\mapActions.ts src\\tmp\\mapActionsCopy.ts & ts-node --esm src/index.ts"
     },
     "dependencies": {
         "@logux/server": "^0.11.0",

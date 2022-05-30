@@ -2,13 +2,8 @@ import { ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import { CrossTabClient, IndexedStore, badge, badgeEn, log, confirm } from '@logux/client';
 import { badgeStyles } from '@logux/client/badge/styles';
 import { createStoreCreator } from '@logux/redux';
-import mapReducer from '../reducers/mapSlice';
+import { mapReducer } from '../reducers/mapSlice';
 
-// export const store = configureStore({
-//     reducer: {
-
-//     },
-// })
 
 const reducer = combineReducers({
     maps: mapReducer
@@ -26,7 +21,7 @@ const client = new CrossTabClient({
 
 const createStore = createStoreCreator(client)
 
-export const store = createStore(reducer)
+export const store = createStore(reducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__())
 
 badge(store.client, { messages: badgeEn, styles: badgeStyles })
 log(store.client)
