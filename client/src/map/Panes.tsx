@@ -1,4 +1,4 @@
-import Split from "react-split";
+import Split from "../lib/react-split";
 import { useAppSelector } from "../app/hooks";
 import Map from "./Map";
 import "./Panes.css"
