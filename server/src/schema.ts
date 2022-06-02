@@ -4,7 +4,7 @@ import { Schema } from "mongoose";
 
 class AbstractProperty {
     @prop({ required: true })
-    public name!: String
+    public name!: string
 }
 export const AbstractPropertyModel = getModelForClass(AbstractProperty)
 
@@ -27,7 +27,7 @@ export const PropertyModel = getModelForClass(Property)
 
 class Node {
     @prop({ required: true })
-    public name!: String
+    public name!: string
 
     @prop({ required: true, ref: () => Property })
     public properties!: typegoose.Ref<Property>[]
@@ -48,7 +48,7 @@ export const NodeOnMapModel = getModelForClass(NodeOnMap)
 
 class Map {
     @prop({ required: true })
-    public name!: String
+    public name!: string
 
     @prop({ required: true, ref: () => NodeOnMap })
     public nodes!: typegoose.Ref<NodeOnMap>[]

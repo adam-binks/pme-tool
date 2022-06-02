@@ -4,8 +4,9 @@ import Node from "./Node";
 import styles from './Map.module.css';
 import { useSubscription } from '@logux/redux';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { closePane, renameMap } from "../common/mapActions";
+import { addNodeToMap, closePane, createNode, renameMap } from "../common/mapActions";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
+import { generateId } from "../etc/helpers";
 
 interface MapProps {
     id: string,
@@ -17,19 +18,17 @@ export default function Map({ id, paneIndex }: MapProps) {
 
     const nodeIds = ["one", "two"]
 
-    // const [, drop] = useDrop(
-    //     () => ({
-    //         accept: ItemTypes.NODE,
-    //         drop(item: DragItem, monitor) {
-    //             const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-    //             const left = Math.round(item.left + delta.x)
-    //             const top = Math.round(item.top + delta.y)
-    //             moveBox(item.id, left, top)
-    //             return undefined
-    //         },
-    //     }),
-    //     [moveBox],
-    // )
+    const addNode = (e: React.MouseEvent) => {
+        const nodeId = generateId();
+        dispatch.sync(createNode({ id: nodeId, name: "New node" }))
+        dispatch.sync(addNodeToMap({
+            mapId: id,
+            nodeId,
+            nodeOnMapId: generateId(),
+            x: 0,
+            y: 0,
+        }))
+    }
 
     const isSubscribing = useSubscription([`map/${id}`])
     if (isSubscribing) {
@@ -46,7 +45,7 @@ export default function Map({ id, paneIndex }: MapProps) {
     return (
         <div
             className={styles.Map}
-        // onDoubleClick={}
+            onDoubleClick={(e) => addNode(e)}
         >
             <TransformWrapper
                 minPositionX={0}
@@ -58,9 +57,9 @@ export default function Map({ id, paneIndex }: MapProps) {
                 }}
                 limitToBounds={false}
             >
-                    <p>Map {id}</p>
-                    <input value={map?.name} onChange={(e) => dispatch.sync(renameMap({ id, name: e.target.value }))} />
-                    <button onClick={() => dispatch(closePane({ paneIndex }))}>Close pane</button>
+                <p>Map {id}</p>
+                <input value={map?.name} onChange={(e) => dispatch.sync(renameMap({ id, name: e.target.value }))} />
+                <button onClick={() => dispatch(closePane({ paneIndex }))}>Close pane</button>
                 <TransformComponent
                     wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                 >

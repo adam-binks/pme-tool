@@ -1,7 +1,7 @@
 import { Server } from '@logux/server'
 import mongoose from 'mongoose'
-import map from './features/map'
-import node from './features/node'
+import map from './features/map.js'
+import node from './features/node.js'
 
 export const server = new Server(
     Server.loadOptions(process, {

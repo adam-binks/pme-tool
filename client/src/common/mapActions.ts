@@ -1,5 +1,25 @@
 import { defineAction } from '@logux/actions'
 
+export interface Map {
+    _id: string
+    name: string
+    nodes: NodeOnMap[]
+    mapSchema: undefined // todo
+}
+
+export interface NodeOnMap {
+    _id: string
+    node: Node
+    x: number
+    y: number
+}
+
+export interface Node {
+    _id: string
+    name: string
+    // todo more
+}
+
 
 /* template to copy: 
 
@@ -15,7 +35,7 @@ export const X = defineAction<{
 export const loadMap = defineAction<{
     type: 'map/load'
     // id: string
-    map: any
+    map: Map
 }>('map/load')
 
 export const createMap = defineAction<{
@@ -33,6 +53,7 @@ export const addNodeToMap = defineAction<{
     type: 'map/addNode'
     mapId: string
     nodeId: string
+    nodeOnMapId: string
     x: number
     y: number
 }>('map/addNode')

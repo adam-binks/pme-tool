@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MapModel, MapSchemaModel } from './schema.js';
+import { MapModel, MapSchemaModel, NodeModel } from './schema.js';
 
 export function objectId(id: string) {
     return new mongoose.Types.ObjectId(id)
@@ -12,4 +12,8 @@ export async function createBlankMap(id: string) {
 
 export function getMapById(id: string) {
     return MapModel.findById(objectId(id))
+}
+
+export function getNodeById(id: string) {
+    return NodeModel.findById(objectId(id))
 }
