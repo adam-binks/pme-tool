@@ -34,12 +34,24 @@ class Node {
 }
 export const NodeModel = getModelForClass(Node)
 
+class NodeOnMap {
+    @prop({ required: true, ref: () => Node })
+    public node!: typegoose.Ref<Node>
+
+    @prop({ required: true })
+    public x!: number
+
+    @prop({ required: true })
+    public y!: number
+}
+export const NodeOnMapModel = getModelForClass(NodeOnMap)
+
 class Map {
     @prop({ required: true })
     public name!: String
 
-    @prop({ required: true, ref: () => Node })
-    public nodes!: typegoose.Ref<Node>[]
+    @prop({ required: true, ref: () => NodeOnMap })
+    public nodes!: typegoose.Ref<NodeOnMap>[]
 
     @prop({ required: true, ref: () => MapSchema })
     public mapSchema!: typegoose.Ref<MapSchema>

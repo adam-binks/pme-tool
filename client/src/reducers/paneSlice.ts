@@ -3,7 +3,7 @@ import { openPane, closePane } from "../common/mapActions"
 
 export type PanesState = { id: string }[]
 
-export function panesReducer(state: PanesState = [{id: "74ab7f102ea0c3d6427145b8"}, {id: "1a0db562763379afc7b4e6cc"}, {id: "d778e6c1df631574a75fc3a8"}], action: Action): PanesState {
+export function panesReducer(state: PanesState = [{id: "74ab7f102ea0c3d6427145b8"}, {id: "1a0db562763379afc7b4e6cc"}], action: Action): PanesState {
     if (openPane.match(action)) {
         return [...state, action.pane]
     }

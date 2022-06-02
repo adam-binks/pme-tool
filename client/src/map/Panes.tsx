@@ -6,8 +6,6 @@ import "./Panes.css"
 export default function Panes() {
     const panes = useAppSelector(state => state.panes)
 
-    console.log("rendering panes")
-
     if (panes.length === 0) {
         return (<p>Open a map!</p>)
     }

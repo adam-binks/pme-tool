@@ -1,3 +1,4 @@
+import { toast } from "react-toastify"
 import { createMap, openPane } from "../common/mapActions"
 import { generateId } from "../etc/helpers"
 import { useAppDispatch } from "./hooks"
@@ -11,7 +12,7 @@ export default function Header() {
                 try {
                     await dispatch.sync(createMap({id: newMapId}))
                 } catch {
-                    console.log('Error creating map')
+                    toast.error('Error creating map')
                 }
                 dispatch(openPane({pane: {id: newMapId}}))
             }}>Create map</button>
