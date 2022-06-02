@@ -5,6 +5,7 @@ import styles from './Map.module.css';
 import { useSubscription } from '@logux/redux';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { closePane, renameMap } from "../common/mapActions";
+import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 
 interface MapProps {
     id: string,
@@ -47,16 +48,32 @@ export default function Map({ id, paneIndex }: MapProps) {
             className={styles.Map}
         // onDoubleClick={}
         >
-            <p>Map {id}</p>
-            <input value={map?.name} onChange={(e) => dispatch.sync(renameMap({ id, name: e.target.value }))} />
-            <button onClick={() => dispatch(closePane({paneIndex}))}>Close pane</button>
+            <TransformWrapper
+                minPositionX={0}
+                minScale={0.1}
+                doubleClick={{ disabled: true }}
+                panning={{
+                    excluded: ["doNotPan"],
+                    velocityDisabled: true
+                }}
+                limitToBounds={false}
+            >
+                    <p>Map {id}</p>
+                    <input value={map?.name} onChange={(e) => dispatch.sync(renameMap({ id, name: e.target.value }))} />
+                    <button onClick={() => dispatch(closePane({ paneIndex }))}>Close pane</button>
+                <TransformComponent
+                    wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                >
+                    {nodeIds.map(nodeId =>
 
-            {nodeIds.map(nodeId =>
-                <Node
-                    id={nodeId}
-                    key={nodeId}
-                />
-            )}
+                        <Node
+                            id={nodeId}
+                            key={nodeId}
+                        />
+
+                    )}
+                </TransformComponent>
+            </TransformWrapper>
         </div>
     )
 }

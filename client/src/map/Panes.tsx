@@ -26,7 +26,6 @@ export default function Panes() {
                     />
                 )}
             </Split>
-            <p>Num panes: {panes.length}</p>
         </>
     )
 }

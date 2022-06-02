@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@kokarn/react-zoom-pan-pinch": "^2.1.5",
     "@logux/actions": "^0.2.3",
     "@logux/client": "^0.15.3",
     "@logux/core": "^0.7.3",
