@@ -1,6 +1,6 @@
 import { createReducer, Draft } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
-import { addNodeToMap, createNode, loadMap, Map, Node, renameMap } from "../common/mapActions"
+import { addNodeToMap, createNode, loadMap, Map, moveNodeOnMap, Node, renameMap } from "../common/mapActions"
 
 export type MapsState = { maps: Map[], nodes: Node[] }
 
@@ -42,6 +42,15 @@ export default createReducer(initialState, (builder) => {
                 map?.nodes.push({_id: action.nodeOnMapId, node: node, ...action})
             } else {
                 map ? toast.error(`Could not missing node ${action.nodeId}`) : toast.error(`Could not missing map ${action.mapId}`)
+            }
+        })
+
+        .addCase(moveNodeOnMap, (state, action) => {
+            const map = getMap(state, action.mapId)
+            const node = map?.nodes.find(node => node._id === action.nodeOnMapId)
+            if (node) {
+                node.x = action.x
+                node.y = action.y
             }
         })
 })

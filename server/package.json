@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "nodemon",
+        "server": "nodemon",
         "db": "mongod --dbpath=\"./data/db\"",
         "mongo": "mongo",
         "start": "copy ..\\client\\src\\common\\mapActions.ts src\\tmp\\mapActionsCopy.ts & ts-node --esm src/index.ts"

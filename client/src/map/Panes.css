@@ -18,4 +18,9 @@
 .gutter.gutter-horizontal {
     cursor: col-resize;
     width: 10px;
+    transition: background-color .2s;
+}
+
+.gutter.gutter-horizontal:hover {
+    background-color: rgb(182, 182, 182);
 }

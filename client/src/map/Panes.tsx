@@ -18,7 +18,7 @@ export default function Panes() {
             >
                 {panes.map((pane, paneIndex) =>
                     <Map
-                        id={pane.id}
+                        mapId={pane.id}
                         key={pane.id}
                         paneIndex={paneIndex}
                     />

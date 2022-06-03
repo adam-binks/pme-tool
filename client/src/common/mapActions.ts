@@ -74,6 +74,13 @@ export const addNodeToMap = defineAction<{
     y: number
 }>('map/addNode')
 
+export const moveNodeOnMap = defineAction<{
+    type: 'map/moveNode'
+    mapId: string
+    nodeOnMapId: string
+    x: number
+    y: number
+}>('map/moveNode')
 
 // node
 

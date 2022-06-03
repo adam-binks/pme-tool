@@ -1,5 +1,5 @@
 import { createBlankMap, getMapById, getNodeById } from '../helpers.js'
-import { addNodeToMap, createMap, loadMap, renameMap } from '../tmp/mapActionsCopy.js'
+import { addNodeToMap, createMap, loadMap, moveNodeOnMap, renameMap } from '../tmp/mapActionsCopy.js'
 import { Server } from '@logux/server'
 import { NodeOnMapModel } from '../schema.js'
 import typegoose from '@typegoose/typegoose'
@@ -41,18 +41,9 @@ export default (server: Server) => {
                     }
                 }))
             } else {
-                console.log("Error - map/load typeguards failed")
+                console.error("Error - map/load typeguards failed")
             }
         },
-        filter(ctx, action) {
-            console.log('in filter')
-            console.log(action)
-            return (mapAction, mapMeta) => {
-                console.log('in inner')
-                console.log(mapAction)
-                return true
-            }
-        }
     })
 
     server.type(createMap, {
@@ -89,20 +80,38 @@ export default (server: Server) => {
         async process(ctx, action) {
             let map = await getMapById(action.mapId).populate('nodes')
             await getNodeById(action.nodeId) // check that the node exists
-
-            const nodeAlreadyOnMap = isDocumentArray(map.nodes) && !map.nodes.every(node => node._id !== action.nodeId)
-            if (!nodeAlreadyOnMap) {
-                const nodeOnMap = await NodeOnMapModel.create({
-                    _id: action.nodeOnMapId,
-                    node: action.nodeId,
-                    x: action.x,
-                    y: action.y,
-                })
+            const nodeOnMap = await NodeOnMapModel.create({
+                _id: action.nodeOnMapId,
+                node: action.nodeId,
+                x: action.x,
+                y: action.y,
+            }).catch((reason) => { console.log("Error creating nodeonmap " + reason) })
+            if (nodeOnMap) {
                 map.nodes.push(nodeOnMap)
-                map.save()
+                await map.save().catch((reason) => { console.error("Error adding node to map " + reason) })
             }
+        }
 
-            // todo - if schema not in map, add schema
+        // todo - if schema not in map, add schema
+    })
+
+    server.type(moveNodeOnMap, {
+        access() {
+            return true
+        },
+        async process(ctx, action) {
+            let map = await getMapById(action.mapId).populate('nodes')
+
+            if (isDocumentArray(map.nodes)) {
+                const node = map.nodes.find(node => node._id.toString() === action.nodeOnMapId)
+                if (node) {
+                    node.x = action.x
+                    node.y = action.y
+                    await node.save()
+                } else {
+                    console.error("no node " + action.nodeOnMapId + " in " + map.nodes)
+                }
+            }
         }
     })
 }
