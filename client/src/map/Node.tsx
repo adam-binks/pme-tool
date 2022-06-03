@@ -1,21 +1,17 @@
 import { useAppSelector } from "../app/hooks";
+import { NodeOnMap } from "../common/mapActions";
 import styles from "./Node.module.css";
 
 interface NodeProps {
-    id: string,
+    nodeOnMap: NodeOnMap,
 }
-export default function Node({ id }: NodeProps) {
-    // temp
-    const node = {
-        x: 100,
-        y: 100
-    }
+export default function Node({ nodeOnMap }: NodeProps) {
     return (
         <div 
             className={styles.Node}
-            style={{left: node.x, top: node.y}}
+            style={{left: nodeOnMap.x, top: nodeOnMap.y}}
         >
-            <p>Node {id}</p>
+            <p>Node {nodeOnMap.node.name} {nodeOnMap._id}</p>
         </div>
     )
 }

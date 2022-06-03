@@ -4,7 +4,12 @@ export interface Map {
     _id: string
     name: string
     nodes: NodeOnMap[]
-    mapSchema: undefined // todo
+    mapSchema: MapSchema // todo
+}
+
+export interface MapSchema {
+    _id: string
+    properties: AbstractProperty[]
 }
 
 export interface NodeOnMap {
@@ -17,7 +22,18 @@ export interface NodeOnMap {
 export interface Node {
     _id: string
     name: string
-    // todo more
+    properties: Property[]
+}
+
+export interface Property {
+    _id: string
+    abstractProperty: AbstractProperty
+    value: any
+}
+
+export interface AbstractProperty {
+    _id: string
+
 }
 
 
@@ -65,6 +81,7 @@ export const createNode = defineAction<{
     type: 'node/create'
     id: string
     name: string
+    properties: Property[]
     // todo - type, properties
 }>('node/create')
 

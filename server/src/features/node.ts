@@ -12,9 +12,12 @@ export default (server: Server) => {
             const nodeExists = await getNodeById(action.id)
             if (!nodeExists) {
                 const node = await NodeModel.create({
+                    _id: action.id,
                     ...action
                 })
                 await node.save()
+            } else {
+                console.error("node exists " + action.id)
             }
         }
     })

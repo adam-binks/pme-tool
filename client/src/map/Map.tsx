@@ -13,14 +13,12 @@ interface MapProps {
     paneIndex: number,
 }
 export default function Map({ id, paneIndex }: MapProps) {
-    const map = useAppSelector(state => state.maps.find(map => map._id === id))
+    const map = useAppSelector(state => state.maps.maps.find(map => map._id === id))
     const dispatch = useAppDispatch()
-
-    const nodeIds = ["one", "two"]
 
     const addNode = (e: React.MouseEvent) => {
         const nodeId = generateId();
-        dispatch.sync(createNode({ id: nodeId, name: "New node" }))
+        dispatch.sync(createNode({ id: nodeId, name: "New node", properties: [] }))
         dispatch.sync(addNodeToMap({
             mapId: id,
             nodeId,
@@ -63,13 +61,11 @@ export default function Map({ id, paneIndex }: MapProps) {
                 <TransformComponent
                     wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                 >
-                    {nodeIds.map(nodeId =>
-
+                    {map.nodes.map(nodeOnMap =>
                         <Node
-                            id={nodeId}
-                            key={nodeId}
+                            nodeOnMap={nodeOnMap}
+                            key={nodeOnMap._id}
                         />
-
                     )}
                 </TransformComponent>
             </TransformWrapper>

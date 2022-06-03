@@ -2,8 +2,8 @@ import { ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import { CrossTabClient, IndexedStore, badge, badgeEn, log, confirm } from '@logux/client';
 import { badgeStyles } from '@logux/client/badge/styles';
 import { createStoreCreator } from '@logux/redux';
-import { mapReducer } from '../reducers/mapSlice';
-import { panesReducer } from '../reducers/paneSlice';
+import mapReducer from '../reducers/mapReducer';
+import panesReducer from '../reducers/paneReducer';
 
 
 const reducer = combineReducers({
