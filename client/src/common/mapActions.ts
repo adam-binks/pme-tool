@@ -33,7 +33,8 @@ export interface Property {
 
 export interface AbstractProperty {
     _id: string
-
+    name: string
+    type: "text" | "checkbox"
 }
 
 

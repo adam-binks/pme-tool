@@ -5,6 +5,9 @@ import { Schema } from "mongoose";
 class AbstractProperty {
     @prop({ required: true })
     public name!: string
+
+    @prop({ required: true })
+    public type!: "text" | "checkbox"
 }
 export const AbstractPropertyModel = getModelForClass(AbstractProperty)
 
