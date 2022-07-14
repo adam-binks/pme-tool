@@ -1,18 +1,20 @@
-import { Action } from "@logux/core"
-import { createReducer } from "@reduxjs/toolkit"
-import { openPane, closePane } from "../common/mapActions"
+import { createReducer, createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-export type PanesState = { id: string }[]
+export type Pane = { id: string }
+export type PanesState = Pane[]
 
-const initialState: PanesState = [{id: "74ab7f102ea0c3d6427145b8"}, {id: "1a0db562763379afc7b4e6cc"}]
+const initialState: PanesState = [{ id: "ZDb8e2RwfWLnoJtgn9VI" }]//, { id: "1a0db562763379afc7b4e6cc" }]
 
-export default createReducer(initialState, (builder) => {
-    builder
-        .addCase(openPane, (state, action) => {
-            state.push(action.pane)
-        })
-
-        .addCase(closePane, (state, action) => {
-            return state.filter((_, index) => index !== action.paneIndex)
-        })
+export const paneSlice = createSlice({
+    name: 'panes',
+    initialState: initialState,
+    reducers: {
+        openPane: (state, action: PayloadAction<Pane>) => {
+            state.push(action.payload)
+        }
+    }
 })
+
+export const { openPane } = paneSlice.actions
+
+export default paneSlice.reducer

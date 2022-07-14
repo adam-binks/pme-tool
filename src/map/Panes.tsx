@@ -11,19 +11,19 @@ export default function Panes() {
     }
     return (
         <>
-            <Split
+            {/* <Split
                 className="split-flex"
                 direction="horizontal"
                 aria-roledescription={`Split screen into ${panes.length}`}
-            >
-                {panes.map((pane, paneIndex) =>
+            > */}
+                {panes.map((pane: any, paneIndex: number) =>
                     <Map
                         mapId={pane.id}
                         key={pane.id}
                         paneIndex={paneIndex}
                     />
                 )}
-            </Split>
+            {/* </Split> */}
         </>
     )
 }

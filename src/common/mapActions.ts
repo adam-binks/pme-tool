@@ -1,5 +1,3 @@
-import { defineAction } from '@logux/actions'
-
 export interface Map {
     _id: string
     name: string
@@ -49,59 +47,59 @@ export const X = defineAction<{
 
 // map
 
-export const loadMap = defineAction<{
-    type: 'map/load'
-    // id: string
-    map: Map
-}>('map/load')
+// export const loadMap = defineAction<{
+//     type: 'map/load'
+//     // id: string
+//     map: Map
+// }>('map/load')
 
-export const createMap = defineAction<{
-    type: 'map/create'
-    id: string
-}>('map/create')
+// export const createMap = defineAction<{
+//     type: 'map/create'
+//     id: string
+// }>('map/create')
 
-export const renameMap = defineAction<{
-    type: 'map/rename'
-    id: string
-    name: string
-}>('map/rename')
+// export const renameMap = defineAction<{
+//     type: 'map/rename'
+//     id: string
+//     name: string
+// }>('map/rename')
 
-export const addNodeToMap = defineAction<{
-    type: 'map/addNode'
-    mapId: string
-    nodeId: string
-    nodeOnMapId: string
-    x: number
-    y: number
-}>('map/addNode')
+// export const addNodeToMap = defineAction<{
+//     type: 'map/addNode'
+//     mapId: string
+//     nodeId: string
+//     nodeOnMapId: string
+//     x: number
+//     y: number
+// }>('map/addNode')
 
-export const moveNodeOnMap = defineAction<{
-    type: 'map/moveNode'
-    mapId: string
-    nodeOnMapId: string
-    x: number
-    y: number
-}>('map/moveNode')
+// export const moveNodeOnMap = defineAction<{
+//     type: 'map/moveNode'
+//     mapId: string
+//     nodeOnMapId: string
+//     x: number
+//     y: number
+// }>('map/moveNode')
 
-// node
+// // node
 
-export const createNode = defineAction<{
-    type: 'node/create'
-    id: string
-    name: string
-    properties: Property[]
-    // todo - type, properties
-}>('node/create')
+// export const createNode = defineAction<{
+//     type: 'node/create'
+//     id: string
+//     name: string
+//     properties: Property[]
+//     // todo - type, properties
+// }>('node/create')
 
 
-// panes
+// // panes
 
-export const openPane = defineAction<{
-    type: 'panes/add'
-    pane: {id: string}
-}>('panes/add')
+// export const openPane = defineAction<{
+//     type: 'panes/add'
+//     pane: {id: string}
+// }>('panes/add')
 
-export const closePane = defineAction<{
-    type: 'panes/close'
-    paneIndex: number
-}>('panes/close')
+// export const closePane = defineAction<{
+//     type: 'panes/close'
+//     paneIndex: number
+// }>('panes/close')
