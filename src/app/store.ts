@@ -6,20 +6,14 @@ import 'firebase/database';
 import 'firebase/compat/firestore';
 import { firestoreReducer, reduxFirestore, createFirestoreInstance } from 'redux-firestore'
 import { firebaseReducer } from 'react-redux-firebase';
+import { firebaseConfig } from './firebase';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyB12r9VgxPIQLLauHll-J_MqTPPVuPzYGE",
-    authDomain: "pme-tool.firebaseapp.com",
-    projectId: "pme-tool",
-    storageBucket: "pme-tool.appspot.com",
-    messagingSenderId: "647602178300",
-    appId: "1:647602178300:web:aae9b56eaa4147e0b3af79"
-}
 
 firebase.initializeApp(firebaseConfig)
 firebase.firestore()
 
-// const createStoreWithFirebase = compose(reduxFirestore(firebase))(createStore)
+// not sure if this compose is needed
+const createStoreWithFirebase = compose(reduxFirestore(firebase))(createStore)
 
 const rootReducer = combineReducers({
     firebase: firebaseReducer,
@@ -27,7 +21,7 @@ const rootReducer = combineReducers({
     panes: paneReducer,
 })
 
-export const store = createStore(rootReducer, 
+export const store = createStoreWithFirebase(rootReducer, 
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
 )
 

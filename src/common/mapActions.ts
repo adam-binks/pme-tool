@@ -1,5 +1,5 @@
 export interface Map {
-    _id: string
+    id: string
     name: string
     nodes: NodeOnMap[]
     mapSchema: MapSchema // todo

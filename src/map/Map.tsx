@@ -8,7 +8,7 @@ import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pin
 import { generateId } from "../etc/helpers";
 import MapHeader from "./MapHeader";
 import { useEffect, useState } from "react";
-import { useFirestore } from "react-redux-firebase";
+import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
 
 export interface DragItem {
     type: string
@@ -22,23 +22,9 @@ interface MapProps {
     paneIndex: number,
 }
 export default function Map({ mapId: mapId, paneIndex }: MapProps) {
-    // for some reason this isn't working:
-    // useFirestoreConnect([{ collection: 'maps', doc: mapId }])//{ collection: 'maps' })
-    // so we use a manual method instead:
-    const firestore = useFirestore()
-    useEffect(() => {
-        console.log("mount");
-        firestore.setListener({ collection: 'maps' })
-
-        return function cleanup() {
-            console.log("unmount");
-            firestore.unsetListener({ collection: 'maps' })
-        }
-    })
-
     const dispatch = useAppDispatch()
-    const map = useAppSelector(state => state.firestore.ordered?.maps?.find((map: any) => map.id === mapId))
-    console.log(`map: `, map)
+    const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
+    console.log(map)
 
     const addNode = (e: React.MouseEvent) => {
         const nodeId = generateId();
