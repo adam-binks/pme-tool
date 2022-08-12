@@ -4,9 +4,10 @@ import firebase from 'firebase/compat/app'
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/compat/firestore';
-import { firestoreReducer, reduxFirestore, createFirestoreInstance } from 'redux-firestore'
+import { firestoreReducer, reduxFirestore, createFirestoreInstance, FirestoreReducer } from 'redux-firestore'
 import { firebaseReducer } from 'react-redux-firebase';
 import { firebaseConfig } from './firebase';
+import { FirebaseSchema } from './schema';
 
 
 firebase.initializeApp(firebaseConfig)
@@ -15,7 +16,13 @@ firebase.firestore()
 // not sure if this compose is needed
 const createStoreWithFirebase = compose(reduxFirestore(firebase))(createStore)
 
-const rootReducer = combineReducers({
+interface RootReducerState {
+    firebase: ReturnType<typeof firebaseReducer>,
+    firestore: FirestoreReducer.Reducer<FirebaseSchema>,
+    panes: ReturnType<typeof paneReducer>
+}
+
+const rootReducer = combineReducers<RootReducerState>({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
     panes: paneReducer,

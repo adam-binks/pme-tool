@@ -9,6 +9,7 @@ import { generateId } from "../etc/helpers";
 import MapHeader from "./MapHeader";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
+import { addNode, getBlankNode } from "../reducers/mapFunctions";
 
 export interface DragItem {
     type: string
@@ -23,19 +24,13 @@ interface MapProps {
 }
 export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const dispatch = useAppDispatch()
+    const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
-    console.log(map)
+    const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
 
-    const addNode = (e: React.MouseEvent) => {
-        const nodeId = generateId();
-        // dispatch.sync(createNode({ id: nodeId, name: "New node", properties: [] }))
-        // dispatch.sync(addNodeToMap({
-        //     mapId,
-        //     nodeId,
-        //     nodeOnMapId: generateId(),
-        //     x: 0,
-        //     y: 0,
-        // }))
+    const createNodeAtLocation = (e: React.MouseEvent) => {
+        const blankNode = getBlankNode()
+        addNode(firestore, mapId, blankNode)
     }
 
     const [zoomLevel, setZoomLevel] = useState(1)
@@ -60,12 +55,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
         [dispatch, zoomLevel],
     )
 
-    // const isSubscribing = true//useSubscription([`map/${mapId}`])
-    // if (isSubscribing) {
-    //     return <div className={styles.Map}>
-    //         <p>Loading... {mapId}</p>
-    //     </div>
-    // }
     if (!map) {
         return <div className={styles.Map}>
             <p>Error: could not load map (ID: {mapId})</p>
@@ -74,7 +63,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     return (
         <div
             className={styles.Map}
-            onDoubleClick={(e) => addNode(e)}
+            onDoubleClick={(e) => createNodeAtLocation(e)}
             ref={drop}
         >
             <TransformWrapper
@@ -92,10 +81,10 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                 <TransformComponent
                     wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                 >
-                    {map.nodes && map.nodes.map((nodeOnMap: any) =>
+                    {nodes && Object.values(nodes).map((node: any) =>
                         <Node
-                            nodeOnMap={nodeOnMap}
-                            key={nodeOnMap._id}
+                            node={node}
+                            key={node.id}
                         />
                     )}
                 </TransformComponent>

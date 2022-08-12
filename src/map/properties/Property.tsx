@@ -1,4 +1,4 @@
-import { AbstractProperty, Property } from "../../common/mapActions";
+import { AbstractProperty, Property } from "../../app/schema";
 import styles from "./Property.module.css"
 import TextProperty from "./TextProperty";
 

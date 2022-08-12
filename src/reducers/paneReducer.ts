@@ -3,7 +3,11 @@ import { createReducer, createSlice, PayloadAction } from "@reduxjs/toolkit"
 export type Pane = { id: string }
 export type PanesState = Pane[]
 
-const initialState: PanesState = [{ id: "6715fc412f32e5438e18a691" }]//, { id: "1a0db562763379afc7b4e6cc" }]
+const initialState: PanesState = [
+    { id: "6715fc412f32e5438e18a691" },
+    // { id: "1747e2874c3914a0f269734d" },
+    // { id: '6a3b3ea554b9c433a4f98c0b' }
+]
 
 export const paneSlice = createSlice({
     name: 'panes',
