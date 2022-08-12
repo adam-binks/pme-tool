@@ -12,18 +12,27 @@ export default function Panes() {
     const [subscribedMaps, setSubscribedMaps] = useState<string[]>([])
 
     useEffect(() => {
-        const getListeners = (mapId: string) => [{
-            doc: mapId,
-            collection: 'maps',
-            subcollections: [
-                { collection: 'nodes' }
-            ],
-            storeAs: `nodes.${mapId}`
-        },
-        {
-            doc: mapId,
-            collection: 'maps',
-        }
+        const getListeners = (mapId: string) => [
+            {
+                doc: mapId,
+                collection: 'maps',
+            },
+            {
+                doc: mapId,
+                collection: 'maps',
+                subcollections: [
+                    { collection: 'nodes' }
+                ],
+                storeAs: `nodes.${mapId}`
+            },
+            {
+                doc: mapId,
+                collection: 'maps',
+                subcollections: [
+                    { collection: 'nodes' }
+                ],
+                storeAs: `nodes.${mapId}`
+            },
         ]
 
         // Add listeners for all open maps

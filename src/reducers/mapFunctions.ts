@@ -37,3 +37,7 @@ export function addNode(firestore: ExtendedFirestoreInstance, mapId: string, nod
     firestore.set(`maps/${mapId}/nodes/${node.id}`, node)
     console.log('add node')
 }
+
+export function updateNode(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, changes: Partial<Node>) {
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, changes)
+}

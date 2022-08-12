@@ -6,7 +6,7 @@ interface PropertyProps {
     property: Property | undefined  // passed only if this is on a map node
     abstractProperty: AbstractProperty
 }
-export default function Property({ property, abstractProperty }: PropertyProps) {
+export default function PropertyComponent({ property, abstractProperty }: PropertyProps) {
     return (
         <div className={styles.Property}>
             {abstractProperty.type === "text" && 

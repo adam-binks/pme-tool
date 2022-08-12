@@ -9,7 +9,7 @@ import { generateId } from "../etc/helpers";
 import MapHeader from "./MapHeader";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
-import { addNode, getBlankNode } from "../reducers/mapFunctions";
+import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 
 export interface DragItem {
     type: string
@@ -40,15 +40,11 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
             accept: ItemTypes.NODE,
             drop(item: DragItem, monitor) {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+                // correct for canvas zoom
                 const x = Math.round(item.x + (delta.x / zoomLevel))
                 const y = Math.round(item.y + (delta.y / zoomLevel))
-                console.log({ zoomLevel, delta, x, y })
-                // dispatch.sync(moveNodeOnMap({
-                //     mapId: mapId,
-                //     nodeOnMapId: item.id,
-                //     x: x,
-                //     y: y
-                // }))
+                updateNode(firestore, mapId, item.id, {x, y})
+                
                 return undefined
             },
         }),
@@ -84,6 +80,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                     {nodes && Object.values(nodes).map((node: any) =>
                         <Node
                             node={node}
+                            mapId={mapId    }
                             key={node.id}
                         />
                     )}
