@@ -71,7 +71,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                     velocityDisabled: true
                 }}
                 limitToBounds={false}
-                onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale); console.log("zoom to ", ref.state.scale) }}
+                onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale)}}
             >
                 <MapHeader map={map} paneIndex={paneIndex} />
                 <TransformComponent

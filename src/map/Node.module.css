@@ -4,3 +4,8 @@
     background-color: #CCC;
     border-radius: 2px;
 }
+
+.debugNodeText {
+    font-size: x-small;
+    color: #777
+}

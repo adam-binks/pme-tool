@@ -5,8 +5,9 @@ import styles from "./Property.module.css"
 interface TextPropertyProps {
     property: Property | undefined  // passed only if this is on a map node
     abstractProperty: AbstractProperty
+    updatePropertyValue: (property: Property, newValue: any) => void
 }
-export default function TextProperty({ property, abstractProperty }: TextPropertyProps) {
+export default function TextProperty({ property, abstractProperty, updatePropertyValue }: TextPropertyProps) {
     return (
         <>
             <label>
@@ -15,9 +16,10 @@ export default function TextProperty({ property, abstractProperty }: TextPropert
             <ReactTextareaAutosize
                 value={property?.value}
                 //onChange={(e) => dispatch(nodeTextUpdated({ id: node.id, changes: { label: e.target.value } }))}
-                className={`${styles.textInput} hiddenTextArea`}
+                className={`${styles.textInput} hiddenTextArea doNotPan`}
                 maxRows={8}
                 disabled={property === undefined}
+                onChange={(e) => property && updatePropertyValue(property, e.target.value)}
             />
         </>
     )

@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { Map, Node } from "../app/schema";
+import { Map, Node, Property } from "../app/schema";
 import { generateId } from "../etc/helpers";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
@@ -35,9 +35,24 @@ export function getBlankNode(): Node {
 
 export function addNode(firestore: ExtendedFirestoreInstance, mapId: string, node: Node) {
     firestore.set(`maps/${mapId}/nodes/${node.id}`, node)
-    console.log('add node')
 }
 
 export function updateNode(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, changes: Partial<Node>) {
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, changes)
+}
+
+export function addNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayUnion(property))
+}
+
+// NB: this is bad for multiplayer
+// if two users change diff properties on the same node simultaneously, one might overwrite the others' changes
+// I might fix this later (by moving to subcollections), but for now this is worth the save in dev time
+// this function is redundant with updateNode but we use it to make that refactoring easier
+export function updateNodeProperties(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, properties: Property[]) {
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, {properties})
+}
+
+export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove(property))
 }

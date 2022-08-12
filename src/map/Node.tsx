@@ -4,7 +4,9 @@ import { useAppSelector } from "../app/hooks";
 import { Node as NodeType, Property } from "../app/schema";
 import { generateId } from "../etc/helpers";
 import { ItemTypes } from "../ItemTypes";
+import { addNodeProperty, updateNodeProperties } from "../reducers/mapFunctions";
 import styles from "./Node.module.css";
+import { AddPropertySelect } from "./properties/AddPropertySelect";
 import PropertyComponent from "./properties/Property";
 
 interface NodeProps {
@@ -28,18 +30,16 @@ export default function Node({ node, mapId }: NodeProps) {
     )
 
     const firestore = useFirestore()
-    const addProperty = () => {
-        const id = generateId()
-        const property : Property = {
-            id,
-            abstractProperty: {
-                id: "temp",
-                name: "Title",
-                type: "text"
-            },
-            value: "",
-        }
-        firestore.set(`maps/${mapId}/nodes/${node.id}/properties/${id}`, property)
+    const addProperty = (property: Property) => {
+        updateNodeProperties(firestore, mapId, node.id, [...node.properties, property])
+    }
+
+    const updatePropertyValue = (property: Property, newValue: any) => {
+        updateNodeProperties(firestore, mapId, node.id, 
+            node.properties.map(existingProp => existingProp === property ? 
+                {...existingProp, value: newValue} : existingProp
+            )
+        )
     }
 
     if (isDragging) {
@@ -51,14 +51,16 @@ export default function Node({ node, mapId }: NodeProps) {
             style={{ left: node.x, top: node.y }}
             ref={drag}
         >
+            <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
             {node.properties.map(property => 
                 <PropertyComponent
+                    key={property.id}
                     property={property}
-                    abstractProperty={property.abstractProperty}
+                    abstractProperty={{id: property.abstractPropertyId, name: "TODO", type: "text"}}
+                    updatePropertyValue={updatePropertyValue}
                 />
             )}
-            <p className="doNotPan">{node.name} {node.id}</p>
-            <button onClick={addProperty}>Add property</button>
+            <AddPropertySelect addProperty={addProperty}/>
         </div>
     )
 }

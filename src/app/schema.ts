@@ -25,7 +25,7 @@ export interface Schema {
 
 export interface Property {
     id: string
-    abstractProperty: AbstractProperty
+    abstractPropertyId: string
     value: any
 }
 
