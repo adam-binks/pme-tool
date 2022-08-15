@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 import { generateId } from "../etc/helpers";
 import MapHeader from "./MapHeader";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 
@@ -28,12 +28,30 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
     const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
 
-    const createNodeAtLocation = (e: React.MouseEvent) => {
-        const blankNode = getBlankNode()
-        addNode(firestore, mapId, blankNode)
-    }
+    const mapHeaderDivRef = useRef<HTMLDivElement>(null)
 
     const [zoomLevel, setZoomLevel] = useState(1)
+    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
+
+    const screenCoordsToMapCoords = (screenX: number, screenY: number) => {
+        const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
+
+        // correct for canvas element offset from topleft of screen
+        const xFromCanvasTopleft = screenX - (mapHeaderRect?.left || 0)
+        const yFromCanvasTopleft = screenY - (mapHeaderRect?.bottom || 0)
+
+        // correct for panning and zooming of the canvas
+        return {
+            x: ((xFromCanvasTopleft - panOffset.x) / zoomLevel),
+            y: (yFromCanvasTopleft - panOffset.y) / zoomLevel,
+        }
+    }
+
+    const createNodeAtLocation = (e: React.MouseEvent) => {
+        const {x, y} = screenCoordsToMapCoords(e.clientX, e.clientY)
+        const blankNode = getBlankNode(x, y)
+        addNode(firestore, mapId, blankNode)
+    }
 
     const [, drop] = useDrop(
         () => ({
@@ -43,8 +61,8 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                 // correct for canvas zoom
                 const x = Math.round(item.x + (delta.x / zoomLevel))
                 const y = Math.round(item.y + (delta.y / zoomLevel))
-                updateNode(firestore, mapId, item.id, {x, y})
-                
+                updateNode(firestore, mapId, item.id, { x, y })
+
                 return undefined
             },
         }),
@@ -71,16 +89,19 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                     velocityDisabled: true
                 }}
                 limitToBounds={false}
-                onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale)}}
+                onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale) }}
+                onPanningStop={(ref, event) => { 
+                    setPanOffset({ x: ref.state.positionX, y: ref.state.positionY }) 
+                }}
             >
-                <MapHeader map={map} paneIndex={paneIndex} />
+                <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
                 <TransformComponent
                     wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                 >
                     {nodes && Object.values(nodes).map((node: any) =>
                         <Node
                             node={node}
-                            mapId={mapId    }
+                            mapId={mapId}
                             key={node.id}
                         />
                     )}

@@ -22,14 +22,14 @@ export function renameMap(firestore: ExtendedFirestoreInstance, mapId: string, n
     firestore.update(`maps/${mapId}`, { name: newName })
 }
 
-export function getBlankNode(): Node {
+export function getBlankNode(x: number, y: number): Node {
     const id = generateId()
     return {
         id,
         name: "New node",
         properties: [],
-        x: 0,
-        y: 0,
+        x,
+        y,
     }
 }
 
