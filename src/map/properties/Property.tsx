@@ -1,6 +1,4 @@
-import { useFirestore } from "react-redux-firebase";
 import { AbstractProperty, Property } from "../../app/schema";
-import { updateNodeProperties } from "../../reducers/mapFunctions";
 import styles from "./Property.module.css"
 import TextProperty from "./TextProperty";
 
@@ -10,7 +8,6 @@ interface PropertyProps {
     updatePropertyValue: (property: Property, newValue: any) => void
 }
 export default function PropertyComponent({ property, abstractProperty, updatePropertyValue }: PropertyProps) {
-    const firestore = useFirestore()
 
     return (
         <div className={`${styles.Property} doNotPan`}>

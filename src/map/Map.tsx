@@ -3,13 +3,12 @@ import { ItemTypes } from "../ItemTypes";
 import Node from "./Node";
 import styles from './Map.module.css';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-// import { addNodeToMap, closePane, createNode, moveNodeOnMap, renameMap } from "../common/mapActions";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
-import { generateId } from "../etc/helpers";
 import MapHeader from "./MapHeader";
-import { useEffect, useRef, useState } from "react";
-import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
+import { useRef, useState } from "react";
+import { useFirestore } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
+import { SchemaPane } from "./schema/SchemaPane";
 
 export interface DragItem {
     type: string
@@ -48,7 +47,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     }
 
     const createNodeAtLocation = (e: React.MouseEvent) => {
-        const {x, y} = screenCoordsToMapCoords(e.clientX, e.clientY)
+        const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
         const blankNode = getBlankNode(x, y)
         addNode(firestore, mapId, blankNode)
     }
@@ -80,33 +79,37 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
             onDoubleClick={(e) => createNodeAtLocation(e)}
             ref={drop}
         >
-            <TransformWrapper
-                minPositionX={0}
-                minScale={0.1}
-                doubleClick={{ disabled: true }}
-                panning={{
-                    excluded: ["doNotPan"],
-                    velocityDisabled: true
-                }}
-                limitToBounds={false}
-                onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale) }}
-                onPanningStop={(ref, event) => { 
-                    setPanOffset({ x: ref.state.positionX, y: ref.state.positionY }) 
-                }}
-            >
-                <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
-                <TransformComponent
-                    wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+            <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
+
+            <div className={styles.MapMain}>
+                <TransformWrapper
+                    minPositionX={0}
+                    minScale={0.1}
+                    doubleClick={{ disabled: true }}
+                    panning={{
+                        excluded: ["doNotPan"],
+                        velocityDisabled: true
+                    }}
+                    limitToBounds={false}
+                    onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale) }}
+                    onPanningStop={(ref, event) => {
+                        setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                    }}
                 >
-                    {nodes && Object.values(nodes).map((node: any) =>
-                        <Node
-                            node={node}
-                            mapId={mapId}
-                            key={node.id}
-                        />
-                    )}
-                </TransformComponent>
-            </TransformWrapper>
+                    <TransformComponent
+                        wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                    >
+                        {nodes && Object.values(nodes).map((node: any) =>
+                            <Node
+                                node={node}
+                                mapId={mapId}
+                                key={node.id}
+                            />
+                        )}
+                    </TransformComponent>
+                </TransformWrapper>
+                <SchemaPane schema={map.schema} />
+            </div>
         </div>
     )
 }

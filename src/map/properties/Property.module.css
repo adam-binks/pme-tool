@@ -1,3 +1,7 @@
 .Property {
     background-color: white;
 }
+
+.textInput {
+    outline: 2px;
+}

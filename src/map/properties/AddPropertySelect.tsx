@@ -1,16 +1,46 @@
+import { useFirestore } from "react-redux-firebase";
 import Select from "react-select";
-import { Property } from "../../app/schema";
+import { useAppSelector } from "../../app/hooks";
+import { AbstractProperty, defaultPropertyValueByType, Node, Property, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
+import { updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
 
 interface AddPropertySelectProps {
-    addProperty: (property: Property) => void
+    mapId: string
+    node: Node
 }
-export function AddPropertySelect({ addProperty }: AddPropertySelectProps) {
+export function AddPropertySelect({ mapId, node }: AddPropertySelectProps) {
+    const firestore = useFirestore()
 
     const options = [
         { value: "text", label: "Text" },
         { value: "checkbox", label: "Checkbox" },
     ]
+
+    const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
+    const addAbstractProperty = (newProperty: AbstractProperty) => {
+        updateSchema(firestore, mapId, {
+            properties: [...schema?.properties, newProperty]
+        })
+    }
+
+    const createNewPropertyAndAddToNode = (name: string, type: PropertyType) => {
+        const abstractPropertyId = generateId()
+        addAbstractProperty({
+            id: abstractPropertyId,
+            name,
+            type
+        })
+        addProperty({
+            id: generateId(),
+            abstractPropertyId,
+            value: defaultPropertyValueByType[type]
+        })
+    }
+
+    const addProperty = (property: Property) => {
+        updateNodeProperties(firestore, mapId, node.id, [...node.properties, property])
+    }
 
     return (
         <Select
@@ -20,11 +50,7 @@ export function AddPropertySelect({ addProperty }: AddPropertySelectProps) {
             options={options}
             onChange={(e, meta) => {
                 if (e?.value) {
-                    addProperty({
-                        id: generateId(),
-                        abstractPropertyId: "TODO",
-                        value: "",
-                    })
+                    createNewPropertyAndAddToNode("New property", e.value as PropertyType)
                 }
             }}
         />

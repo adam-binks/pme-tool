@@ -2,9 +2,8 @@ import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../app/hooks";
 import { Node as NodeType, Property } from "../app/schema";
-import { generateId } from "../etc/helpers";
 import { ItemTypes } from "../ItemTypes";
-import { addNodeProperty, updateNodeProperties } from "../reducers/mapFunctions";
+import { updateNodeProperties } from "../reducers/mapFunctions";
 import styles from "./Node.module.css";
 import { AddPropertySelect } from "./properties/AddPropertySelect";
 import PropertyComponent from "./properties/Property";
@@ -29,10 +28,9 @@ export default function Node({ node, mapId }: NodeProps) {
         [node],
     )
 
+    const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
+
     const firestore = useFirestore()
-    const addProperty = (property: Property) => {
-        updateNodeProperties(firestore, mapId, node.id, [...node.properties, property])
-    }
 
     const updatePropertyValue = (property: Property, newValue: any) => {
         updateNodeProperties(firestore, mapId, node.id, 
@@ -56,11 +54,11 @@ export default function Node({ node, mapId }: NodeProps) {
                 <PropertyComponent
                     key={property.id}
                     property={property}
-                    abstractProperty={{id: property.abstractPropertyId, name: "TODO", type: "text"}}
+                    abstractProperty={abstractProperties.find((prop: Property) => prop.id === property.abstractPropertyId)}
                     updatePropertyValue={updatePropertyValue}
                 />
             )}
-            <AddPropertySelect addProperty={addProperty}/>
+            <AddPropertySelect mapId={mapId} node={node} />
         </div>
     )
 }

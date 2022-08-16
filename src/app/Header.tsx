@@ -11,7 +11,7 @@ export default function Header() {
     const firestore = useFirestore()
 
     return (
-        <div style={{ backgroundColor: "#eee", width: "100%", height: "50px" }}>
+        <div style={{ backgroundColor: "#eee", width: "100%", height: "30px" }}>
             <button onClick={async () => {
                 const id = createMap(firestore)
                 dispatch(openPane({ id }))

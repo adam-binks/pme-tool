@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { Map, Node, Property } from "../app/schema";
+import { Map, Node, Property, Schema } from "../app/schema";
 import { generateId } from "../etc/helpers";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
@@ -55,4 +55,8 @@ export function updateNodeProperties(firestore: ExtendedFirestoreInstance, mapId
 
 export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove(property))
+}
+
+export function updateSchema(firestore: ExtendedFirestoreInstance, mapId: string, changes: Partial<Schema>) {
+    firestore.update(`maps/${mapId}`, {schema: changes})
 }

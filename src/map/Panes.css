@@ -1,7 +1,7 @@
 .split-flex {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    flex-grow: 1;
     /* the split.js docs say border-box works better */
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

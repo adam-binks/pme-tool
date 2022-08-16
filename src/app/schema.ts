@@ -32,5 +32,12 @@ export interface Property {
 export interface AbstractProperty {
     id: string
     name: string
-    type: "text" | "checkbox"
+    type: PropertyType
+}
+
+export type PropertyType = "text" | "checkbox"
+
+export const defaultPropertyValueByType = {
+    text: "",
+    checkbox: true,
 }

@@ -3,6 +3,7 @@ import { useAppDispatch } from "../app/hooks"
 import { renameMap } from "../reducers/mapFunctions"
 import { closePane } from "../reducers/paneReducer"
 import { Map } from "../app/schema"
+import styles from "./MapHeader.module.css"
 
 interface MapHeaderProps {
     map: Map
@@ -14,7 +15,7 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
     const firestore = useFirestore()
 
     return (
-        <div ref={divRef}>
+        <div ref={divRef} className={styles.MapHeader}>
             <p>Map {map.id}</p>
             <input 
                 value={map.name} 

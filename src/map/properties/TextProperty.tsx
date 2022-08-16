@@ -16,7 +16,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
             <ReactTextareaAutosize
                 value={property?.value}
                 //onChange={(e) => dispatch(nodeTextUpdated({ id: node.id, changes: { label: e.target.value } }))}
-                className={`${styles.textInput} hiddenTextArea doNotPan`}
+                className={`${styles.textInput} subtleTextArea doNotPan`}
                 maxRows={8}
                 disabled={property === undefined}
                 onChange={(e) => property && updatePropertyValue(property, e.target.value)}
