@@ -1,4 +1,5 @@
 import { AbstractProperty, Property } from "../../app/schema";
+import CheckboxProperty from "./CheckboxProperty";
 import styles from "./Property.module.css"
 import TextProperty from "./TextProperty";
 
@@ -13,19 +14,24 @@ export default function PropertyComponent({ property, abstractProperty, updateAb
     return (
         <div className={`${styles.Property} doNotPan`}>
             <input
-                type="text" 
-                className={`${styles.propertyName} subtleTextArea doNotPan`} 
+                type="text"
+                className={`${styles.propertyName} subtleTextArea doNotPan`}
                 value={abstractProperty.name}
-                onChange={(e) => updateAbstractProperty(abstractProperty.id, {name: e.target.value})}
+                onChange={(e) => updateAbstractProperty(abstractProperty.id, { name: e.target.value })}
             />
 
-            {abstractProperty.type === "text" && 
-                <TextProperty 
+            {abstractProperty.type === "text" &&
+                <TextProperty
                     property={property}
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
                 />}
-            {abstractProperty.type === "checkbox" && <p>Todo implement checkbox</p>}
+            {abstractProperty.type === "checkbox" &&
+                <CheckboxProperty
+                    property={property}
+                    abstractProperty={abstractProperty}
+                    updatePropertyValue={updatePropertyValue}
+                />}
         </div>
     )
 }

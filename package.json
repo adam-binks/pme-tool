@@ -1,6 +1,7 @@
 {
   "name": "pme-tool-client",
   "version": "0.1.0",
+  "homepage": "https://adambinks.me/pme-tool",
   "private": true,
   "dependencies": {
     "@firebase/firestore": "^3.4.11",
