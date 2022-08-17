@@ -4,7 +4,7 @@ export type Pane = { id: string }
 export type PanesState = Pane[]
 
 const initialState: PanesState = [
-    { id: "0ecea6f2999cd25e7aee1584" },
+    { id: "78d8d7533529d4989e4b7914" },
     // { id: "1747e2874c3914a0f269734d" },
     // { id: '6a3b3ea554b9c433a4f98c0b' }
 ]

@@ -15,3 +15,7 @@
 .textInput {
     border: 1px solid #aaa;
 }
+
+.AddNewPropertySelect {
+    text-align: left;
+}
