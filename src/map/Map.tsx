@@ -9,6 +9,9 @@ import { useRef, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { SchemaPane } from "./schema/SchemaPane";
+import React from "react";
+
+export const MapContext = React.createContext<string>("")
 
 export interface DragItem {
     type: string
@@ -74,42 +77,43 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
         </div>
     }
     return (
-        <div
-            className={styles.Map}
-            onDoubleClick={(e) => createNodeAtLocation(e)}
-            ref={drop}
-        >
-            <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
+        <MapContext.Provider value={mapId}>
+            <div
+                className={styles.Map}
+                onDoubleClick={(e) => createNodeAtLocation(e)}
+                ref={drop}
+            >
+                <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 
-            <div className={styles.MapMain}>
-                <TransformWrapper
-                    minPositionX={0}
-                    minScale={0.1}
-                    doubleClick={{ disabled: true }}
-                    panning={{
-                        excluded: ["doNotPan"],
-                        velocityDisabled: true
-                    }}
-                    limitToBounds={false}
-                    onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale) }}
-                    onPanningStop={(ref, event) => {
-                        setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
-                    }}
-                >
-                    <TransformComponent
-                        wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                <div className={styles.MapMain}>
+                    <TransformWrapper
+                        minPositionX={0}
+                        minScale={0.1}
+                        doubleClick={{ disabled: true }}
+                        panning={{
+                            excluded: ["doNotPan"],
+                            velocityDisabled: true
+                        }}
+                        limitToBounds={false}
+                        onZoomStop={(ref, event) => { setZoomLevel(ref.state.scale) }}
+                        onPanningStop={(ref, event) => {
+                            setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                        }}
                     >
-                        {nodes && Object.values(nodes).map((node: any) =>
-                            <Node
-                                node={node}
-                                mapId={mapId}
-                                key={node.id}
-                            />
-                        )}
-                    </TransformComponent>
-                </TransformWrapper>
-                <SchemaPane schema={map.schema} />
+                        <TransformComponent
+                            wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                        >
+                            {nodes && Object.values(nodes).map((node: any) =>
+                                <Node
+                                    node={node}
+                                    key={node.id}
+                                />
+                            )}
+                        </TransformComponent>
+                    </TransformWrapper>
+                    <SchemaPane schema={map.schema} />
+                </div>
             </div>
-        </div>
+        </MapContext.Provider>
     )
 }

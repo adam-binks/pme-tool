@@ -1,15 +1,17 @@
+import { useContext } from "react";
 import { useFirestore } from "react-redux-firebase";
 import Select from "react-select";
 import { useAppSelector } from "../../app/hooks";
 import { AbstractProperty, defaultPropertyValueByType, Node, Property, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
+import { MapContext } from "../Map";
 
 interface AddPropertySelectProps {
-    mapId: string
     node: Node
 }
-export function AddPropertySelect({ mapId, node }: AddPropertySelectProps) {
+export function AddPropertySelect({ node }: AddPropertySelectProps) {
+    const mapId = useContext(MapContext)
     const firestore = useFirestore()
 
     const options = [

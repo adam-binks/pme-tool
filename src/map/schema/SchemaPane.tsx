@@ -1,4 +1,8 @@
+import { useContext } from "react"
+import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
+import { updateAbstractProperty } from "../../reducers/mapFunctions"
+import { MapContext } from "../Map"
 import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
 
@@ -6,6 +10,8 @@ interface SchemaPaneProps {
     schema: Schema
 }
 export function SchemaPane({ schema }: SchemaPaneProps) {
+    const firestore = useFirestore()
+    const mapId = useContext(MapContext)
 
     if (!schema?.properties) {
         return (
@@ -27,6 +33,9 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                     abstractProperty={property}
                     property={undefined}
                     updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
+                    updateAbstractProperty={(id, changes) => 
+                        updateAbstractProperty(firestore, mapId, schema.properties, id, changes)
+                    }
                 />
             )}
 

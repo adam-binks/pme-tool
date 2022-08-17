@@ -1,7 +1,17 @@
 .Property {
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.propertyName {
+    /* height: 9px; */
+    font-size: small;
+    width: 100%;
+    color: #888;
 }
 
 .textInput {
-    outline: 2px;
+    border: 1px solid #aaa;
 }
