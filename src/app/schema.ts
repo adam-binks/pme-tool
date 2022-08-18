@@ -7,6 +7,7 @@ export interface Map {
     name: string
     createdAt: Date
     nodes: Node[]
+    arrows: Arrow[]
     schema: Schema
 }
 
@@ -16,6 +17,13 @@ export interface Node {
     properties: Property[]
     x: number
     y: number
+}
+
+export interface Arrow {
+    id: string
+    properties: Property[]
+    source: string
+    dest: string
 }
 
 export interface Schema {

@@ -9,6 +9,7 @@ export function createMap(firestore: ExtendedFirestoreInstance) {
         name: "New map",
         createdAt: new Date(),
         nodes: [],
+        arrows: [],
         schema: {
             id: generateId(),
             properties: [],

@@ -29,9 +29,9 @@ export default function Panes() {
                 doc: mapId,
                 collection: 'maps',
                 subcollections: [
-                    { collection: 'nodes' }
+                    { collection: 'arrows' }
                 ],
-                storeAs: `nodes.${mapId}`
+                storeAs: `arrows.${mapId}`
             },
         ]
 

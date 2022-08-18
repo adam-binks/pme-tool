@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import Creatable from "react-select/creatable";
-import Select, { GroupBase, OptionsOrGroups } from "react-select";
+import Select from "react-select";
 import { useAppSelector } from "../../app/hooks";
-import { AbstractProperty, defaultPropertyValueByType, Node, Property, PropertyType } from "../../app/schema";
+import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
 import { MapContext } from "../Map";
@@ -19,10 +19,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const [isCreatingNewProperty, setIsCreatingNewProperty] = useState("")
 
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
-
-    const options: OptionsOrGroups<null, GroupBase<null>> | undefined = schema?.properties.map(
-        (property: AbstractProperty) => ({ value: property.id, label: property.name })
-    )
 
     const createAbstractProperty = (newProperty: AbstractProperty) => {
         updateSchema(firestore, mapId, {
@@ -54,7 +50,15 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 className={`${styles.AddNewPropertySelect} doNotPan`}
                 value={null} // So it goes back to "Add property" on select an option 
                 placeholder="Add property"
-                options={options}
+                noOptionsMessage={() => <p>Type to name a new property</p>}
+                options={[
+                    {
+                        label: "Existing properties",
+                        options: schema?.properties.map(
+                            (property: AbstractProperty) => ({ value: property.id, label: property.name })
+                        )
+                    }
+                ]}
                 onCreateOption={(input) => {
                     if (input) {
                         setIsCreatingNewProperty(input)

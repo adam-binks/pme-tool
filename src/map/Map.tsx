@@ -10,6 +10,7 @@ import { useFirestore } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { SchemaPane } from "./schema/SchemaPane";
 import React from "react";
+import ArrowComponent from "./Arrow";
 
 export const MapContext = React.createContext<string>("")
 
@@ -29,6 +30,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
     const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
+    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`])
 
     const mapHeaderDivRef = useRef<HTMLDivElement>(null)
 
@@ -107,6 +109,12 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                 <Node
                                     node={node}
                                     key={node.id}
+                                />
+                            )}
+                            {arrows && Object.values(arrows).map((arrow: any) =>
+                                <ArrowComponent
+                                    arrow={arrow}
+                                    key={arrow.id}
                                 />
                             )}
                         </TransformComponent>

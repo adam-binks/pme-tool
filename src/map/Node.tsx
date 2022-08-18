@@ -47,6 +47,7 @@ export default function Node({ node }: NodeProps) {
     }
     return (
         <div
+            id={`node.${node.id}`}
             className={`${styles.Node} doNotPan`}
             style={{ left: node.x, top: node.y }}
             ref={drag}
