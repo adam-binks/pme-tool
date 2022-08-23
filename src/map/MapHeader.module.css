@@ -1,4 +1,6 @@
 .MapHeader {
     color: grey;
     align-items: left;
+    background-color: white;
+    z-index: 1; /* pop over arrows */
 }

@@ -5,7 +5,12 @@
     border-radius: 2px;
 }
 
+.nodeCanReceiveArrow {
+    background-color: red !important;
+}
+
 .debugNodeText {
+    display: none;
     font-size: x-small;
-    color: #777
+    color: #777;
 }

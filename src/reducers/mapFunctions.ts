@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { AbstractProperty, Map, Node, Property, Schema } from "../app/schema";
+import { AbstractProperty, Arrow, Map, Node, Property, Schema } from "../app/schema";
 import { generateId } from "../etc/helpers";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
@@ -70,4 +70,12 @@ export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, map
                 : prop
         )
     });
+}
+
+export function addArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrow: Arrow) {
+    firestore.set(`maps/${mapId}/arrows/${arrow.id}`, arrow)
+}
+
+export function updateArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrowId: string, changes: Partial<Arrow>) {
+    firestore.set(`maps/${mapId}/arrows/${arrowId}`, changes)
 }
