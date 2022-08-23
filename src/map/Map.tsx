@@ -1,6 +1,6 @@
 import { useDrop, XYCoord } from "react-dnd";
 import { ItemTypes } from "../ItemTypes";
-import Node from "./node/Node";
+import NodeComponent from "./node/Node";
 import styles from './Map.module.css';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
@@ -13,6 +13,7 @@ import React from "react";
 import ArrowComponent from "./Arrow";
 import { MouseFollower } from "./node/MouseFollower";
 import { useXarrow, Xwrapper } from "react-xarrows";
+import { Arrow, Node } from "../app/schema";
 
 export const MapContext = React.createContext<string>("")
 
@@ -119,7 +120,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                 wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                             >
                                 {nodes && Object.values(nodes).map((node: any) =>
-                                    <Node
+                                    node && <NodeComponent
                                         node={node}
                                         key={node.id}
                                     />
@@ -128,7 +129,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                         </TransformWrapper>
 
                         {arrows && Object.values(arrows).map((arrow: any) =>
-                            <ArrowComponent
+                            arrow && <ArrowComponent
                                 arrow={arrow}
                                 key={arrow.id}
                                 strokeWidthScaler={zoomLevel}

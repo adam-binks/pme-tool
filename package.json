@@ -4,8 +4,11 @@
   "homepage": "https://adambinks.me/pme-tool",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.0",
     "@firebase/firestore": "^3.4.11",
     "@kokarn/react-zoom-pan-pinch": "^2.1.5",
+    "@mantine/core": "^5.2.3",
+    "@mantine/hooks": "^5.2.3",
     "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",

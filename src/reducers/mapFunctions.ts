@@ -79,3 +79,7 @@ export function addArrow(firestore: ExtendedFirestoreInstance, mapId: string, ar
 export function updateArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrowId: string, changes: Partial<Arrow>) {
     firestore.set(`maps/${mapId}/arrows/${arrowId}`, changes)
 }
+
+export function deleteArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrowId: string) {
+    firestore.delete(`maps/${mapId}/arrows/${arrowId}`)
+}

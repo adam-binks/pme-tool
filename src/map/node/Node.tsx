@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useXarrow } from "react-xarrows";
@@ -20,6 +20,7 @@ interface NodeProps {
 export default function Node({ node }: NodeProps) {
     const mapId = useContext(MapContext)
     const dispatch = useAppDispatch()
+    const updateXArrow = useXarrow()
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: ItemTypes.NODE,
@@ -34,6 +35,8 @@ export default function Node({ node }: NodeProps) {
         }),
         [node],
     )
+
+    const [isHovered, setIsHovered] = useState(false)
 
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
@@ -51,17 +54,16 @@ export default function Node({ node }: NodeProps) {
         )
     }
 
-    if (isDragging) {
-        return <div ref={drag} /> // hide the element while dragging
-    }
+    // if (isDragging) {
+    //     return <div ref={drag} style={{ position: "absolute", left: node.x, top: node.y }} /> // hide the element while dragging
+    // }
     return (
         <div
             id={`node.${node.id}`}
             className={`${styles.Node} ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""} doNotPan`}
-            style={{ left: node.x, top: node.y }}
+            style={{ left: node.x, top: node.y, ...isDragging ? {display: "none"} : {} }}
             ref={drag}
             onClick={(e) => {
-                console.log(addingArrowFrom)
                 if (addingArrowFrom) {
                     addArrow(firestore, mapId, {
                         id: generateId(),
@@ -69,14 +71,17 @@ export default function Node({ node }: NodeProps) {
                         dest: node.id,
                         properties: []
                     })
-                    dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
+                    dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                 }
                 e.stopPropagation()
             }}
             onDoubleClick={(e) => e.stopPropagation()} // prevent this bubbling to map
+            onMouseEnter={() => {setIsHovered(true); updateXArrow()}}
+            onMouseLeave={() => {setIsHovered(false); !isDragging && updateXArrow()}}
         >
             <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
-            <AddArrowButton node={node} />
+            <p>I am node</p>
+            {isHovered && <AddArrowButton node={node} />}
             {node.properties.map(property =>
                 <PropertyComponent
                     key={property.id}
@@ -90,7 +95,7 @@ export default function Node({ node }: NodeProps) {
                     }
                 />
             )}
-            <AddPropertySelect node={node} />
+            {isHovered && <AddPropertySelect node={node} />}
         </div>
     )
 }

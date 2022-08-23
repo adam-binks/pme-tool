@@ -28,12 +28,14 @@ export function MouseFollower({ strokeWidthScaler, correctForMapOffset }: MouseF
     return (
         <>
             {addingArrowFrom && <>
-                <div id="mouseFollower" style={{ position: "absolute", left: mousePos.x, top: mousePos.y }} />
+                <div id="mouseFollower" style={{ position: "absolute", left: mousePos.x, top: mousePos.y, pointerEvents: "none" }} />
                 <Xarrow
                     start={`node.${addingArrowFrom}`}
                     end={"mouseFollower"}
-                    strokeWidth={5 * strokeWidthScaler}
+                    strokeWidth={3 * strokeWidthScaler}
                     curveness={0}
+                    divContainerStyle={{pointerEvents: "none"}}
+                    SVGcanvasStyle={{pointerEvents: "none"}}
                 />
             </>}
         </>

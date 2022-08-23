@@ -65,7 +65,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                     }
                 }}
                 onChange={(newValue, meta) => {
-                    console.log(newValue, schema.properties)
                     if (newValue) {
                         const property = schema?.properties.find((prop: AbstractProperty) => prop.id === (newValue as any).value)
                         if (!property) {
@@ -75,6 +74,10 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                         addPropertyToNode(property)
                     }
                 }}
+                styles={{menu: base => ({
+                    ...base,
+                    marginTop: -1,
+                })}}
             />
         )
     } else {

@@ -1,12 +1,15 @@
 import './App.css';
 import Panes from '../map/Panes';
 import Header from './Header';
+import { MantineProvider } from '@mantine/core';
 
 export default function App() {
     return (
-        <div className="App">
-            <Header/>
-            <Panes />
-        </div>
+        <MantineProvider>
+            <div className="App">
+                <Header />
+                <Panes />
+            </div>
+        </MantineProvider>
     )
 }

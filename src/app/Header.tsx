@@ -1,7 +1,4 @@
 import { useFirestore } from "react-redux-firebase"
-import { toast } from "react-toastify"
-// import { createMap, openPane } from "../common/mapActions"
-import { generateId } from "../etc/helpers"
 import { createMap } from "../reducers/mapFunctions"
 import { openPane } from "../reducers/paneReducer"
 import { useAppDispatch } from "./hooks"
@@ -14,7 +11,7 @@ export default function Header() {
         <div className="Header">
             <button onClick={async () => {
                 const id = createMap(firestore)
-            dispatch(openPane({ id, addingArrowFrom: undefined }))
+                dispatch(openPane({ id, addingArrowFrom: undefined }))
             }}>Create map</button>
         </div>
     )
