@@ -44,11 +44,22 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
         }])
     }
 
+    const sharedProps = {
+        value: null,
+        styles: {
+            menu: (base: any) => ({
+                ...base,
+                marginTop: -1,
+            }),
+            menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
+        },
+        menuPortalTarget: document.body
+    }
+
     if (!isCreatingNewProperty) {
         return (
             <Creatable
                 className={`${styles.AddNewPropertySelect} doNotPan`}
-                value={null} // So it goes back to "Add property" on select an option 
                 placeholder="Add property"
                 noOptionsMessage={() => <p>Type to name a new property</p>}
                 options={[
@@ -74,17 +85,13 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                         addPropertyToNode(property)
                     }
                 }}
-                styles={{menu: base => ({
-                    ...base,
-                    marginTop: -1,
-                })}}
+                {...sharedProps}
             />
         )
     } else {
         return (
             <Select
                 className={`${styles.AddNewPropertySelect} doNotPan`}
-                value={null} // So it goes back to "Add property" on select an option 
                 placeholder={`Choose an input for '${isCreatingNewProperty}'`}
                 options={[
                     { value: "text", label: "Text" },
@@ -99,6 +106,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 menuIsOpen={true}
                 autoFocus={true}
                 onMenuClose={() => setIsCreatingNewProperty("")}
+                {...sharedProps}
             />
         )
     }

@@ -14,6 +14,7 @@ import ArrowComponent from "./Arrow";
 import { MouseFollower } from "./node/MouseFollower";
 import { useXarrow, Xwrapper } from "react-xarrows";
 import { Arrow, Node } from "../app/schema";
+import { useMouse } from "@mantine/hooks";
 
 export const MapContext = React.createContext<string>("")
 
@@ -42,6 +43,8 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const [zoomLevel, setZoomLevel] = useState(1)
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
 
+    const {x: mouseX, y: mouseY, ref: mouseRef} = useMouse()
+    
     const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
         const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
 
@@ -96,7 +99,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
             <div
                 className={styles.Map}
                 onDoubleClick={(e) => createNodeAtLocation(e)}
-                ref={drop}
+                ref={(el) => drop(el) && mouseRef}
             >
                 <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 
@@ -135,7 +138,12 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                 strokeWidthScaler={zoomLevel}
                             />
                         )}
-                        <MouseFollower strokeWidthScaler={zoomLevel} correctForMapOffset={correctForMapOffset} />
+                        <MouseFollower 
+                            mouseX={mouseX} 
+                            mouseY={mouseY} 
+                            strokeWidthScaler={zoomLevel} 
+                            correctForMapOffset={correctForMapOffset} 
+                        />
                     </Xwrapper>
 
                     <SchemaPane schema={map.schema} />

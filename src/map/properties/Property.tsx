@@ -1,3 +1,4 @@
+import { Card } from "@mantine/core";
 import { toast } from "react-toastify";
 import { AbstractProperty, Property } from "../../app/schema";
 import CheckboxProperty from "./CheckboxProperty";
@@ -18,7 +19,7 @@ export default function PropertyComponent({ property, abstractProperty, updateAb
     }
 
     return (
-        <div className={`${styles.Property} doNotPan`} key={abstractProperty.id}>
+        <Card.Section className={`${styles.Property} doNotPan`} key={abstractProperty.id}>
             <input
                 type="text"
                 className={`${styles.propertyName} subtleTextArea doNotPan`}
@@ -38,6 +39,6 @@ export default function PropertyComponent({ property, abstractProperty, updateAb
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
                 />}
-        </div>
+        </Card.Section>
     )
 }

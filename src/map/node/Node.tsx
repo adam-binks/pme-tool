@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { Card } from "@mantine/core";
+import { MouseEvent, useContext, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useXarrow } from "react-xarrows";
@@ -54,16 +55,18 @@ export default function Node({ node }: NodeProps) {
         )
     }
 
-    // if (isDragging) {
-    //     return <div ref={drag} style={{ position: "absolute", left: node.x, top: node.y }} /> // hide the element while dragging
-    // }
+    if (isDragging) {
+        return <div ref={drag} style={{ position: "absolute", left: node.x, top: node.y }} /> // hide the element while dragging
+    }
     return (
-        <div
+        <Card
+            shadow="sm"
+            radius="md"
             id={`node.${node.id}`}
             className={`${styles.Node} ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""} doNotPan`}
-            style={{ left: node.x, top: node.y, ...isDragging ? {display: "none"} : {} }}
+            style={{ left: node.x, top: node.y }}
             ref={drag}
-            onClick={(e) => {
+            onClick={(e: MouseEvent) => {
                 if (addingArrowFrom) {
                     addArrow(firestore, mapId, {
                         id: generateId(),
@@ -75,7 +78,7 @@ export default function Node({ node }: NodeProps) {
                 }
                 e.stopPropagation()
             }}
-            onDoubleClick={(e) => e.stopPropagation()} // prevent this bubbling to map
+            onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
             onMouseEnter={() => {setIsHovered(true); updateXArrow()}}
             onMouseLeave={() => {setIsHovered(false); !isDragging && updateXArrow()}}
         >
@@ -96,6 +99,6 @@ export default function Node({ node }: NodeProps) {
                 />
             )}
             {isHovered && <AddPropertySelect node={node} />}
-        </div>
+        </Card>
     )
 }
