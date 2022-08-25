@@ -81,7 +81,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                 const y = Math.round(item.y + (delta.y / zoomLevel))
                 updateNode(firestore, mapId, item.id, { x, y })
 
-                setTimeout(() => updateXArrow(), 10) // temporary hack - doesn't work if another moves it
+                setTimeout(() => updateXArrow(), 100) // temporary hack - doesn't work if another moves it
 
                 return undefined
             },

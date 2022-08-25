@@ -62,6 +62,7 @@ export default function Node({ node }: NodeProps) {
         <Card
             shadow="sm"
             radius="md"
+            p="xs"
             id={`node.${node.id}`}
             className={`${styles.Node} ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""} doNotPan`}
             style={{ left: node.x, top: node.y, overflow: "visible" }}
@@ -97,7 +98,7 @@ export default function Node({ node }: NodeProps) {
             </Stack>
             {/* <AddArrowButton node={node} /> */}
             {isHovered && <AddArrowButton node={node} />}
-            {isHovered && <AddPropertySelect node={node} />}
+            {(isHovered || true) && <AddPropertySelect node={node} />}
         </Card>
     )
 }

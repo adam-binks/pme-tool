@@ -47,6 +47,12 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const sharedProps = {
         value: null,
         styles: {
+            container: (base:any ) => ({
+                ...base,
+                position: "absolute",
+                bottom: "-30px",
+                zIndex: 10,
+            }),
             menu: (base: any) => ({
                 ...base,
                 marginTop: -1,
