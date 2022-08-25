@@ -1,4 +1,4 @@
-import { Card } from "@mantine/core";
+import { Card, Stack } from "@mantine/core";
 import { MouseEvent, useContext, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -79,25 +79,23 @@ export default function Node({ node }: NodeProps) {
                 e.stopPropagation()
             }}
             onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-            onMouseEnter={() => {setIsHovered(true); updateXArrow()}}
-            onMouseLeave={() => {setIsHovered(false); !isDragging && updateXArrow()}}
+            onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
+            onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
         >
             <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
-            <p>I am node</p>
+            <Stack spacing={5}>
+                {node.properties.map(property =>
+                    <PropertyComponent
+                        key={property.id}
+                        property={property}
+                        abstractProperty={
+                            abstractProperties.find((prop: Property) => prop.id === property.abstractPropertyId)
+                        }
+                        updatePropertyValue={updatePropertyValue}
+                    />
+                )}
+            </Stack>
             {isHovered && <AddArrowButton node={node} />}
-            {node.properties.map(property =>
-                <PropertyComponent
-                    key={property.id}
-                    property={property}
-                    abstractProperty={
-                        abstractProperties.find((prop: Property) => prop.id === property.abstractPropertyId)
-                    }
-                    updatePropertyValue={updatePropertyValue}
-                    updateAbstractProperty={(id, changes) =>
-                        updateAbstractProperty(firestore, mapId, abstractProperties, id, changes)
-                    }
-                />
-            )}
             {isHovered && <AddPropertySelect node={node} />}
         </Card>
     )

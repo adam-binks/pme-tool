@@ -110,7 +110,7 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                             minScale={0.1}
                             doubleClick={{ disabled: true }}
                             panning={{
-                                excluded: ["doNotPan"],
+                                excluded: ["doNotPan", "textarea", "input"],
                                 velocityDisabled: true
                             }}
                             limitToBounds={false}

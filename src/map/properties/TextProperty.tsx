@@ -1,6 +1,6 @@
-import ReactTextareaAutosize from "react-textarea-autosize"
+import { Textarea } from "@mantine/core"
 import { AbstractProperty, Property } from "../../app/schema"
-import styles from "./Property.module.css"
+import { PropertyLabel } from "./PropertyLabel"
 
 
 interface TextPropertyProps {
@@ -9,14 +9,22 @@ interface TextPropertyProps {
     updatePropertyValue: (property: Property, newValue: any) => void
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue }: TextPropertyProps) {
+    const label = <PropertyLabel abstractProperty={abstractProperty} labelProps={{}} />
     return (
         <>
-            <ReactTextareaAutosize
+            <Textarea
                 value={property?.value}
-                className={`${styles.textInput} subtleTextArea doNotPan`}
+                onChange={(e) => property && updatePropertyValue(property, e.currentTarget.value)}
+                label={label}
+                styles={{
+                    label: {
+                        width: "95%"
+                    }
+                }}
+                placeholder={abstractProperty.name}
+                autosize
                 maxRows={8}
                 disabled={property === undefined}
-                onChange={(e) => property && updatePropertyValue(property, e.target.value)}
             />
         </>
     )

@@ -1,5 +1,6 @@
 .Node {
     position: absolute;
+    width: 200px;
 }
 
 .nodeCanReceiveArrow {

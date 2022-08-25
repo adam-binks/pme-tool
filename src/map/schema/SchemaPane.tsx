@@ -33,9 +33,6 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                     abstractProperty={property}
                     property={undefined}
                     updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
-                    updateAbstractProperty={(id, changes) => 
-                        updateAbstractProperty(firestore, mapId, schema.properties, id, changes)
-                    }
                 />
             )}
 
