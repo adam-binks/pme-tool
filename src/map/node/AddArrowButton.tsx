@@ -1,4 +1,6 @@
-import { useContext, useRef, useState } from "react"
+import { ActionIcon } from "@mantine/core"
+import { IconArrowNarrowRight, IconArrowRight } from "@tabler/icons"
+import { MouseEvent, useContext, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Node } from "../../app/schema"
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer"
@@ -14,16 +16,29 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
 
+    const addingFromThis = addingArrowFrom === node.id
+
     return (
-        <button
-            style={addingArrowFrom === node.id ? {backgroundColor: "blue"} : undefined}
-            onClick={() => dispatch(setAddingArrowFrom({
-                mapId, 
-                addingArrowFrom: addingArrowFrom === node.id ? undefined : node.id
-            }))}
-            onBlur={() => dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))}
+        <ActionIcon
+            style={{
+                position: "absolute",
+                right: -18,
+                bottom: 10,
+            }}
+            onClick={(e: MouseEvent) => {
+                dispatch(setAddingArrowFrom({
+                    mapId,
+                    addingArrowFrom: addingFromThis ? undefined : node.id
+                }))
+                addingFromThis && e.stopPropagation()
+            }}
+            variant="filled"
+            radius="xl"
+            size="lg"
+            color="yellow"
+            id={addingFromThis ? "addingArrowFromButton" : ""}
         >
-            Add arrow
-        </button>
+            <IconArrowNarrowRight />
+        </ActionIcon>
     )
 }

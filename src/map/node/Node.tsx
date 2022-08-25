@@ -64,7 +64,7 @@ export default function Node({ node }: NodeProps) {
             radius="md"
             id={`node.${node.id}`}
             className={`${styles.Node} ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""} doNotPan`}
-            style={{ left: node.x, top: node.y }}
+            style={{ left: node.x, top: node.y, overflow: "visible" }}
             ref={drag}
             onClick={(e: MouseEvent) => {
                 if (addingArrowFrom) {
@@ -95,6 +95,7 @@ export default function Node({ node }: NodeProps) {
                     />
                 )}
             </Stack>
+            {/* <AddArrowButton node={node} /> */}
             {isHovered && <AddArrowButton node={node} />}
             {isHovered && <AddPropertySelect node={node} />}
         </Card>

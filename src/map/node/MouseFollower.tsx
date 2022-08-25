@@ -21,7 +21,7 @@ export function MouseFollower({ strokeWidthScaler, mouseX, mouseY, correctForMap
             {addingArrowFrom && <>
                 <div id="mouseFollower" style={{ position: "absolute", left: mouseX, top: mouseY, pointerEvents: "none" }} />
                 <Xarrow
-                    start={`node.${addingArrowFrom}`}
+                    start={`addingArrowFromButton`}
                     end={"mouseFollower"}
                     strokeWidth={3 * strokeWidthScaler}
                     curveness={0}
