@@ -1,10 +1,23 @@
-.Node {
-    position: absolute;
+.nodeCard {
     width: 200px;
+    overflow: visible;
+}
+
+.nodeCard.isDragging {
+    opacity: 0.2;
+}
+
+.nodeWrapper {
+    position: absolute;
 }
 
 .nodeCanReceiveArrow {
-    background-color: red !important;
+    background-color: rgb(223, 243, 255) !important;
+    transition: background-color 0.5s;
+}
+
+.nodeCanReceiveArrow:hover {
+    background-color: rgb(164, 220, 255) !important;
 }
 
 .debugNodeText {

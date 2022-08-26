@@ -32,7 +32,7 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
                 }))
                 addingFromThis && e.stopPropagation()
             }}
-            variant="filled"
+            variant={addingFromThis ? "filled" : "outline"}
             radius="xl"
             size="lg"
             color="yellow"

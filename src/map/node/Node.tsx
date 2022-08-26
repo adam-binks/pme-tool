@@ -55,17 +55,18 @@ export default function Node({ node }: NodeProps) {
         )
     }
 
-    if (isDragging) {
-        return <div ref={drag} style={{ position: "absolute", left: node.x, top: node.y }} /> // hide the element while dragging
-    }
     return (
+        <div className={`${styles.nodeWrapper}`} id={`node.${node.id}`} style={{ left: node.x, top: node.y}}>
         <Card
             shadow="sm"
             radius="md"
             p="xs"
-            id={`node.${node.id}`}
-            className={`${styles.Node} ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""} doNotPan`}
-            style={{ left: node.x, top: node.y, overflow: "visible" }}
+            // id={`node.${node.id}`}
+            className={
+                `${styles.nodeCard}
+                ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
+                ${isDragging ? styles.isDragging : ""}
+                doNotPan`}
             ref={drag}
             onClick={(e: MouseEvent) => {
                 if (addingArrowFrom) {
@@ -96,9 +97,9 @@ export default function Node({ node }: NodeProps) {
                     />
                 )}
             </Stack>
-            {/* <AddArrowButton node={node} /> */}
-            {isHovered && <AddArrowButton node={node} />}
+            {(isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
             {(isHovered || true) && <AddPropertySelect node={node} />}
         </Card>
+        </div>
     )
 }

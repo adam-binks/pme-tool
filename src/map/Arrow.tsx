@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
-import Xarrow from "react-xarrows"
+import Xarrow, { useXarrow } from "react-xarrows"
 import { Arrow } from "../app/schema"
 import { deleteArrow } from "../reducers/mapFunctions"
 import styles from "./Arrow.module.css"
@@ -13,6 +13,19 @@ interface ArrowProps {
 export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps) {
     const firestore = useFirestore()
     const mapId = useContext(MapContext)
+
+    const sourceId = `node.${arrow.source}`
+    const destId = `node.${arrow.dest}`
+
+    const updateXArrow = useXarrow()
+
+    if (!document.getElementById(sourceId) || !document.getElementById(destId)) {
+        setTimeout(updateXArrow, 200)
+        console.log('no id ', {source: document.getElementById(sourceId), dest: document.getElementById(destId)})
+        return (<p>No id</p>)
+    }
+
+    // console.log({source: `node.${arrow.source}`, dest: `node.${arrow.dest}`})
 
     var selfLoopArrowProps = {}
     if (arrow.source === arrow.dest) {

@@ -19,7 +19,12 @@ export function MouseFollower({ strokeWidthScaler, mouseX, mouseY, correctForMap
     return (
         <>
             {addingArrowFrom && <>
-                <div id="mouseFollower" style={{ position: "absolute", left: mouseX, top: mouseY, pointerEvents: "none" }} />
+                <div id="mouseFollower" style={{
+                    position: "absolute",
+                    left: mouseX, 
+                    top: mouseY, 
+                    pointerEvents: "none"
+                }} />
                 <Xarrow
                     start={`addingArrowFromButton`}
                     end={"mouseFollower"}
