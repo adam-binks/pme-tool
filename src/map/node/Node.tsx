@@ -55,51 +55,58 @@ export default function Node({ node }: NodeProps) {
         )
     }
 
+    // return (
+    //     <div className={`${styles.nodeWrapper}`} id={`node.${node.id}`} style={{ left: node.x, top: node.y,
+    //     width: 5, height: 5, backgroundColor: "red" }}>
+
+    //     </div>
+    // )
+
     return (
-        <div className={`${styles.nodeWrapper}`} id={`node.${node.id}`} style={{ left: node.x, top: node.y}}>
-        <Card
-            shadow="sm"
-            radius="md"
-            p="xs"
-            // id={`node.${node.id}`}
-            className={
-                `${styles.nodeCard}
+        <div className={`${styles.nodeWrapper}`} id={`node.${node.id}`} style={{ left: node.x, top: node.y }}>
+            <Card
+                shadow="sm"
+                radius="md"
+                p="xs"
+                // id={`node.${node.id}`}
+                className={
+                    `${styles.nodeCard}
                 ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
                 ${isDragging ? styles.isDragging : ""}
                 doNotPan`}
-            ref={drag}
-            onClick={(e: MouseEvent) => {
-                if (addingArrowFrom) {
-                    addArrow(firestore, mapId, {
-                        id: generateId(),
-                        source: addingArrowFrom,
-                        dest: node.id,
-                        properties: []
-                    })
-                    dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
-                }
-                e.stopPropagation()
-            }}
-            onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-            onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
-            onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
-        >
-            <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
-            <Stack spacing={5}>
-                {node.properties.map(property =>
-                    <PropertyComponent
-                        key={property.id}
-                        property={property}
-                        abstractProperty={
-                            abstractProperties.find((prop: Property) => prop.id === property.abstractPropertyId)
-                        }
-                        updatePropertyValue={updatePropertyValue}
-                    />
-                )}
-            </Stack>
-            {(isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
-            {(isHovered || true) && <AddPropertySelect node={node} />}
-        </Card>
+                ref={drag}
+                onClick={(e: MouseEvent) => {
+                    if (addingArrowFrom) {
+                        addArrow(firestore, mapId, {
+                            id: generateId(),
+                            source: addingArrowFrom,
+                            dest: node.id,
+                            properties: []
+                        })
+                        dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
+                    }
+                    e.stopPropagation()
+                }}
+                onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
+                onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
+                onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
+            >
+                <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
+                <Stack spacing={5}>
+                    {node.properties.map(property =>
+                        <PropertyComponent
+                            key={property.id}
+                            property={property}
+                            abstractProperty={
+                                abstractProperties.find((prop: Property) => prop.id === property.abstractPropertyId)
+                            }
+                            updatePropertyValue={updatePropertyValue}
+                        />
+                    )}
+                </Stack>
+                {(isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
+                {(isHovered || true) && <AddPropertySelect node={node} />}
+            </Card>
         </div>
     )
 }

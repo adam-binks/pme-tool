@@ -43,8 +43,8 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const [zoomLevel, setZoomLevel] = useState(1)
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
 
-    const {x: mouseX, y: mouseY, ref: mouseRef} = useMouse()
-    
+    const { x: mouseX, y: mouseY, ref: mouseRef } = useMouse()
+
     const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
         const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
 
@@ -110,14 +110,34 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                             minScale={0.1}
                             doubleClick={{ disabled: true }}
                             panning={{
-                                excluded: ["doNotPan", "textarea", "input", "mantine-Select-dropdown"],
+                                excluded: [
+                                    "doNotPan",
+                                    "textarea",
+                                    "input",
+                                    "mantine-Select-dropdown",
+                                    "mantine-ScrollArea-root",
+                                    "mantine-ScrollArea-viewport",
+                                    "mantine-ScrollArea-scrollbar",
+                                    "mantine-ScrollArea-thumb",
+                                    "mantine-Select-item",
+                                ],
                                 velocityDisabled: true
+                            }}
+                            wheel={{
+                                excluded: ["doNotZoom",
+                                    "mantine-Select-dropdown",
+                                    "mantine-ScrollArea-root",
+                                    "mantine-ScrollArea-viewport",
+                                    "mantine-ScrollArea-scrollbar",
+                                    "mantine-ScrollArea-thumb",
+                                    "mantine-Select-item",
+                                ]
                             }}
                             limitToBounds={false}
                             onZoom={(ref, event) => { setZoomLevel(ref.state.scale); }}
-                            onPanning={(ref, event) => {
-                                setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
-                            }}
+                        // onPanning={(ref, event) => {
+                        //     setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                        // }}
                         >
                             <TransformComponent
                                 wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
@@ -128,21 +148,27 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                         key={node.id}
                                     />
                                 )}
+                                {arrows && Object.values(arrows).map((arrow: any) => {
+                                    if (!arrow || !nodes) return
+                                    const sourceNode = nodes[arrow.source]
+                                    const destNode = nodes[arrow.dest]
+                                    return <ArrowComponent
+                                        source={{ x: sourceNode.x, y: sourceNode.y }}
+                                        dest={{ x: destNode.x, y: destNode.y }}
+                                        arrow={arrow}
+                                        key={arrow.id}
+                                        strokeWidthScaler={zoomLevel}
+                                    />
+                                }
+                                )}
                             </TransformComponent>
                         </TransformWrapper>
 
-                        {arrows && Object.values(arrows).map((arrow: any) =>
-                            arrow && <ArrowComponent
-                                arrow={arrow}
-                                key={arrow.id}
-                                strokeWidthScaler={zoomLevel}
-                            />
-                        )}
-                        <MouseFollower 
-                            mouseX={mouseX} 
-                            mouseY={mouseY} 
-                            strokeWidthScaler={zoomLevel} 
-                            correctForMapOffset={correctForMapOffset} 
+                        <MouseFollower
+                            mouseX={mouseX}
+                            mouseY={mouseY}
+                            strokeWidthScaler={zoomLevel}
+                            correctForMapOffset={correctForMapOffset}
                         />
                     </Xwrapper>
 

@@ -44,28 +44,14 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     const sharedProps : Partial<SelectProps> = {
-        value: null,
+        value: undefined,
         radius: "xl"
-        // styles: {
-        //     container: (base: any) => ({
-        //         ...base,
-        //         position: "absolute",
-        //         bottom: "-30px",
-        //         zIndex: 10,
-        //     }),
-        //     menu: (base: any) => ({
-        //         ...base,
-        //         marginTop: -1,
-        //     }),
-        //     menuPortal: (base: any) => ({ ...base, zIndex: 9999 })
-        // },
-        // menuPortalTarget: document.body
     }
 
     if (!isCreatingNewProperty) {
         return (
             <Select
-                className={`${styles.AddNewPropertySelect} doNotPan`}
+                className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
                 placeholder="Add property"
                 searchable
                 creatable
@@ -102,7 +88,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     } else {
         return (
             <Select
-                className={`${styles.AddNewPropertySelect} doNotPan`}
+                className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
                 placeholder={`Choose an input for '${isCreatingNewProperty}'`}
                 data={[
                     { value: "text", label: "Text" },
