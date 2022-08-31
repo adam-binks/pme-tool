@@ -1,10 +1,10 @@
 import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
 import Xarrow, { useXarrow } from "react-xarrows"
-import { Arrow, Node } from "../app/schema"
-import { deleteArrow } from "../reducers/mapFunctions"
+import { Arrow, Node } from "../../app/schema"
+import { deleteArrow } from "../../reducers/mapFunctions"
 import styles from "./Arrow.module.css"
-import { MapContext } from "./Map"
+import { MapContext } from "../Map"
 import { SvgArrow } from "./SvgArrow"
 
 interface ArrowProps {

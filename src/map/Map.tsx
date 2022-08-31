@@ -10,10 +10,9 @@ import { useFirestore } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { SchemaPane } from "./schema/SchemaPane";
 import React from "react";
-import ArrowComponent from "./Arrow";
+import ArrowComponent from "./arrow/Arrow";
 import { MouseFollower } from "./node/MouseFollower";
 import { useXarrow, Xwrapper } from "react-xarrows";
-import { Arrow, Node } from "../app/schema";
 import { useMouse } from "@mantine/hooks";
 
 export const MapContext = React.createContext<string>("")
@@ -104,7 +103,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                 <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 
                 <div className={styles.MapMain}>
-                    <Xwrapper>
                         <TransformWrapper
                             minPositionX={0}
                             minScale={0.1}
@@ -170,7 +168,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                             strokeWidthScaler={zoomLevel}
                             correctForMapOffset={correctForMapOffset}
                         />
-                    </Xwrapper>
 
                     <SchemaPane schema={map.schema} />
                 </div>

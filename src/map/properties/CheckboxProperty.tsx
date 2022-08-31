@@ -18,6 +18,7 @@ export default function CheckboxProperty({ property, abstractProperty, updatePro
                     checked={property ? property.value : true} // always check in schema, so it looks like a checkbox
                     onChange={(e) => property && updatePropertyValue(property, e.target.checked)}
                     label={label}
+                    mx={2}
                 />
             </Group>
         </>

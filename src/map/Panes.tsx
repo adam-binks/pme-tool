@@ -4,12 +4,15 @@ import Map from "./Map";
 import "./Panes.css"
 import { useFirestore } from "react-redux-firebase";
 import { useEffect, useState } from "react";
+import { useForceUpdate } from "@mantine/hooks";
 
 export default function Panes() {
     const panes = useAppSelector(state => state.panes)
 
     const firestore = useFirestore()
     const [subscribedMaps, setSubscribedMaps] = useState<string[]>([])
+
+    const forceUpdate = useForceUpdate()
 
     useEffect(() => {
         const getListeners = (mapId: string) => [
@@ -40,6 +43,7 @@ export default function Panes() {
             const pane = panes[i]
             if (!subscribedMaps.includes(pane.id)) {
                 firestore.setListeners(getListeners(pane.id))
+                setTimeout(forceUpdate, 0)
             }
         }
 
@@ -61,11 +65,14 @@ export default function Panes() {
         return (<p>Open a map!</p>)
     }
     return (
+        // wrapping this in a fragment prevents a bug where a newly added pane size can't be reduced
+        // for some reason 🤷
         <>
             <Split
                 className="split-flex"
                 direction="horizontal"
                 aria-roledescription={`Split screen into ${panes.length}`}
+                key={panes.length}
             >
                 {panes.map((pane: any, paneIndex: number) =>
                     <Map

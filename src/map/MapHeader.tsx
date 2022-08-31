@@ -21,6 +21,8 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
             className={styles.MapHeader}
             shadow="md"
             p="xs"
+            onClick={(e: any) => e.stopPropagation()}
+            onDoubleClick={(e: any) => e.stopPropagation()}
         >
             <Group position="apart" mx="md">
                 <TextInput
