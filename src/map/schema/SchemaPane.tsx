@@ -1,3 +1,4 @@
+import { Paper, Stack, Text, Title } from "@mantine/core"
 import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
@@ -15,27 +16,33 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     if (!schema?.properties) {
         return (
-            <div className={styles.schemaPane}>
+            <Paper className={styles.schemaPane}>
                 Schema is missing
-            </div>
+            </Paper>
         )
     }
 
     return (
-        <div className={styles.schemaPane}>
-            <p>Schema</p>
+        <Paper 
+            className={styles.schemaPane}
+            p="md"
+            radius={0}
+            shadow={"lg"}
+        >
+            <Stack>
+                <Title order={3}>Schema</Title>
 
-            <p>Headless properties</p>
+                <Title order={5}>Headless properties</Title>
 
-            {schema.properties.map(
-                (property) => <PropertyComponent
-                    key={property.id}
-                    abstractProperty={property}
-                    property={undefined}
-                    updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
-                />
-            )}
-
-        </div>
+                {schema.properties.map(
+                    (property) => <PropertyComponent
+                        key={property.id}
+                        abstractProperty={property}
+                        property={undefined}
+                        updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
+                    />
+                )}
+            </Stack>
+        </Paper>
     )
 }

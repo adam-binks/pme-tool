@@ -37,6 +37,7 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
             size="lg"
             color="yellow"
             id={addingFromThis ? "addingArrowFromButton" : ""}
+            title="Add arrow"
         >
             <IconArrowNarrowRight />
         </ActionIcon>

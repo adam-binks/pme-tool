@@ -1,9 +1,5 @@
 .schemaPane {
-    background-color: lightblue;
+    background-color: white;
     width: 250px;
-    padding: 7px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px 5px;
     z-index: 1; /* pop over arrows */
 }

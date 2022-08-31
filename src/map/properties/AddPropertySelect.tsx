@@ -45,7 +45,8 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
 
     const sharedProps : Partial<SelectProps> = {
         value: undefined,
-        radius: "xl"
+        radius: "xl",
+        variant: "filled",
     }
 
     if (!isCreatingNewProperty) {

@@ -4,6 +4,7 @@ import { renameMap } from "../reducers/mapFunctions"
 import { closePane } from "../reducers/paneReducer"
 import { Map } from "../app/schema"
 import styles from "./MapHeader.module.css"
+import { CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
 
 interface MapHeaderProps {
     map: Map
@@ -15,15 +16,28 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
     const firestore = useFirestore()
 
     return (
-        <div ref={divRef} className={styles.MapHeader}>
-            <p>Map {map.id}</p>
-            <input 
-                value={map.name} 
-                onChange={(e) => renameMap(firestore, map.id, e.target.value)}
-            />
-            <button
-                onClick={() => dispatch(closePane(paneIndex))}
-            >Close pane</button>
-        </div>
+        <Paper
+            ref={divRef}
+            className={styles.MapHeader}
+            shadow="md"
+            p="xs"
+        >
+            <Group position="apart" mx="md">
+                <TextInput
+                    value={map.name}
+                    variant="filled"
+                    size="md"
+                    onChange={(e) => renameMap(firestore, map.id, e.target.value)}
+                />
+                <Text size="xs" color="dimmed">
+                    Map ID: {map.id}
+                </Text>
+                <CloseButton
+                    title="Close map"
+                    onClick={() => dispatch(closePane(paneIndex))}
+                    size="lg"
+                />
+            </Group>
+        </Paper>
     )
 }

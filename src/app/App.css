@@ -21,9 +21,9 @@
     font-size: medium;
 }
 
-.Header {
-    background-color: "#eee";
+/* .Header {
+    background-color: "red" !important;
     width: "100%";
     height: "30px";
     z-index: 1; /* pop over arrows */
-}
+/*} */

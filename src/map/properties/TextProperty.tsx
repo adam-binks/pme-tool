@@ -9,7 +9,11 @@ interface TextPropertyProps {
     updatePropertyValue: (property: Property, newValue: any) => void
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue }: TextPropertyProps) {
-    const label = <PropertyLabel abstractProperty={abstractProperty} labelProps={{}} />
+    const label = <PropertyLabel
+        abstractProperty={abstractProperty}
+        labelProps={{mb: -10}}
+    />
+    
     return (
         <>
             <Textarea
@@ -21,6 +25,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                         width: "95%"
                     }
                 }}
+                variant="filled"
                 placeholder={abstractProperty.name}
                 autosize
                 maxRows={8}
