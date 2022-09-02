@@ -13,6 +13,7 @@ export interface Map {
 
 export interface Node {
     id: string
+    classId: string | null
     name: string
     properties: Property[]
     x: number
@@ -24,11 +25,20 @@ export interface Arrow {
     properties: Property[]
     source: string
     dest: string
+    classId: string | null
 }
 
 export interface Schema {
     id: string
     properties: AbstractProperty[]
+    classes: Class[]
+}
+
+export interface Class {
+    id: string
+    name: string
+    propertyIds: string
+    element: "node" | "arrow"
 }
 
 export interface Property {

@@ -1,13 +1,14 @@
-import { Card, Stack } from "@mantine/core";
+import { ActionIcon, Card, Group, Menu, Stack } from "@mantine/core";
+import { IconDots, IconTrash } from "@tabler/icons";
 import { MouseEvent, useContext, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useXarrow } from "react-xarrows";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Node as NodeType, Property } from "../../app/schema";
+import { Arrow, Node as NodeType, Property } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { ItemTypes } from "../../ItemTypes";
-import { addArrow, updateAbstractProperty, updateNodeProperties } from "../../reducers/mapFunctions";
+import { addArrow, deleteNode, updateAbstractProperty, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { MapContext } from "../Map";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
@@ -22,6 +23,7 @@ export default function Node({ node }: NodeProps) {
     const mapId = useContext(MapContext)
     const dispatch = useAppDispatch()
     const updateXArrow = useXarrow()
+    const arrows = useAppSelector(state => state.firestore[`arrows.${mapId}`])
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: ItemTypes.NODE,
@@ -81,7 +83,8 @@ export default function Node({ node }: NodeProps) {
                             id: generateId(),
                             source: addingArrowFrom,
                             dest: node.id,
-                            properties: []
+                            properties: [],
+                            classId: null,
                         })
                         dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                     }
@@ -92,6 +95,26 @@ export default function Node({ node }: NodeProps) {
                 onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
             >
                 <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
+                <Group my={-8} position="right" spacing="xs">
+                    {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
+                    <Menu shadow="md" width={200} position="left-start">
+                        <Menu.Target>
+                            <ActionIcon radius="xl" style={{}} size="md">
+                                <IconDots />
+                            </ActionIcon>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item
+                                onClick={() => 
+                                    deleteNode(firestore, mapId, node.id, arrows ? Object.values(arrows) : [])
+                                }
+                                icon={<IconTrash size={14}
+                            />}>
+                                Delete
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Group>
                 <Stack spacing={5}>
                     {node.properties.map(property =>
                         <PropertyComponent
@@ -104,7 +127,6 @@ export default function Node({ node }: NodeProps) {
                         />
                     )}
                 </Stack>
-                {(isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
                 {(isHovered || true) && <AddPropertySelect node={node} />}
             </Card>
         </div>

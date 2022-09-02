@@ -16,6 +16,8 @@ export function MouseFollower({ strokeWidthScaler, mouseX, mouseY, correctForMap
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
 
+    console.log({mouseX, mouseY})
+
     return (
         <>
             {addingArrowFrom && <>

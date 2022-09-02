@@ -13,9 +13,10 @@ export function createMap(firestore: ExtendedFirestoreInstance) {
         schema: {
             id: generateId(),
             properties: [],
+            classes: [],
         },
     }
-    firestore.set({collection: 'maps', doc: id}, newMap)
+    firestore.set({ collection: 'maps', doc: id }, newMap)
     return id
 }
 
@@ -31,6 +32,7 @@ export function getBlankNode(x: number, y: number): Node {
         properties: [],
         x,
         y,
+        classId: null,
     }
 }
 
@@ -42,6 +44,15 @@ export function updateNode(firestore: ExtendedFirestoreInstance, mapId: string, 
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, changes)
 }
 
+export function deleteNode(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, arrows: Arrow[]) {
+    firestore.delete(`maps/${mapId}/nodes/${nodeId}`)
+    arrows.forEach(arrow => {
+        if (arrow.source === nodeId || arrow.dest === nodeId) {
+            deleteArrow(firestore, mapId, arrow.id)
+        }
+    })
+}
+
 export function addNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayUnion(property))
 }
@@ -51,7 +62,7 @@ export function addNodeProperty(firestore: ExtendedFirestoreInstance, mapId: str
 // I might fix this later (by moving to subcollections), but for now this is worth the save in dev time
 // this function is redundant with updateNode but we use it to make that refactoring easier
 export function updateNodeProperties(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, properties: Property[]) {
-    firestore.update(`maps/${mapId}/nodes/${nodeId}`, {properties})
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, { properties })
 }
 
 export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
@@ -59,7 +70,7 @@ export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: 
 }
 
 export function updateSchema(firestore: ExtendedFirestoreInstance, mapId: string, changes: Partial<Schema>) {
-    firestore.update(`maps/${mapId}`, {schema: changes})
+    firestore.update(`maps/${mapId}`, { schema: changes })
 }
 
 export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, mapId: string, abstractProperties: AbstractProperty[], id: string, changes: Partial<AbstractProperty>) {
@@ -69,7 +80,7 @@ export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, map
                 { ...prop, ...changes }
                 : prop
         )
-    });
+    })
 }
 
 export function addArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrow: Arrow) {

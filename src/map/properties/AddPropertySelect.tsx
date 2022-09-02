@@ -43,7 +43,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
         }])
     }
 
-    const sharedProps : Partial<SelectProps> = {
+    const sharedProps: Partial<SelectProps> = {
         value: undefined,
         radius: "xl",
         variant: "filled",
@@ -52,8 +52,9 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     if (!isCreatingNewProperty) {
         return (
             <Select
+                key="Add property"
                 className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
-                placeholder="Add property"
+                placeholder="＋ Add property"
                 searchable
                 creatable
                 nothingFound={"Type to name a new property"}
@@ -66,6 +67,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                         })
                     )
                 }
+                pt={10}
                 getCreateLabel={(input) => `+ Create ${input}`}
                 onCreate={(input) => {
                     if (input) {
@@ -89,6 +91,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     } else {
         return (
             <Select
+                key="Created property input"
                 className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
                 placeholder={`Choose an input for '${isCreatingNewProperty}'`}
                 data={[

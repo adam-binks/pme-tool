@@ -21,6 +21,7 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
             className={styles.MapHeader}
             shadow="md"
             p="xs"
+            radius={0}
             onClick={(e: any) => e.stopPropagation()}
             onDoubleClick={(e: any) => e.stopPropagation()}
         >

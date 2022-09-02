@@ -20,11 +20,11 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
 
     return (
         <ActionIcon
-            style={{
-                position: "absolute",
-                right: -18,
-                bottom: 10,
-            }}
+            // style={{
+            //     position: "absolute",
+            //     right: -18,
+            //     bottom: 10,
+            // }}
             onClick={(e: MouseEvent) => {
                 dispatch(setAddingArrowFrom({
                     mapId,
@@ -32,10 +32,10 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
                 }))
                 addingFromThis && e.stopPropagation()
             }}
-            variant={addingFromThis ? "filled" : "outline"}
+            variant={addingFromThis ? "filled" : "subtle"}
             radius="xl"
-            size="lg"
-            color="yellow"
+            size="md"
+            color={addingFromThis ? "yellow" : "gray"}
             id={addingFromThis ? "addingArrowFromButton" : ""}
             title="Add arrow"
         >
