@@ -48,9 +48,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
         const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
 
-        console.log(mapHeaderRect)
-        console.log(mapHeaderRect?.bottom)
-
         // correct for canvas element offset from topleft of screen
         const xFromCanvasTopleft = screenX - (mapHeaderRect?.left || 0)
         const yFromCanvasTopleft = screenY - ((useHeightInstead ? mapHeaderRect?.height : mapHeaderRect?.bottom) || 0)
@@ -70,7 +67,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
 
     const createNodeAtLocation = (e: React.MouseEvent) => {
         const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
-        console.log({x, y, clientX: e.clientX, clientY: e.clientY, zoomLevel})
         const blankNode = getBlankNode(x, y)
         addNode(firestore, mapId, blankNode)
     }
@@ -138,6 +134,9 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                 "mantine-ScrollArea-scrollbar",
                                 "mantine-ScrollArea-thumb",
                                 "mantine-Select-item",
+                                "mantine-Menu-itemLabel",
+                                "mantine-Menu-itemLabel",
+                                "mantine-Menu-item",
                             ]
                         }}
                         limitToBounds={false}
@@ -159,6 +158,10 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                                 if (!arrow || !nodes) return
                                 const sourceNode = nodes[arrow.source]
                                 const destNode = nodes[arrow.dest]
+                                if (!sourceNode || !destNode) {
+                                    console.error(`Missing parts of arrow: `, arrow)
+                                    return
+                                }
                                 return <ArrowComponent
                                     source={{ x: sourceNode.x, y: sourceNode.y }}
                                     dest={{ x: destNode.x, y: destNode.y }}
@@ -175,7 +178,6 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
                         mouseX={mouseX}
                         mouseY={mouseY}
                         strokeWidthScaler={zoomLevel}
-                        correctForMapOffset={correctForMapOffset}
                     />
 
                     <SchemaPane schema={map.schema} />

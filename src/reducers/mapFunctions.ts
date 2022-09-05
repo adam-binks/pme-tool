@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { AbstractProperty, Arrow, Map, Node, Property, Schema } from "../app/schema";
+import { AbstractProperty, Arrow, Class, Map, Node, Property, Schema } from "../app/schema";
 import { generateId } from "../etc/helpers";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
@@ -79,6 +79,16 @@ export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, map
             (prop) => prop.id === id ?
                 { ...prop, ...changes }
                 : prop
+        )
+    })
+}
+
+export function updateClass(firestore: ExtendedFirestoreInstance, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
+    updateSchema(firestore, mapId, {
+        classes: classes.map(
+            (theClass) => theClass.id === id ?
+                { ...theClass, ...changes }
+                : theClass
         )
     })
 }

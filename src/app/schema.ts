@@ -37,7 +37,7 @@ export interface Schema {
 export interface Class {
     id: string
     name: string
-    propertyIds: string
+    propertyIds: string[]
     element: "node" | "arrow"
 }
 

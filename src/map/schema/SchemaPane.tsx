@@ -14,7 +14,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useContext(MapContext)
 
-    if (!schema?.properties) {
+    if (!schema) {
         return (
             <Paper className={styles.schemaPane}>
                 Schema is missing
@@ -32,9 +32,15 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             <Stack>
                 <Title order={3}>Schema</Title>
 
+                <Title order={5}>Classes</Title>
+
+                {schema.classes && schema.classes.map(
+                    (theClass) => <p key={theClass.id}>{JSON.stringify(theClass)}</p>
+                )}
+
                 <Title order={5}>Headless properties</Title>
 
-                {schema.properties.map(
+                {schema.properties && schema.properties.map(
                     (property) => <PropertyComponent
                         key={property.id}
                         abstractProperty={property}

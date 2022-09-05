@@ -8,15 +8,12 @@ interface MouseFollowerProps {
     mouseX: number
     mouseY: number
     strokeWidthScaler: number
-    correctForMapOffset: (screenX: number, screenY: number, useHeightInstead: boolean) => { x: number, y: number }
 }
-export function MouseFollower({ strokeWidthScaler, mouseX, mouseY, correctForMapOffset }: MouseFollowerProps) {
+export function MouseFollower({ strokeWidthScaler, mouseX, mouseY }: MouseFollowerProps) {
     const mapId = useContext(MapContext)
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
-
-    console.log({mouseX, mouseY})
 
     return (
         <>

@@ -12,6 +12,7 @@ import { addArrow, deleteNode, updateAbstractProperty, updateNodeProperties } fr
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { MapContext } from "../Map";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
+import { AddClassSelect } from "../properties/AddClassSelect";
 import PropertyComponent from "../properties/Property";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
@@ -23,7 +24,7 @@ export default function Node({ node }: NodeProps) {
     const mapId = useContext(MapContext)
     const dispatch = useAppDispatch()
     const updateXArrow = useXarrow()
-    const arrows = useAppSelector(state => state.firestore[`arrows.${mapId}`])
+    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`])
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: ItemTypes.NODE,
@@ -94,6 +95,7 @@ export default function Node({ node }: NodeProps) {
                 onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
                 onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
             >
+                <AddClassSelect element={node} elementType={"node"} />
                 <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
                 <Group my={-8} position="right" spacing="xs">
                     {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}

@@ -59,13 +59,13 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 creatable
                 nothingFound={"Type to name a new property"}
                 data={
-                    schema?.properties.map(
+                    schema?.properties ? schema?.properties.map(
                         (property: AbstractProperty) => ({
                             value: property.id,
                             label: property.name,
                             group: "Existing properties"
                         })
-                    )
+                    ) : []
                 }
                 pt={10}
                 getCreateLabel={(input) => `+ Create ${input}`}
