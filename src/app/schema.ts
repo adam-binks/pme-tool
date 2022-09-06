@@ -51,9 +51,10 @@ export interface AbstractProperty {
     type: PropertyType
 }
 
-export type PropertyType = "text" | "checkbox"
+export type PropertyType = "text" | "checkbox" | "title"
 
 export const defaultPropertyValueByType = {
     text: "",
+    title: "",
     checkbox: true,
 }

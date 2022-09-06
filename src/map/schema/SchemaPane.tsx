@@ -1,8 +1,7 @@
-import { Paper, Stack, Text, Title } from "@mantine/core"
-import { useContext } from "react"
+import { Paper, Stack, Title } from "@mantine/core"
+import { MouseEvent } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
-import { updateAbstractProperty } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
 import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
@@ -28,6 +27,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             p="md"
             radius={0}
             shadow={"lg"}
+            onClick={(e: MouseEvent) => e.stopPropagation()}
         >
             <Stack>
                 <Title order={3}>Schema</Title>

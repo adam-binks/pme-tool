@@ -24,6 +24,14 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
                     property={property}
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
+                    textStyle={"text"}
+                />}
+            {abstractProperty.type === "title" &&
+                <TextProperty
+                    property={property}
+                    abstractProperty={abstractProperty}
+                    updatePropertyValue={updatePropertyValue}
+                    textStyle={"title"}
                 />}
             {abstractProperty.type === "checkbox" &&
                 <CheckboxProperty

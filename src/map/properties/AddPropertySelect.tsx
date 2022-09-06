@@ -19,6 +19,8 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
 
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
 
+    const nodeHasTitle = 
+
     const createAbstractProperty = (newProperty: AbstractProperty) => {
         updateSchema(firestore, mapId, "properties",
             [...(schema?.properties ? schema.properties : []), newProperty]
@@ -99,6 +101,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 data={[
                     { value: "text", label: "Text" },
                     { value: "checkbox", label: "Checkbox" },
+                    { value: "title", label: "Title" },
                 ]}
                 onChange={(newValue) => {
                     if (newValue) {

@@ -3,6 +3,7 @@ import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { useAppSelector } from "../../app/hooks"
 import { AbstractProperty } from "../../app/schema"
+import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { updateAbstractProperty } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
 
@@ -15,9 +16,15 @@ export function PropertyLabel({ abstractProperty, labelProps }: PropertyLabelPro
     const mapId = useMapId()
     const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
     
+    const batchedTextInput = useBatchedTextInput(
+        abstractProperty.name,
+        (newValue) => updateAbstractProperty(firestore, mapId, abstractProperties,
+            abstractProperty.id, { name: newValue })
+    )
+
     return (
         <TextInput
-            value={abstractProperty.name}
+            // value={abstractProperty.name}
             variant="unstyled"
             size="xs"
             styles={{
@@ -25,9 +32,10 @@ export function PropertyLabel({ abstractProperty, labelProps }: PropertyLabelPro
                     height: "50%"
                 }
             }}
-            onChange={(e) => updateAbstractProperty(firestore, mapId, abstractProperties,
-                 abstractProperty.id, { name: e.target.value })}
+            // onChange={(e) => updateAbstractProperty(firestore, mapId, abstractProperties,
+            //      abstractProperty.id, { name: e.target.value })}
             {...labelProps}
+            {...batchedTextInput}
         />
     )
 }

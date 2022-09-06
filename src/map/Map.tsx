@@ -15,7 +15,7 @@ import { MouseFollower } from "./node/MouseFollower";
 import { useXarrow, Xwrapper } from "react-xarrows";
 import { useMouse } from "@mantine/hooks";
 import { Center, Text } from "@mantine/core";
-import { setAddingArrowFrom } from "../reducers/paneReducer";
+import { Pane, setAddingArrowFrom } from "../reducers/paneReducer";
 
 const MapContext = React.createContext<string>("")
 export const useMapId =() => useContext(MapContext)
@@ -54,6 +54,10 @@ export default function Map({ mapId, paneIndex }: MapProps) {
     const [selection, setSelection] = useState<Selection>({ nodeIds: [], arrowIds: [] })
 
     const updateXArrow = useXarrow()
+
+    const addingArrowFrom = useAppSelector(state => state.panes.find(
+        (pane: Pane) => pane.id === mapId)?.addingArrowFrom
+    )
 
     const mapHeaderDivRef = useRef<HTMLDivElement>(null)
 
@@ -129,7 +133,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                             // NB: includes schemePane etc
                             setSelection({nodeIds: [], arrowIds: []});
                             (document.activeElement as HTMLElement).blur()
-                            dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
+                            addingArrowFrom && dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
                         }}
                     >
                         <TransformWrapper
