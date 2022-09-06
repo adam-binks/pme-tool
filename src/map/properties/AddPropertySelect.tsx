@@ -4,7 +4,7 @@ import { Select, SelectProps } from "@mantine/core";
 import { useAppSelector } from "../../app/hooks";
 import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
-import { updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
+import { updateNodeProperties, updateSchema, nodeHasTitle } from "../../reducers/mapFunctions";
 import { useMapId } from "../Map";
 import styles from './Property.module.css'
 
@@ -18,8 +18,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const [isCreatingNewProperty, setIsCreatingNewProperty] = useState("")
 
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
-
-    const nodeHasTitle = 
 
     const createAbstractProperty = (newProperty: AbstractProperty) => {
         updateSchema(firestore, mapId, "properties",
@@ -38,11 +36,17 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     const addPropertyToNode = (abstractProperty: AbstractProperty) => {
-        updateNodeProperties(firestore, mapId, node.id, [...node.properties, {
+        const newProperty = {
             id: generateId(),
             abstractPropertyId: abstractProperty.id,
             value: defaultPropertyValueByType[abstractProperty.type]
-        }])
+        }
+
+        updateNodeProperties(firestore, mapId, node.id, 
+            // make the title the first property
+            abstractProperty.type === "title" ? [newProperty, ...node.properties]
+                                              : [...node.properties, newProperty]
+        )
     }
 
     const sharedProps: Partial<SelectProps> = {
@@ -94,15 +98,18 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
             />
         )
     } else {
+        let propertyTypes = [
+            { value: "text", label: "Text" },
+            { value: "checkbox", label: "Checkbox" },
+        ]
+        if (schema.properties && !nodeHasTitle(node, schema?.properties)) {
+            propertyTypes.push({ value: "title", label: "Title" })
+        }
         return (
             <Select
                 key="Created property input"
                 placeholder={`Choose an input for '${isCreatingNewProperty}'`}
-                data={[
-                    { value: "text", label: "Text" },
-                    { value: "checkbox", label: "Checkbox" },
-                    { value: "title", label: "Title" },
-                ]}
+                data={propertyTypes}
                 onChange={(newValue) => {
                     if (newValue) {
                         createNewPropertyAndAddToNode(isCreatingNewProperty, newValue as PropertyType)

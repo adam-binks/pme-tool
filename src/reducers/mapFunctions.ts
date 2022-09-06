@@ -98,3 +98,10 @@ export function updateArrow(firestore: ExtendedFirestoreInstance, mapId: string,
 export function deleteArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrowId: string) {
     firestore.delete(`maps/${mapId}/arrows/${arrowId}`)
 }
+
+export function nodeHasTitle(node: Node, properties: AbstractProperty[]) {
+    const firstProp = node?.properties && node.properties[0]
+    if (!firstProp) { return false }
+    const abstractProp = properties.find(p => p.id === firstProp.id)
+    return abstractProp?.type === "title"
+}

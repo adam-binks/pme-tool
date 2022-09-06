@@ -30,13 +30,14 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 label={label}
                 styles={{
                     input: (textStyle === "title") ? {
-                        fontSize: "large",
+                        fontSize: "105%",
                         fontWeight: "bold"
                     } : undefined,
                     label: {
                         width: "95%"
                     }
                 }}
+                mt={(textStyle === "title") ? 5 : undefined}
                 variant="filled"
                 placeholder={abstractProperty.name}
                 autosize
