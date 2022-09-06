@@ -4,14 +4,14 @@ import { MouseEvent, useContext, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Node } from "../../app/schema"
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer"
-import { MapContext } from "../Map"
+import { useMapId } from "../Map"
 
 interface AddArrowButtonProps {
     node: Node
 }
 export function AddArrowButton({ node }: AddArrowButtonProps) {
     const dispatch = useAppDispatch()
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )

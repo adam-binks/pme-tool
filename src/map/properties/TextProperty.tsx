@@ -1,5 +1,6 @@
 import { Textarea } from "@mantine/core"
 import { AbstractProperty, Property } from "../../app/schema"
+import { PropertyControls } from "./PropertyControls"
 import { PropertyLabel } from "./PropertyLabel"
 
 
@@ -15,7 +16,8 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     />
     
     return (
-        <>
+        <div>
+            <PropertyControls abstractProperty={abstractProperty} />
             <Textarea
                 value={property?.value}
                 onChange={(e) => property && updatePropertyValue(property, e.currentTarget.value)}
@@ -31,6 +33,6 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 maxRows={8}
                 disabled={property === undefined}
             />
-        </>
+        </div>
     )
 }

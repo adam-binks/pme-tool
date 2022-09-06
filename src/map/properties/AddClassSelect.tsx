@@ -5,7 +5,7 @@ import { useAppSelector } from "../../app/hooks";
 import { Arrow, Node, Class, Schema } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { updateArrow, updateNode, updateSchema } from "../../reducers/mapFunctions";
-import { MapContext } from "../Map";
+import { useMapId } from "../Map";
 
 interface AddClassSelectProps {
     elementType: "node" | "arrow"
@@ -13,7 +13,7 @@ interface AddClassSelectProps {
 }
 export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const firestore = useFirestore()
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
 
     const createClass = (newClass: Class) => {
@@ -46,7 +46,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
         console.error("No schema.classes!")
     }
 
-    const theClass = element.classId && schema?.classes.find((cls: Class) => cls.id === element.classId)
+    const theClass = element.classId && schema?.classes?.find((cls: Class) => cls.id === element.classId)
     if (element.classId && !theClass) { 
         console.error(`Missing class with ID ${element.classId}`)
     }
@@ -69,6 +69,11 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     })
                 ) : []
             }
+            styles={(theme) => ({
+                input: {
+                    fontWeight: "bold"
+                }
+            })}
             pb={10}
             radius="xl"
             variant="filled"

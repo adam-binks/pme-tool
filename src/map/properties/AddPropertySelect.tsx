@@ -5,14 +5,14 @@ import { useAppSelector } from "../../app/hooks";
 import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
-import { MapContext } from "../Map";
+import { useMapId } from "../Map";
 import styles from './Property.module.css'
 
 interface AddPropertySelectProps {
     node: Node
 }
 export function AddPropertySelect({ node }: AddPropertySelectProps) {
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
     const firestore = useFirestore()
 
     const [isCreatingNewProperty, setIsCreatingNewProperty] = useState("")
@@ -21,7 +21,8 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
 
     const createAbstractProperty = (newProperty: AbstractProperty) => {
         updateSchema(firestore, mapId, {
-            properties: [...schema?.properties, newProperty]
+            ...schema,
+            properties: [...(schema?.properties ? schema.properties : []), newProperty]
         })
     }
 
@@ -44,16 +45,17 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     const sharedProps: Partial<SelectProps> = {
+        className: `${styles.AddNewPropertySelect} doNotPan doNotZoom`,
         value: undefined,
         radius: "xl",
         variant: "filled",
+        pt: 10,
     }
 
     if (!isCreatingNewProperty) {
         return (
             <Select
                 key="Add property"
-                className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
                 placeholder="＋ Add property"
                 searchable
                 creatable
@@ -67,7 +69,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                         })
                     ) : []
                 }
-                pt={10}
                 getCreateLabel={(input) => `+ Create ${input}`}
                 onCreate={(input) => {
                     if (input) {
@@ -92,7 +93,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
         return (
             <Select
                 key="Created property input"
-                className={`${styles.AddNewPropertySelect} doNotPan doNotZoom`}
                 placeholder={`Choose an input for '${isCreatingNewProperty}'`}
                 data={[
                     { value: "text", label: "Text" },

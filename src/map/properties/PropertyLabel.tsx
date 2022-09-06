@@ -4,7 +4,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppSelector } from "../../app/hooks"
 import { AbstractProperty } from "../../app/schema"
 import { updateAbstractProperty } from "../../reducers/mapFunctions"
-import { MapContext } from "../Map"
+import { useMapId } from "../Map"
 
 interface PropertyLabelProps {
     abstractProperty: AbstractProperty
@@ -12,7 +12,7 @@ interface PropertyLabelProps {
 }
 export function PropertyLabel({ abstractProperty, labelProps }: PropertyLabelProps) {
     const firestore = useFirestore()
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
     const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
     
     return (

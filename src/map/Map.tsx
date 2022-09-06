@@ -5,7 +5,7 @@ import styles from './Map.module.css';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 import MapHeader from "./MapHeader";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { SchemaPane } from "./schema/SchemaPane";
@@ -16,7 +16,21 @@ import { useXarrow, Xwrapper } from "react-xarrows";
 import { useMouse } from "@mantine/hooks";
 import { Center, Text } from "@mantine/core";
 
-export const MapContext = React.createContext<string>("")
+const MapContext = React.createContext<string>("")
+export const useMapId =() => useContext(MapContext)
+
+interface Selection {
+    nodeIds: string[]
+    arrowIds: string[]
+}
+const SelectionContext = React.createContext<{
+    selection: Selection
+    setSelection: React.Dispatch<React.SetStateAction<{
+        nodeIds: string[];
+        arrowIds: string[];
+    }>>
+}>({ selection: { nodeIds: [], arrowIds: [] }, setSelection: () => { } })
+export const useSelection = () => useContext(SelectionContext)
 
 export interface DragItem {
     type: string
@@ -29,12 +43,14 @@ interface MapProps {
     mapId: string,
     paneIndex: number,
 }
-export default function Map({ mapId: mapId, paneIndex }: MapProps) {
+export default function Map({ mapId, paneIndex }: MapProps) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
     const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
     const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`])
+
+    const [selection, setSelection] = useState<Selection>({ nodeIds: [], arrowIds: [] })
 
     const updateXArrow = useXarrow()
 
@@ -98,91 +114,96 @@ export default function Map({ mapId: mapId, paneIndex }: MapProps) {
     }
     return (
         <MapContext.Provider value={mapId}>
-            <div
-                className={styles.Map}
-                onDoubleClick={(e) => createNodeAtLocation(e)}
-                ref={(el) => drop(el) && mouseRef}
-            >
-                <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
+            <SelectionContext.Provider value={{
+                selection,
+                setSelection
+            }}>
+                <div
+                    className={styles.Map}
+                    onDoubleClick={(e) => createNodeAtLocation(e)}
+                    ref={(el) => drop(el) && mouseRef}
+                >
+                    <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 
-                <div className={styles.MapMain}>
-                    <TransformWrapper
-                        minPositionX={0}
-                        minScale={0.1}
-                        doubleClick={{ disabled: true }}
-                        panning={{
-                            excluded: [
-                                "doNotPan",
-                                "textarea",
-                                "input",
-                                "mantine-Select-dropdown",
-                                "mantine-ScrollArea-root",
-                                "mantine-ScrollArea-viewport",
-                                "mantine-ScrollArea-scrollbar",
-                                "mantine-ScrollArea-thumb",
-                                "mantine-Select-item",
-                                "mantine-Group-root",
-                                "mantine-Stack-root",
-                            ],
-                            velocityDisabled: true
-                        }}
-                        wheel={{
-                            excluded: ["doNotZoom",
-                                "mantine-Select-dropdown",
-                                "mantine-ScrollArea-root",
-                                "mantine-ScrollArea-viewport",
-                                "mantine-ScrollArea-scrollbar",
-                                "mantine-ScrollArea-thumb",
-                                "mantine-Select-item",
-                                "mantine-Menu-itemLabel",
-                                "mantine-Menu-itemLabel",
-                                "mantine-Menu-item",
-                            ]
-                        }}
-                        limitToBounds={false}
-                        onZoom={(ref, event) => { setZoomLevel(ref.state.scale); }}
-                        onPanning={(ref, event) => {
-                            setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
-                        }}
-                    >
-                        <TransformComponent
-                            wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                    <div className={styles.MapMain}>
+                        <TransformWrapper
+                            minPositionX={0}
+                            minScale={0.1}
+                            doubleClick={{ disabled: true }}
+                            panning={{
+                                excluded: [
+                                    "doNotPan",
+                                    "textarea",
+                                    "input",
+                                    "mantine-Select-dropdown",
+                                    "mantine-ScrollArea-root",
+                                    "mantine-ScrollArea-viewport",
+                                    "mantine-ScrollArea-scrollbar",
+                                    "mantine-ScrollArea-thumb",
+                                    "mantine-Select-item",
+                                    "mantine-Group-root",
+                                    "mantine-Stack-root",
+                                ],
+                                velocityDisabled: true
+                            }}
+                            wheel={{
+                                excluded: ["doNotZoom",
+                                    "mantine-Select-dropdown",
+                                    "mantine-ScrollArea-root",
+                                    "mantine-ScrollArea-viewport",
+                                    "mantine-ScrollArea-scrollbar",
+                                    "mantine-ScrollArea-thumb",
+                                    "mantine-Select-item",
+                                    "mantine-Menu-itemLabel",
+                                    "mantine-Menu-itemLabel",
+                                    "mantine-Menu-item",
+                                ]
+                            }}
+                            limitToBounds={false}
+                            onZoom={(ref, event) => { setZoomLevel(ref.state.scale); }}
+                            onPanning={(ref, event) => {
+                                setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                            }}
                         >
-                            {nodes && Object.values(nodes).map((node: any) =>
-                                node && <NodeComponent
-                                    node={node}
-                                    key={node.id}
-                                />
-                            )}
-                            {arrows && Object.values(arrows).map((arrow: any) => {
-                                if (!arrow || !nodes) return
-                                const sourceNode = nodes[arrow.source]
-                                const destNode = nodes[arrow.dest]
-                                if (!sourceNode || !destNode) {
-                                    console.error(`Missing parts of arrow: `, arrow)
-                                    return
+                            <TransformComponent
+                                wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                            >
+                                {nodes && Object.values(nodes).map((node: any) =>
+                                    node && <NodeComponent
+                                        node={node}
+                                        key={node.id}
+                                    />
+                                )}
+                                {arrows && Object.values(arrows).map((arrow: any) => {
+                                    if (!arrow || !nodes) return
+                                    const sourceNode = nodes[arrow.source]
+                                    const destNode = nodes[arrow.dest]
+                                    if (!sourceNode || !destNode) {
+                                        console.warn(`Missing parts of arrow: `, arrow)
+                                        return
+                                    }
+                                    return <ArrowComponent
+                                        source={{ x: sourceNode.x, y: sourceNode.y }}
+                                        dest={{ x: destNode.x, y: destNode.y }}
+                                        arrow={arrow}
+                                        key={arrow.id}
+                                        strokeWidthScaler={zoomLevel}
+                                    />
                                 }
-                                return <ArrowComponent
-                                    source={{ x: sourceNode.x, y: sourceNode.y }}
-                                    dest={{ x: destNode.x, y: destNode.y }}
-                                    arrow={arrow}
-                                    key={arrow.id}
-                                    strokeWidthScaler={zoomLevel}
-                                />
-                            }
-                            )}
-                        </TransformComponent>
-                    </TransformWrapper>
+                                )}
+                            </TransformComponent>
+                        </TransformWrapper>
 
-                    <MouseFollower
-                        mouseX={mouseX}
-                        mouseY={mouseY}
-                        strokeWidthScaler={zoomLevel}
-                    />
+                        <MouseFollower
+                            mouseX={mouseX}
+                            mouseY={mouseY}
+                            strokeWidthScaler={zoomLevel}
+                        />
 
-                    <SchemaPane schema={map.schema} />
+                        <SchemaPane schema={map.schema} />
+                    </div>
                 </div>
-            </div>
+            </SelectionContext.Provider>
         </MapContext.Provider>
     )
 }

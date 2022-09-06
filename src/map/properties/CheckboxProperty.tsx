@@ -1,5 +1,6 @@
 import { Checkbox, Group } from "@mantine/core"
 import { AbstractProperty, Property } from "../../app/schema"
+import { PropertyControls } from "./PropertyControls"
 import { PropertyLabel } from "./PropertyLabel"
 
 interface CheckboxPropertyProps {
@@ -12,7 +13,8 @@ export default function CheckboxProperty({ property, abstractProperty, updatePro
         size: "sm"
     }} />
     return (
-        <>
+        <div>
+            <PropertyControls abstractProperty={abstractProperty} />
             <Group position="apart">
                 <Checkbox
                     checked={property ? property.value : true} // always check in schema, so it looks like a checkbox
@@ -21,6 +23,6 @@ export default function CheckboxProperty({ property, abstractProperty, updatePro
                     mx={2}
                 />
             </Group>
-        </>
+        </div>
     )
 }

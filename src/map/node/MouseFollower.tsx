@@ -2,7 +2,7 @@ import { useContext } from "react"
 import Xarrow from "react-xarrows"
 import { useAppSelector } from "../../app/hooks"
 import { Pane } from "../../reducers/paneReducer"
-import { MapContext } from "../Map"
+import { useMapId } from "../Map"
 
 interface MouseFollowerProps {
     mouseX: number
@@ -10,7 +10,7 @@ interface MouseFollowerProps {
     strokeWidthScaler: number
 }
 export function MouseFollower({ strokeWidthScaler, mouseX, mouseY }: MouseFollowerProps) {
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )

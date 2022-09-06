@@ -4,7 +4,7 @@ import Xarrow, { useXarrow } from "react-xarrows"
 import { Arrow, Node } from "../../app/schema"
 import { deleteArrow } from "../../reducers/mapFunctions"
 import styles from "./Arrow.module.css"
-import { MapContext } from "../Map"
+import { useMapId } from "../Map"
 import { SvgArrow } from "./SvgArrow"
 
 interface ArrowProps {
@@ -15,7 +15,7 @@ interface ArrowProps {
 }
 export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler }: ArrowProps) {
     // const firestore = useFirestore()
-    // const mapId = useContext(MapContext)
+    // const mapId = useMapId()
 
     // const sourceId = `node.${arrow.source}`
     // const destId = `node.${arrow.dest}`

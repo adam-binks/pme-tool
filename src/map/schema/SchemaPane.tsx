@@ -3,7 +3,7 @@ import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
 import { updateAbstractProperty } from "../../reducers/mapFunctions"
-import { MapContext } from "../Map"
+import { useMapId } from "../Map"
 import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
 
@@ -12,7 +12,7 @@ interface SchemaPaneProps {
 }
 export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
-    const mapId = useContext(MapContext)
+    const mapId = useMapId()
 
     if (!schema) {
         return (
