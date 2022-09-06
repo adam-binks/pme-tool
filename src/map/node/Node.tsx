@@ -9,7 +9,7 @@ import { generateId } from "../../etc/helpers";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
-import { useMapId } from "../Map";
+import { useMapId, useSelection } from "../Map";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import PropertyComponent from "../properties/Property";
@@ -39,6 +39,9 @@ export default function Node({ node }: NodeProps) {
         [node],
     )
 
+    const [selection, setSelection] = useSelection()
+    const isSelected = selection.nodeIds && selection.nodeIds.includes(node.id)
+
     const [isHovered, setIsHovered] = useState(false)
 
     const addingArrowFrom = useAppSelector(state => state.panes.find(
@@ -58,16 +61,25 @@ export default function Node({ node }: NodeProps) {
     }
 
     return (
-        <div className={`${styles.nodeWrapper}`} id={`node.${node.id}`} style={{ left: node.x, top: node.y }}>
+        <div
+            className={`
+                ${styles.nodeWrapper}
+                ${isSelected ? styles.isSelected : ""}
+            `}
+            id={`node.${node.id}`}
+            style={{ left: node.x, top: node.y }}
+        >
+            {(isSelected || node.classId) && <AddClassSelect element={node} elementType={"node"} />}
             <Card
-                shadow="sm"
+                shadow={isSelected ? "xl" : "sm"}
                 radius="md"
                 p="xs"
                 className={
                     `${styles.nodeCard}
-                ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
-                ${isDragging ? styles.isDragging : ""}
-                doNotPan`}
+                    ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
+                    ${isDragging ? styles.isDragging : ""}
+                    doNotPan`
+                }
                 ref={drag}
                 onClick={(e: MouseEvent) => {
                     if (addingArrowFrom) {
@@ -80,7 +92,23 @@ export default function Node({ node }: NodeProps) {
                         })
                         dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                     } else {
-
+                        if (e.shiftKey) {
+                            // toggle inclusion in selection
+                            if (isSelected) {
+                                setSelection({
+                                    ...selection,
+                                    nodeIds: selection.nodeIds.filter(id => id !== node.id)
+                                })
+                            } else {
+                                setSelection({
+                                    ...selection,
+                                    nodeIds: [...selection.nodeIds, node.id]
+                                })
+                            }
+                        } else {
+                            // replace selection
+                            setSelection({ nodeIds: [node.id], arrowIds: [] })
+                        }
                     }
                     e.stopPropagation()
                 }}
@@ -88,13 +116,13 @@ export default function Node({ node }: NodeProps) {
                 onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
                 onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
             >
-                <AddClassSelect element={node} elementType={"node"} />
                 <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
 
                 <Group my={-8} position="right" spacing="xs">
                     {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
                     <NodeOverFlowMenu node={node} />
                 </Group>
+
                 <Stack spacing={5}>
                     {node.properties.map(property =>
                         <PropertyComponent
@@ -107,8 +135,9 @@ export default function Node({ node }: NodeProps) {
                         />
                     )}
                 </Stack>
-                {(isHovered || true) && <AddPropertySelect node={node} />}
+
             </Card>
+            {isSelected && <AddPropertySelect node={node} />}
         </div>
     )
 }

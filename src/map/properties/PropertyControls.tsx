@@ -6,6 +6,7 @@ import { useAppSelector } from "../../app/hooks"
 import { AbstractProperty } from "../../app/schema"
 import { updateAbstractProperty } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
+import styles from "./Property.module.css"
 
 interface PropertyControlsProps {
     abstractProperty: AbstractProperty
@@ -19,10 +20,11 @@ export function PropertyControls({ abstractProperty }: PropertyControlsProps) {
         <Menu shadow="md" width={200} position="left-start">
             <Menu.Target>
                 <ActionIcon
-                    mx="xs" 
+                    className={styles.propertyOverflowButton}
+                    mx="xs"
                     my={5}
-                    style={{position: "absolute", right: 0, zIndex: 2}} 
-                    radius="xl" 
+                    style={{ position: "absolute", right: 0, zIndex: 2 }}
+                    radius="xl"
                     size="xs"
                 >
                     <IconDotsVertical />

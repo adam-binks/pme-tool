@@ -15,6 +15,7 @@ import { MouseFollower } from "./node/MouseFollower";
 import { useXarrow, Xwrapper } from "react-xarrows";
 import { useMouse } from "@mantine/hooks";
 import { Center, Text } from "@mantine/core";
+import { setAddingArrowFrom } from "../reducers/paneReducer";
 
 const MapContext = React.createContext<string>("")
 export const useMapId =() => useContext(MapContext)
@@ -23,13 +24,13 @@ interface Selection {
     nodeIds: string[]
     arrowIds: string[]
 }
-const SelectionContext = React.createContext<{
-    selection: Selection
+const SelectionContext = React.createContext<[
+    selection: Selection,
     setSelection: React.Dispatch<React.SetStateAction<{
         nodeIds: string[];
         arrowIds: string[];
     }>>
-}>({ selection: { nodeIds: [], arrowIds: [] }, setSelection: () => { } })
+]>([ { nodeIds: [], arrowIds: [] }, () => { } ])
 export const useSelection = () => useContext(SelectionContext)
 
 export interface DragItem {
@@ -114,10 +115,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
     }
     return (
         <MapContext.Provider value={mapId}>
-            <SelectionContext.Provider value={{
-                selection,
-                setSelection
-            }}>
+            <SelectionContext.Provider value={[selection, setSelection]}>
                 <div
                     className={styles.Map}
                     onDoubleClick={(e) => createNodeAtLocation(e)}
@@ -125,7 +123,15 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                 >
                     <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 
-                    <div className={styles.MapMain}>
+                    <div
+                        className={styles.MapMain}
+                        onClick={(e) => {
+                            // NB: includes schemePane etc
+                            setSelection({nodeIds: [], arrowIds: []});
+                            (document.activeElement as HTMLElement).blur()
+                            dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
+                        }}
+                    >
                         <TransformWrapper
                             minPositionX={0}
                             minScale={0.1}
@@ -147,7 +153,8 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                 velocityDisabled: true
                             }}
                             wheel={{
-                                excluded: ["doNotZoom",
+                                excluded: [
+                                    "doNotZoom",
                                     "mantine-Select-dropdown",
                                     "mantine-ScrollArea-root",
                                     "mantine-ScrollArea-viewport",
@@ -160,7 +167,11 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                 ]
                             }}
                             limitToBounds={false}
-                            onZoom={(ref, event) => { setZoomLevel(ref.state.scale); }}
+                            onZoom={(ref, event) => {
+                                setZoomLevel(ref.state.scale)
+                                // panoffset can also be changed when zooming
+                                setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                            }}
                             onPanning={(ref, event) => {
                                 setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
                             }}

@@ -1,5 +1,4 @@
 import { Select } from "@mantine/core";
-import { useContext } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../../app/hooks";
 import { Arrow, Node, Class, Schema } from "../../app/schema";
@@ -17,9 +16,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
 
     const createClass = (newClass: Class) => {
-        schema && updateSchema(firestore, mapId, {
-            classes: [...schema.classes, newClass]
-        })
+        schema && updateSchema(firestore, mapId, "classes", [...schema.classes, newClass])
     }
 
     const addClassToElement = (newClass: Class) => {
@@ -44,10 +41,11 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
 
     if (schema?.classes === undefined) {
         console.error("No schema.classes!")
+        updateSchema(firestore, mapId, "classes", [])
     }
 
     const theClass = element.classId && schema?.classes?.find((cls: Class) => cls.id === element.classId)
-    if (element.classId && !theClass) { 
+    if (element.classId && !theClass) {
         console.error(`Missing class with ID ${element.classId}`)
     }
 
@@ -65,16 +63,21 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     (theClass: Class) => ({
                         value: theClass.id,
                         label: theClass.name,
-                        group: "Existing classes"
+                        group: `Existing ${elementType} types`
                     })
                 ) : []
             }
+            dropdownPosition="top"
+            style={{position: "absolute"}}
+            mt={-40}
             styles={(theme) => ({
                 input: {
-                    fontWeight: "bold"
+                    backgroundColor: theClass ? "white" : "",
+                    fontWeight: "bold",
                 }
             })}
-            pb={10}
+            pb={5}
+            withinPortal
             radius="xl"
             variant="filled"
             getCreateLabel={(input) => `+ Create ${input}`}
@@ -93,7 +96,9 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     }
                     addClassToElement(selectedClass)
                 }
-            }}
+            }} 
+            onClickCapture={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
         />
     )
 }

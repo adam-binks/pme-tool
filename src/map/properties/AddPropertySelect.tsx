@@ -20,10 +20,9 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
 
     const createAbstractProperty = (newProperty: AbstractProperty) => {
-        updateSchema(firestore, mapId, {
-            ...schema,
-            properties: [...(schema?.properties ? schema.properties : []), newProperty]
-        })
+        updateSchema(firestore, mapId, "properties",
+            [...(schema?.properties ? schema.properties : []), newProperty]
+        )
     }
 
     const createNewPropertyAndAddToNode = (name: string, type: PropertyType) => {
@@ -49,7 +48,8 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
         value: undefined,
         radius: "xl",
         variant: "filled",
-        pt: 10,
+        pt: 8,
+        withinPortal: true,
     }
 
     if (!isCreatingNewProperty) {
@@ -69,6 +69,8 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                         })
                     ) : []
                 }
+                onClickCapture={(e) => e.stopPropagation()}
+                onDoubleClick={(e) => e.stopPropagation()}
                 getCreateLabel={(input) => `+ Create ${input}`}
                 onCreate={(input) => {
                     if (input) {

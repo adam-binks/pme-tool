@@ -7,8 +7,22 @@
     opacity: 0.2;
 }
 
+.isSelected .nodeCard {
+    outline: 3px solid blue !important;
+    
+}
+
 .nodeWrapper {
     position: absolute;
+    transition: transform 0.1s ease-out;
+}
+
+.nodeWrapper:hover {
+    transform: scale(1.01, 1.01)
+}
+
+.nodeWrapper.isSelected {
+    transform: scale(1.03, 1.03);
 }
 
 .nodeCanReceiveArrow {
@@ -17,7 +31,8 @@
 }
 
 .nodeCanReceiveArrow:hover {
-    background-color: rgb(164, 220, 255) !important;
+    background-color: rgb(185, 228, 255) !important;
+    transform: scale(1.05, 1.05)
 }
 
 .debugNodeText {

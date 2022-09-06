@@ -18,7 +18,7 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
     }
 
     return (
-        <>
+        <div className={styles.Property}>
             {abstractProperty.type === "text" &&
                 <TextProperty
                     property={property}
@@ -31,6 +31,6 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
                 />}
-        </>
+        </div>
     )
 }

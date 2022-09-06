@@ -6,8 +6,6 @@ export interface Map {
     id: string
     name: string
     createdAt: Date
-    nodes: Node[]
-    arrows: Arrow[]
     schema: Schema
 }
 

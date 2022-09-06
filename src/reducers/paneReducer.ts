@@ -5,7 +5,7 @@ export type PanesState = Pane[]
 
 const initialState: PanesState = [
     // { id: "e318638c98b3b958eae4590d", addingArrowFrom: undefined },
-    { id: "43f0946773c49be3a9081fcb", addingArrowFrom: undefined },
+    { id: "ff8bf7d9ff90562de4b31342", addingArrowFrom: undefined },
     // { id: "1747e2874c3914a0f269734d" },
     // { id: '6a3b3ea554b9c433a4f98c0b' }
 ]

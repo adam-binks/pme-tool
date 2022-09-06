@@ -8,8 +8,6 @@ export function createMap(firestore: ExtendedFirestoreInstance) {
         id: id,
         name: "New map",
         createdAt: new Date(),
-        nodes: [],
-        arrows: [],
         schema: {
             id: generateId(),
             properties: [],
@@ -69,28 +67,24 @@ export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: 
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove(property))
 }
 
-export function updateSchema(firestore: ExtendedFirestoreInstance, mapId: string, changes: Partial<Schema>) {
-    firestore.update(`maps/${mapId}`, { schema: changes })
+export function updateSchema(firestore: ExtendedFirestoreInstance, mapId: string, pathFromSchemaRoot: string, value: unknown) {
+    firestore.update(`maps/${mapId}`, { [`schema.${pathFromSchemaRoot}`]: value })
 }
 
 export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, mapId: string, abstractProperties: AbstractProperty[], id: string, changes: Partial<AbstractProperty>) {
-    updateSchema(firestore, mapId, {
-        properties: abstractProperties.map(
-            (prop) => prop.id === id ?
-                { ...prop, ...changes }
-                : prop
-        )
-    })
+    updateSchema(firestore, mapId, "properties", abstractProperties.map(
+        (prop) => prop.id === id ?
+            { ...prop, ...changes }
+            : prop
+    ))
 }
 
 export function updateClass(firestore: ExtendedFirestoreInstance, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
-    updateSchema(firestore, mapId, {
-        classes: classes.map(
-            (theClass) => theClass.id === id ?
-                { ...theClass, ...changes }
-                : theClass
-        )
-    })
+    updateSchema(firestore, mapId, "classes", classes.map(
+        (cls) => cls.id === id ?
+            { ...cls, ...changes }
+            : cls
+    ))
 }
 
 export function addArrow(firestore: ExtendedFirestoreInstance, mapId: string, arrow: Arrow) {
