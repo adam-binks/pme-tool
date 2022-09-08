@@ -3,6 +3,10 @@
     overflow: visible;
 }
 
+.nodeCard.isNaked {
+    background-color: blue;
+}
+
 .nodeCard.isDragging {
     opacity: 0.2;
 }

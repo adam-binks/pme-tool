@@ -12,7 +12,7 @@ interface TextPropertyProps {
     textStyle: "text" | "title"
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
-    const label = (textStyle !== "title") && (
+    const label = (!["title", "text-untitled".includes(abstractProperty.type)]) &&  (
         <PropertyLabel
             abstractProperty={abstractProperty}
             labelProps={{ mb: -10 }}

@@ -17,6 +17,7 @@ import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 import { ElementContext } from "../properties/useElementId";
+import { toast } from "react-toastify";
 
 interface NodeProps {
     node: NodeType,
@@ -62,7 +63,7 @@ export default function Node({ node }: NodeProps) {
     }
 
     // naked nodes are styled differently
-    const isNaked = node.classId === undefined && !node.properties || node.properties.length === 0
+    const isNaked = node.classId === undefined && node.properties?.length === 1
 
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
@@ -70,6 +71,7 @@ export default function Node({ node }: NodeProps) {
                 className={`
                 ${styles.nodeWrapper}
                 ${isSelected ? styles.isSelected : ""}
+                ${isNaked ? styles.isNaked : ""}
             `}
                 id={`node.${node.id}`}
                 style={{ left: node.x, top: node.y }}
@@ -87,6 +89,7 @@ export default function Node({ node }: NodeProps) {
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {
+                        toast.info("ye")
                         if (addingArrowFrom) {
                             addArrow(firestore, mapId, {
                                 id: generateId(),
@@ -121,7 +124,7 @@ export default function Node({ node }: NodeProps) {
                     onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
                     onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
                 >
-                    <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
+                    <p className={`${styles.debugNodeText} doNotPan`}>{node.id}</p>
 
                     <Group my={-8} position="right" spacing="xs">
                         {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}

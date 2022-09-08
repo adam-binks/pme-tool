@@ -1,7 +1,7 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
 import { AbstractProperty, Arrow, Class, Map, Node, Property, Schema } from "../app/schema";
 import { generateId } from "../etc/helpers";
-import { globalProperties } from "../map/properties/globalProperties";
+import { globalProperties, textUntitled } from "../map/properties/globalProperties";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
     const id = generateId()
@@ -27,8 +27,11 @@ export function getBlankNode(x: number, y: number): Node {
     const id = generateId()
     return {
         id,
-        name: "New node",
-        properties: [],
+        properties: [{
+            id: generateId(),
+            abstractPropertyId: textUntitled,
+            value: "",
+        }],
         x,
         y,
         classId: null,

@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Text, Title } from "@mantine/core"
+import { Button, Group, Paper, Title } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { createMap } from "../reducers/mapFunctions"

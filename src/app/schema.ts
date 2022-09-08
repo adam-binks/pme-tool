@@ -12,7 +12,6 @@ export interface Map {
 export interface Node {
     id: string
     classId: string | null
-    name: string
     properties: Property[]
     x: number
     y: number
@@ -53,10 +52,11 @@ export interface AbstractProperty {
     type: PropertyType
 }
 
-export type PropertyType = "text" | "checkbox" | "title"
+export type PropertyType = "text" | "checkbox" | "title" | "text_untitled"
 
 export const defaultPropertyValueByType = {
     text: "",
     title: "",
+    text_untitled: "",
     checkbox: true,
 }
