@@ -1,8 +1,10 @@
 import { Paper, Stack, Title } from "@mantine/core"
-import { MouseEvent } from "react"
+import { MouseEvent, useEffect } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
+import { updateAbstractProperties, updateSchema } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
+import { globalProperties } from "../properties/globalProperties"
 import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
 
@@ -12,6 +14,18 @@ interface SchemaPaneProps {
 export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
+
+    useEffect(() => {
+        if (firestore && schema && schema.properties) {
+            const missingGlobalProperties = globalProperties.filter(
+                globalProp => !schema.properties.find(prop => prop.id === globalProp.id)
+            )
+            if (missingGlobalProperties.length > 0) {
+                console.log("Adding missing global properties ", missingGlobalProperties)
+                updateAbstractProperties(firestore, mapId, [...missingGlobalProperties, ...schema.properties])
+            }
+        }
+    }, [])
 
     if (!schema) {
         return (

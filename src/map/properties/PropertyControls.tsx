@@ -1,20 +1,28 @@
-import { Textarea, TextInputProps, TextInput, Menu, ActionIcon } from "@mantine/core"
-import { IconDots, IconDotsVertical } from "@tabler/icons"
-import { useContext } from "react"
+import { Menu, ActionIcon } from "@mantine/core"
+import { IconDotsVertical } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppSelector } from "../../app/hooks"
-import { AbstractProperty } from "../../app/schema"
-import { updateAbstractProperty } from "../../reducers/mapFunctions"
+import { AbstractProperty, Property } from "../../app/schema"
+import { updateNodeProperties } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
 import styles from "./Property.module.css"
+import { useElementId } from "./useElementId"
 
 interface PropertyControlsProps {
     abstractProperty: AbstractProperty
+    property: Property | undefined
 }
-export function PropertyControls({ abstractProperty }: PropertyControlsProps) {
+export function PropertyControls({ abstractProperty, property }: PropertyControlsProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
-    const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
+    const { elementType, elementId } = useElementId()
+
+    const elementProperties = useAppSelector(state => {
+        if (!property) return
+        const store = `${elementType}s.${mapId}`
+        const d = state.firestore.data[store]
+        return d?.[elementId]?.properties
+    })
 
     return (
         <Menu shadow="md" width={200} position="left-start">
@@ -31,7 +39,22 @@ export function PropertyControls({ abstractProperty }: PropertyControlsProps) {
                 </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-                <Menu.Item>Remove property (todo)</Menu.Item>
+                <Menu.Item onClick={() => {
+                    if (property) {
+                        // remove property from element
+                        switch (elementType) {
+                            case "node":
+                                updateNodeProperties(firestore, mapId, elementId, 
+                                    elementProperties.filter((prop: Property) => prop.id !== property.id)
+                                )
+                                break
+                            default:
+                                console.error("Not implemented!")
+                        }
+                    }
+                }}>
+                    Remove property
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     )

@@ -6,11 +6,12 @@ import { deleteArrow } from "../../reducers/mapFunctions"
 import styles from "./Arrow.module.css"
 import { useMapId } from "../Map"
 import { SvgArrow } from "./SvgArrow"
+import { ElementContext } from "../properties/useElementId"
 
 interface ArrowProps {
     arrow: Arrow
-    source: {x: number, y: number}
-    dest: {x: number, y: number}
+    source: { x: number, y: number }
+    dest: { x: number, y: number }
     strokeWidthScaler: number
 }
 export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler }: ArrowProps) {
@@ -42,10 +43,12 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
     //     }
     // }
     return (
-        <SvgArrow
-            source={source}
-            dest={dest}
-        />
+        <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
+            <SvgArrow
+                source={source}
+                dest={dest}
+            />
+        </ElementContext.Provider>
     )
 
     // return (

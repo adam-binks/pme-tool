@@ -1,6 +1,7 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
 import { AbstractProperty, Arrow, Class, Map, Node, Property, Schema } from "../app/schema";
 import { generateId } from "../etc/helpers";
+import { globalProperties } from "../map/properties/globalProperties";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
     const id = generateId()
@@ -10,7 +11,7 @@ export function createMap(firestore: ExtendedFirestoreInstance) {
         createdAt: new Date(),
         schema: {
             id: generateId(),
-            properties: [],
+            properties: [...globalProperties],
             classes: [],
         },
     }
@@ -64,11 +65,16 @@ export function updateNodeProperties(firestore: ExtendedFirestoreInstance, mapId
 }
 
 export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
-    firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove(property))
+    console.log(firestore.FieldValue.arrayRemove(property))
+    firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove([property]))
 }
 
 export function updateSchema(firestore: ExtendedFirestoreInstance, mapId: string, pathFromSchemaRoot: string, value: unknown) {
     firestore.update(`maps/${mapId}`, { [`schema.${pathFromSchemaRoot}`]: value })
+}
+
+export function updateAbstractProperties(firestore: ExtendedFirestoreInstance, mapId: string, newAbstractProperties: AbstractProperty[]) {
+    updateSchema(firestore, mapId, "properties", newAbstractProperties)
 }
 
 export function updateAbstractProperty(firestore: ExtendedFirestoreInstance, mapId: string, abstractProperties: AbstractProperty[], id: string, changes: Partial<AbstractProperty>) {

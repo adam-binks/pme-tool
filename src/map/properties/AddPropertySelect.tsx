@@ -55,6 +55,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
         radius: "xl",
         variant: "filled",
         pt: 8,
+        shadow: "md",
         withinPortal: true,
     }
 
@@ -102,9 +103,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
             { value: "text", label: "Text" },
             { value: "checkbox", label: "Checkbox" },
         ]
-        if (schema.properties && !nodeHasTitle(node, schema?.properties)) {
-            propertyTypes.push({ value: "title", label: "Title" })
-        }
         return (
             <Select
                 key="Created property input"

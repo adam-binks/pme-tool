@@ -16,6 +16,7 @@ import PropertyComponent from "../properties/Property";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
+import { ElementContext } from "../properties/useElementId";
 
 interface NodeProps {
     node: NodeType,
@@ -60,84 +61,89 @@ export default function Node({ node }: NodeProps) {
         )
     }
 
+    // naked nodes are styled differently
+    const isNaked = node.classId === undefined && !node.properties || node.properties.length === 0
+
     return (
-        <div
-            className={`
+        <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
+            <div
+                className={`
                 ${styles.nodeWrapper}
                 ${isSelected ? styles.isSelected : ""}
             `}
-            id={`node.${node.id}`}
-            style={{ left: node.x, top: node.y }}
-        >
-            {(isSelected || node.classId) && <AddClassSelect element={node} elementType={"node"} />}
-            <Card
-                shadow={isSelected ? "xl" : "sm"}
-                radius="md"
-                p="xs"
-                className={
-                    `${styles.nodeCard}
+                id={`node.${node.id}`}
+                style={{ left: node.x, top: node.y }}
+            >
+                {(isSelected || node.classId) && <AddClassSelect element={node} elementType={"node"} />}
+                <Card
+                    shadow={isSelected ? "xl" : "sm"}
+                    radius="md"
+                    p="xs"
+                    className={
+                        `${styles.nodeCard}
                     ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
                     ${isDragging ? styles.isDragging : ""}
                     doNotPan`
-                }
-                ref={drag}
-                onClick={(e: MouseEvent) => {
-                    if (addingArrowFrom) {
-                        addArrow(firestore, mapId, {
-                            id: generateId(),
-                            source: addingArrowFrom,
-                            dest: node.id,
-                            properties: [],
-                            classId: null,
-                        })
-                        dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
-                    } else {
-                        if (e.shiftKey) {
-                            // toggle inclusion in selection
-                            if (isSelected) {
-                                setSelection({
-                                    ...selection,
-                                    nodeIds: selection.nodeIds.filter(id => id !== node.id)
-                                })
-                            } else {
-                                setSelection({
-                                    ...selection,
-                                    nodeIds: [...selection.nodeIds, node.id]
-                                })
-                            }
-                        } else {
-                            // replace selection
-                            setSelection({ nodeIds: [node.id], arrowIds: [] })
-                        }
                     }
-                    e.stopPropagation()
-                }}
-                onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-                onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
-                onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
-            >
-                <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
-
-                <Group my={-8} position="right" spacing="xs">
-                    {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
-                    <NodeOverFlowMenu node={node} />
-                </Group>
-
-                <Stack spacing={5}>
-                    {node.properties.map(property =>
-                        <PropertyComponent
-                            key={property.id}
-                            property={property}
-                            abstractProperty={
-                                abstractProperties?.find((prop: Property) => prop.id === property.abstractPropertyId)
+                    ref={drag}
+                    onClick={(e: MouseEvent) => {
+                        if (addingArrowFrom) {
+                            addArrow(firestore, mapId, {
+                                id: generateId(),
+                                source: addingArrowFrom,
+                                dest: node.id,
+                                properties: [],
+                                classId: null,
+                            })
+                            dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
+                        } else {
+                            if (e.shiftKey) {
+                                // toggle inclusion in selection
+                                if (isSelected) {
+                                    setSelection({
+                                        ...selection,
+                                        nodeIds: selection.nodeIds.filter(id => id !== node.id)
+                                    })
+                                } else {
+                                    setSelection({
+                                        ...selection,
+                                        nodeIds: [...selection.nodeIds, node.id]
+                                    })
+                                }
+                            } else {
+                                // replace selection
+                                setSelection({ nodeIds: [node.id], arrowIds: [] })
                             }
-                            updatePropertyValue={updatePropertyValue}
-                        />
-                    )}
-                </Stack>
+                        }
+                        e.stopPropagation()
+                    }}
+                    onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
+                    onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
+                    onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
+                >
+                    <p className={`${styles.debugNodeText} doNotPan`}>{node.name} {node.id}</p>
 
-            </Card>
-            {isSelected && <AddPropertySelect node={node} />}
-        </div>
+                    <Group my={-8} position="right" spacing="xs">
+                        {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
+                        <NodeOverFlowMenu node={node} />
+                    </Group>
+
+                    <Stack spacing={5}>
+                        {node.properties.map(property =>
+                            <PropertyComponent
+                                key={property.id}
+                                property={property}
+                                abstractProperty={
+                                    abstractProperties?.find((prop: Property) => prop.id === property.abstractPropertyId)
+                                }
+                                updatePropertyValue={updatePropertyValue}
+                            />
+                        )}
+                    </Stack>
+
+                </Card>
+                {isSelected && <AddPropertySelect node={node} />}
+            </div>
+        </ElementContext.Provider>
     )
 }

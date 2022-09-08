@@ -1,13 +1,13 @@
 import { Select } from "@mantine/core";
 import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../../app/hooks";
-import { Arrow, Node, Class, Schema } from "../../app/schema";
+import { Arrow, Node, Class, Schema, elementType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { updateArrow, updateNode, updateSchema } from "../../reducers/mapFunctions";
 import { useMapId } from "../Map";
 
 interface AddClassSelectProps {
-    elementType: "node" | "arrow"
+    elementType: elementType
     element: Node | Arrow
 }
 export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
@@ -58,6 +58,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
             creatable
             nothingFound={`Name a new ${elementType} type`}
             value={element.classId}
+            shadow="md"
             data={
                 (schema?.classes !== undefined) ? schema?.classes.map(
                     (theClass: Class) => ({

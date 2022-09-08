@@ -25,7 +25,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
 
     return (
         <div>
-            <PropertyControls abstractProperty={abstractProperty} />
+            <PropertyControls abstractProperty={abstractProperty} property={property} />
             <Textarea
                 label={label}
                 styles={{

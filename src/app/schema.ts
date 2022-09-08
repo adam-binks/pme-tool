@@ -32,11 +32,13 @@ export interface Schema {
     classes: Class[]
 }
 
+export type elementType = "node" | "arrow"
+
 export interface Class {
     id: string
     name: string
     propertyIds: string[]
-    element: "node" | "arrow"
+    element: elementType
 }
 
 export interface Property {
