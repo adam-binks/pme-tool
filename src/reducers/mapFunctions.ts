@@ -111,6 +111,6 @@ export function deleteArrow(firestore: ExtendedFirestoreInstance, mapId: string,
 export function nodeHasTitle(node: Node, properties: AbstractProperty[]) {
     const firstProp = node?.properties && node.properties[0]
     if (!firstProp) { return false }
-    const abstractProp = properties.find(p => p.id === firstProp.id)
+    const abstractProp = properties.find(p => p.id === firstProp.abstractPropertyId)
     return abstractProp?.type === "title"
 }

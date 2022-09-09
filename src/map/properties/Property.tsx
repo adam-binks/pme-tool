@@ -17,28 +17,31 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
         return (<></>)
     }
 
-    return (
-        <div className={styles.Property}>
-            {abstractProperty.type === "text" &&
-                <TextProperty
+    const getPropertyElement = () => {
+        switch (abstractProperty.type) {
+            case "text":
+            case "title":
+            case "text_untitled":
+                return <TextProperty
                     property={property}
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
-                    textStyle={"text"}
-                />}
-            {abstractProperty.type === "title" &&
-                <TextProperty
+                    textStyle={abstractProperty.type}
+                />
+
+            case "checkbox":
+                return <CheckboxProperty
                     property={property}
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
-                    textStyle={"title"}
-                />}
-            {abstractProperty.type === "checkbox" &&
-                <CheckboxProperty
-                    property={property}
-                    abstractProperty={abstractProperty}
-                    updatePropertyValue={updatePropertyValue}
-                />}
-        </div>
-    )
+                />
+
+            default:
+                return <p>Unhandled property type {abstractProperty.type}</p>
+        }
+
+    }
+
+    const propertyElement = getPropertyElement()
+    return <div className={styles.Property}>{propertyElement}</div>
 }

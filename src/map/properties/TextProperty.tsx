@@ -9,10 +9,10 @@ interface TextPropertyProps {
     property: Property | undefined  // passed only if this is on a map node
     abstractProperty: AbstractProperty
     updatePropertyValue: (property: Property, newValue: any) => void
-    textStyle: "text" | "title"
+    textStyle: "text" | "title" | "text_untitled"
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
-    const label = (!["title", "text-untitled".includes(abstractProperty.type)]) &&  (
+    const label = (textStyle !== "text_untitled" && textStyle !== "title") &&  (
         <PropertyLabel
             abstractProperty={abstractProperty}
             labelProps={{ mb: -10 }}
@@ -37,7 +37,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                         width: "95%"
                     }
                 }}
-                mt={(textStyle === "title") ? 5 : undefined}
+                mt={!label ? 5 : undefined}
                 variant="filled"
                 placeholder={abstractProperty.name}
                 autosize

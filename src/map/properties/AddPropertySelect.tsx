@@ -60,6 +60,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     if (!isCreatingNewProperty) {
+        const hasTitle = schema.properties && nodeHasTitle(node, schema.properties)
         return (
             <Select
                 key="Add property"
@@ -68,7 +69,11 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 creatable
                 nothingFound={"Type to name a new property"}
                 data={
-                    schema?.properties ? schema?.properties.map(
+                    schema?.properties ? schema?.properties.filter(
+                        (property: AbstractProperty) => 
+                            (property.type !== "text_untitled") &&
+                            !(hasTitle && property.type === "title")
+                    ).map(
                         (property: AbstractProperty) => ({
                             value: property.id,
                             label: property.name,

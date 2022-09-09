@@ -63,7 +63,7 @@ export default function Node({ node }: NodeProps) {
     }
 
     // naked nodes are styled differently
-    const isNaked = node.classId === undefined && node.properties?.length === 1
+    const isNaked = !node.classId && node.properties?.length === 1
 
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
@@ -72,6 +72,7 @@ export default function Node({ node }: NodeProps) {
                 ${styles.nodeWrapper}
                 ${isSelected ? styles.isSelected : ""}
                 ${isNaked ? styles.isNaked : ""}
+                ${isHovered ? styles.isHovered : ""}
             `}
                 id={`node.${node.id}`}
                 style={{ left: node.x, top: node.y }}
@@ -126,8 +127,8 @@ export default function Node({ node }: NodeProps) {
                 >
                     <p className={`${styles.debugNodeText} doNotPan`}>{node.id}</p>
 
-                    <Group my={-8} position="right" spacing="xs">
-                        {(true || isHovered || addingArrowFrom === node.id) && <AddArrowButton node={node} />}
+                    <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
+                        {<AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} />
                     </Group>
 
