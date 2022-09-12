@@ -1,23 +1,23 @@
 import { Card, Group, Stack } from "@mantine/core";
-import { MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
+import { toast } from "react-toastify";
 import { useXarrow } from "react-xarrows";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Node as NodeType, Property } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { ItemTypes } from "../../ItemTypes";
-import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
+import { addArrow, elementHasTitle, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { useMapId, useSelection } from "../Map";
-import { AddPropertySelect } from "../properties/AddPropertySelect";
 import { AddClassSelect } from "../properties/AddClassSelect";
+import { AddPropertySelect } from "../properties/AddPropertySelect";
 import PropertyComponent from "../properties/Property";
+import { ElementContext } from "../properties/useElementId";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
-import { ElementContext } from "../properties/useElementId";
-import { toast } from "react-toastify";
 
 interface NodeProps {
     node: NodeType,
@@ -64,6 +64,8 @@ export default function Node({ node }: NodeProps) {
 
     // naked nodes are styled differently
     const isNaked = !node.classId && node.properties?.length === 1
+
+    const hasTitle = elementHasTitle(node, abstractProperties)
 
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>

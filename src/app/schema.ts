@@ -25,13 +25,15 @@ export interface Arrow {
     classId: string | null
 }
 
+export type Element = Node | Arrow
+export type elementType = "node" | "arrow"
+
 export interface Schema {
     id: string
     properties: AbstractProperty[]
     classes: Class[]
 }
 
-export type elementType = "node" | "arrow"
 
 export interface Class {
     id: string

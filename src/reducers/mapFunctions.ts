@@ -1,7 +1,10 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { AbstractProperty, Arrow, Class, Map, Node, Property, Schema } from "../app/schema";
+import { useAppSelector } from "../app/hooks";
+import { AbstractProperty, Arrow, Class, Element, elementType, Map, Node, Property } from "../app/schema";
 import { generateId } from "../etc/helpers";
+import { useMapId } from "../map/Map";
 import { globalProperties, textUntitled } from "../map/properties/globalProperties";
+import { useElementId } from "../map/properties/useElementId";
 
 export function createMap(firestore: ExtendedFirestoreInstance) {
     const id = generateId()
@@ -67,6 +70,11 @@ export function updateNodeProperties(firestore: ExtendedFirestoreInstance, mapId
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, { properties })
 }
 
+export function updateElementProperties(firestore: ExtendedFirestoreInstance, mapId: string, elementId: string,
+    elementType: elementType, properties: Property[]) {
+    firestore.update(`maps/${mapId}/${elementType}s/${elementId}`, { properties })
+}
+
 export function removeNodeProperty(firestore: ExtendedFirestoreInstance, mapId: string, nodeId: string, property: Property) {
     console.log(firestore.FieldValue.arrayRemove(property))
     firestore.update(`maps/${mapId}/nodes/${nodeId}`, firestore.FieldValue.arrayRemove([property]))
@@ -108,9 +116,27 @@ export function deleteArrow(firestore: ExtendedFirestoreInstance, mapId: string,
     firestore.delete(`maps/${mapId}/arrows/${arrowId}`)
 }
 
-export function nodeHasTitle(node: Node, properties: AbstractProperty[]) {
-    const firstProp = node?.properties && node.properties[0]
+export function elementHasTitle(element: Element, properties: AbstractProperty[]) {
+    const firstProp = element?.properties && element.properties[0]
     if (!firstProp) { return false }
     const abstractProp = properties.find(p => p.id === firstProp.abstractPropertyId)
     return abstractProp?.type === "title"
+}
+
+function useGetElement(elementId: string, elementType: elementType) {
+    const mapId = useMapId()
+    return useAppSelector(state => state.firestore?.data &&
+        state.firestore.data[`${elementType}s.${mapId}`]
+        && state.firestore.data[`${elementType}s.${mapId}`][elementId]) as Element | undefined
+}
+
+export function useElement() {
+    const { elementId, elementType } = useElementId()
+    return { element: useGetElement(elementId, elementType), elementType }
+}
+
+export function useAbstractProperties() {
+    const mapId = useMapId()
+    return useAppSelector(state => state.firebase?.data?.maps &&
+        state.firebase?.data?.maps[mapId]?.schema)
 }

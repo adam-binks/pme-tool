@@ -1,8 +1,7 @@
-import { Card, TextInput } from "@mantine/core";
 import { toast } from "react-toastify";
 import { AbstractProperty, Property } from "../../app/schema";
 import CheckboxProperty from "./CheckboxProperty";
-import styles from "./Property.module.css"
+import styles from "./Property.module.css";
 import TextProperty from "./TextProperty";
 
 interface PropertyProps {

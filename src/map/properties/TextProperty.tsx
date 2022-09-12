@@ -1,6 +1,11 @@
-import { Textarea } from "@mantine/core"
+import { ActionIcon, Textarea } from "@mantine/core"
+import { IconHeading, IconLetterCase } from "@tabler/icons"
+import { useFirestore } from "react-redux-firebase"
 import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
+import { elementHasTitle, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
+import { useMapId } from "../Map"
+import styles from "./Property.module.css"
 import { PropertyControls } from "./PropertyControls"
 import { PropertyLabel } from "./PropertyLabel"
 
@@ -12,7 +17,15 @@ interface TextPropertyProps {
     textStyle: "text" | "title" | "text_untitled"
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
-    const label = (textStyle !== "text_untitled" && textStyle !== "title") &&  (
+    const { element, elementType } = useElement()
+    const firestore = useFirestore()
+    const mapId = useMapId()
+    const abstractProperties = useAbstractProperties()
+    const hasTitle = element && abstractProperties && elementHasTitle(element, abstractProperties)
+
+    console.log({hasTitle, abstractProperties})
+
+    const label = (textStyle !== "text_untitled" && textStyle !== "title") && (
         <PropertyLabel
             abstractProperty={abstractProperty}
             labelProps={{ mb: -10 }}
@@ -26,6 +39,45 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     return (
         <div>
             <PropertyControls abstractProperty={abstractProperty} property={property} />
+            {
+                !hasTitle && <ActionIcon
+                    className={styles.propertyOverflowButton}
+                    onClick={() => {
+                        if (!element?.id || !property) {
+                            return
+                        }
+                        // move to be first, and make it a title
+                        const filteredProps = element?.properties.filter(prop => prop.id !== property?.id)
+                        filteredProps &&
+                            updateElementProperties(firestore, mapId, element.id, elementType, [
+                                {
+                                    ...property,
+                                    abstractPropertyId: "title",
+                                },
+                                ...filteredProps
+                            ])
+                    }}
+                    mx="xs"
+                    my={5}
+                    style={{ position: "absolute", right: 0, top: 40, zIndex: 2 }}
+                    radius="xl"
+                    size="xs"
+                >
+                    <IconHeading />
+                </ActionIcon>
+            }
+            {
+                textStyle === "title" && <ActionIcon
+                    className={styles.propertyOverflowButton}
+                    mx="xs"
+                    my={5}
+                    style={{ position: "absolute", right: 0, top: 40, zIndex: 2 }}
+                    radius="xl"
+                    size="xs"
+                >
+                    <IconLetterCase />
+                </ActionIcon>
+            }
             <Textarea
                 label={label}
                 styles={{
@@ -45,6 +97,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 disabled={property === undefined}
                 {...batchedTextInput}
             />
+            <p>hasTitle: {hasTitle}</p>
         </div>
     )
 }

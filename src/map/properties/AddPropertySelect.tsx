@@ -1,12 +1,12 @@
-import { useContext, useState } from "react";
-import { useFirestore } from "react-redux-firebase";
 import { Select, SelectProps } from "@mantine/core";
+import { useState } from "react";
+import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../../app/hooks";
 import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
-import { updateNodeProperties, updateSchema, nodeHasTitle } from "../../reducers/mapFunctions";
+import { elementHasTitle, updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
 import { useMapId } from "../Map";
-import styles from './Property.module.css'
+import styles from './Property.module.css';
 
 interface AddPropertySelectProps {
     node: Node
@@ -60,7 +60,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     if (!isCreatingNewProperty) {
-        const hasTitle = schema.properties && nodeHasTitle(node, schema.properties)
+        const hasTitle = schema.properties && elementHasTitle(node, schema.properties)
         return (
             <Select
                 key="Add property"

@@ -1,21 +1,20 @@
-import { useDrop, XYCoord } from "react-dnd";
-import { ItemTypes } from "../ItemTypes";
-import NodeComponent from "./node/Node";
-import styles from './Map.module.css';
-import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
-import MapHeader from "./MapHeader";
-import { useContext, useRef, useState } from "react";
-import { useFirestore } from "react-redux-firebase";
-import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
-import { SchemaPane } from "./schema/SchemaPane";
-import React from "react";
-import ArrowComponent from "./arrow/Arrow";
-import { MouseFollower } from "./node/MouseFollower";
-import { useXarrow, Xwrapper } from "react-xarrows";
-import { useMouse } from "@mantine/hooks";
 import { Center, Text } from "@mantine/core";
+import { useMouse } from "@mantine/hooks";
+import React, { useContext, useRef, useState } from "react";
+import { useDrop, XYCoord } from "react-dnd";
+import { useFirestore } from "react-redux-firebase";
+import { useXarrow } from "react-xarrows";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { ItemTypes } from "../ItemTypes";
+import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../reducers/paneReducer";
+import ArrowComponent from "./arrow/Arrow";
+import styles from './Map.module.css';
+import MapHeader from "./MapHeader";
+import { MouseFollower } from "./node/MouseFollower";
+import NodeComponent from "./node/Node";
+import { SchemaPane } from "./schema/SchemaPane";
 
 const MapContext = React.createContext<string>("")
 export const useMapId =() => useContext(MapContext)
@@ -88,7 +87,8 @@ export default function Map({ mapId, paneIndex }: MapProps) {
 
     const createNodeAtLocation = (e: React.MouseEvent) => {
         const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
-        const blankNode = getBlankNode(x, y)
+        const offset = {x: -20, y: -50} // to correct for naked nodes
+        const blankNode = getBlankNode(x + offset.x, y + offset.y)
         addNode(firestore, mapId, blankNode)
     }
 
