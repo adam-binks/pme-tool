@@ -1,4 +1,4 @@
-import { Menu, ActionIcon } from "@mantine/core"
+import { ActionIcon, Menu } from "@mantine/core"
 import { IconDotsVertical } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppSelector } from "../../app/hooks"
@@ -11,8 +11,9 @@ import { useElementId } from "./useElementId"
 interface PropertyControlsProps {
     abstractProperty: AbstractProperty
     property: Property | undefined
+    mt: number | undefined
 }
-export function PropertyControls({ abstractProperty, property }: PropertyControlsProps) {
+export function PropertyControls({ abstractProperty, property, mt }: PropertyControlsProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
     const { elementType, elementId } = useElementId()
@@ -31,7 +32,7 @@ export function PropertyControls({ abstractProperty, property }: PropertyControl
                     className={styles.propertyOverflowButton}
                     mx="xs"
                     my={5}
-                    style={{ position: "absolute", right: 0, zIndex: 2 }}
+                    style={{...(mt ? {marginTop: mt} : {}), position: "absolute", right: 0, zIndex: 2 }}
                     radius="xl"
                     size="xs"
                 >

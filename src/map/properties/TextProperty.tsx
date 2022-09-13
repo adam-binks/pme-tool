@@ -3,8 +3,9 @@ import { IconHeading, IconLetterCase } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
-import { elementHasTitle, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
+import { elementHasTitle, getAbstractProperty, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
+import { textUntitled } from "./globalProperties"
 import styles from "./Property.module.css"
 import { PropertyControls } from "./PropertyControls"
 import { PropertyLabel } from "./PropertyLabel"
@@ -23,8 +24,6 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     const abstractProperties = useAbstractProperties()
     const hasTitle = element && abstractProperties && elementHasTitle(element, abstractProperties)
 
-    console.log({hasTitle, abstractProperties})
-
     const label = (textStyle !== "text_untitled" && textStyle !== "title") && (
         <PropertyLabel
             abstractProperty={abstractProperty}
@@ -37,11 +36,12 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     )
 
     return (
-        <div>
-            <PropertyControls abstractProperty={abstractProperty} property={property} />
+        <div className="doNotPan" style={{position: "relative"}}>
+            <PropertyControls abstractProperty={abstractProperty} property={property} mt={label ? undefined : 7} />
             {
                 !hasTitle && <ActionIcon
                     className={styles.propertyOverflowButton}
+                    title="Transform into heading"
                     onClick={() => {
                         if (!element?.id || !property) {
                             return
@@ -59,7 +59,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                     }}
                     mx="xs"
                     my={5}
-                    style={{ position: "absolute", right: 0, top: 40, zIndex: 2 }}
+                    style={{ position: "absolute", right: 0, top: 22, zIndex: 2 }}
                     radius="xl"
                     size="xs"
                 >
@@ -69,9 +69,21 @@ export default function TextProperty({ property, abstractProperty, updatePropert
             {
                 textStyle === "title" && <ActionIcon
                     className={styles.propertyOverflowButton}
+                    title="Transform into paragraph"
+                    onClick={() => {
+                        if (!element?.id || !property) {
+                            return
+                        }
+                        updateElementProperties(firestore, mapId, element.id, elementType,
+                            element.properties.map(prop => getAbstractProperty(prop, abstractProperties)?.type === "title" ?
+                                {
+                                    ...prop,
+                                    abstractPropertyId: textUntitled,
+                                } : prop))
+                    }}
                     mx="xs"
                     my={5}
-                    style={{ position: "absolute", right: 0, top: 40, zIndex: 2 }}
+                    style={{ position: "absolute", right: 0, top: 22, zIndex: 2 }}
                     radius="xl"
                     size="xs"
                 >
@@ -97,7 +109,6 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 disabled={property === undefined}
                 {...batchedTextInput}
             />
-            <p>hasTitle: {hasTitle}</p>
         </div>
     )
 }

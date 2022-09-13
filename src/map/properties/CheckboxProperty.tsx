@@ -14,7 +14,7 @@ export default function CheckboxProperty({ property, abstractProperty, updatePro
     }} />
     return (
         <div>
-            <PropertyControls abstractProperty={abstractProperty} property={property} />
+            <PropertyControls abstractProperty={abstractProperty} property={property} mt={undefined} />
             <Group position="apart">
                 <Checkbox
                     checked={property ? property.value : true} // always check in schema, so it looks like a checkbox

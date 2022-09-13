@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Node as NodeType, Property } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { ItemTypes } from "../../ItemTypes";
-import { addArrow, elementHasTitle, updateNodeProperties } from "../../reducers/mapFunctions";
+import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { useMapId, useSelection } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
@@ -64,8 +64,6 @@ export default function Node({ node }: NodeProps) {
 
     // naked nodes are styled differently
     const isNaked = !node.classId && node.properties?.length === 1
-
-    const hasTitle = elementHasTitle(node, abstractProperties)
 
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
@@ -134,7 +132,7 @@ export default function Node({ node }: NodeProps) {
                         <NodeOverFlowMenu node={node} />
                     </Group>
 
-                    <Stack spacing={5}>
+                    <Stack spacing={5} className="doNotPan">
                         {node.properties.map(property =>
                             <PropertyComponent
                                 key={property.id}

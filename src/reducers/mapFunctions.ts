@@ -137,6 +137,10 @@ export function useElement() {
 
 export function useAbstractProperties() {
     const mapId = useMapId()
-    return useAppSelector(state => state.firebase?.data?.maps &&
-        state.firebase?.data?.maps[mapId]?.schema)
+    return useAppSelector(state => state.firestore?.data?.maps &&
+        state.firestore?.data?.maps[mapId]?.schema?.properties)
+}
+
+export function getAbstractProperty(property: Property, abstractProperties: AbstractProperty[]) {
+    return abstractProperties.find((abstractProp) => abstractProp.id === property.abstractPropertyId)
 }
