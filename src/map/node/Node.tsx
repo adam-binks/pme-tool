@@ -3,7 +3,7 @@ import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Node as NodeType, Property } from "../../app/schema";
+import { AbstractProperty, Class, Node as NodeType, Property } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
@@ -19,20 +19,30 @@ import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
 interface NodeProps {
-    node: NodeType
+    node?: NodeType
+    theClass?: Class
     inSchema: boolean
 }
-export default function Node({ node, inSchema }: NodeProps) {
+export default function Node({ node = undefined, theClass = undefined, inSchema }: NodeProps) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
+
+    const nodeElementType = (node && "node") || "class"
+    const id = (node && node.id) || (theClass && theClass.id) || ""
+    if (id === "") {
+        console.error("Missing node or class!")
+    }
+
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: inSchema ? ItemTypes.SCHEMA_NODE : ItemTypes.NODE,
-            item: {
+            item: node !== undefined ? {
                 id: node.id,
                 x: node.x,
                 y: node.y
+            } : {
+                id: theClass?.id
             },
             collect: (monitor) => ({
                 isDragging: monitor.isDragging(),
@@ -41,7 +51,7 @@ export default function Node({ node, inSchema }: NodeProps) {
         [node],
     )
 
-    const {isSelected, onClickSelectable} = useSelectable(node.id, "node")
+    const { isSelected, onClickSelectable } = useSelectable(id, inSchema ? "node" : "class")
 
     const [isHovered, setIsHovered] = useState(false)
 
@@ -53,7 +63,7 @@ export default function Node({ node, inSchema }: NodeProps) {
 
 
     const updatePropertyValue = (property: Property, newValue: any) => {
-        updateNodeProperties(firestore, mapId, node.id,
+        node && updateNodeProperties(firestore, mapId, node.id,
             node.properties.map(existingProp => existingProp === property ?
                 { ...existingProp, value: newValue } : existingProp
             )
@@ -61,21 +71,23 @@ export default function Node({ node, inSchema }: NodeProps) {
     }
 
     // naked nodes are styled differently
-    const isNaked = !node.classId && node.properties?.length === 1
+    const isNaked = node && !node.classId && node.properties?.length === 1
 
     return (
-        <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
+        <ElementContext.Provider value={{ elementType: nodeElementType, elementId: id }}>
             <div
                 className={`
                 ${styles.nodeWrapper}
+                ${inSchema ? styles.inSchema : ""}
                 ${isSelected ? styles.isSelected : ""}
                 ${isNaked ? styles.isNaked : ""}
                 ${isHovered ? styles.isHovered : ""}
             `}
-                id={`node.${node.id}`}
-                style={{ left: node.x, top: node.y }}
+                id={`node.${id}`}
+                style={node && { left: node.x, top: node.y }}
             >
-                {(isSelected || node.classId) && <AddClassSelect element={node} elementType={"node"} />}
+                {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
+                {node && (isSelected || node.classId) && <AddClassSelect element={node} elementType={nodeElementType} />}
                 <Card
                     shadow={isSelected ? "xl" : "sm"}
                     radius="md"
@@ -92,7 +104,7 @@ export default function Node({ node, inSchema }: NodeProps) {
                             addArrow(firestore, mapId, {
                                 id: generateId(),
                                 source: addingArrowFrom,
-                                dest: node.id,
+                                dest: id,
                                 properties: [],
                                 classId: null,
                             })
@@ -106,28 +118,36 @@ export default function Node({ node, inSchema }: NodeProps) {
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <p className={`${styles.debugNodeText} doNotPan`}>{node.id}</p>
+                    <p className={`${styles.debugNodeText} doNotPan`}>{id}</p>
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        {<AddArrowButton node={node} />}
-                        <NodeOverFlowMenu node={node} />
+                        {node && <AddArrowButton node={node} />}
+                        {node && <NodeOverFlowMenu node={node} />}
                     </Group>
 
                     <Stack spacing={5} className="doNotPan">
-                        {node.properties.map(property =>
+                        {node && node.properties.map(property =>
                             <PropertyComponent
                                 key={property.id}
                                 property={property}
                                 abstractProperty={
-                                    abstractProperties?.find((prop: Property) => prop.id === property.abstractPropertyId)
+                                    abstractProperties?.find((prop: AbstractProperty) => prop.id === property.abstractPropertyId)
                                 }
                                 updatePropertyValue={updatePropertyValue}
+                            />
+                        )}
+                        {theClass && theClass.propertyIds.map(abstractPropertyId =>
+                            <PropertyComponent
+                                key={abstractPropertyId}
+                                property={undefined}
+                                abstractProperty={abstractProperties.find((prop: AbstractProperty) => prop.id === abstractPropertyId)}
+                                updatePropertyValue={() => {}}
                             />
                         )}
                     </Stack>
 
                 </Card>
-                {isSelected && <AddPropertySelect node={node} />}
+                {node && isSelected && <AddPropertySelect node={node} />}
             </div>
         </ElementContext.Provider>
     )

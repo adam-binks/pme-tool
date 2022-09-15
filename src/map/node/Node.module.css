@@ -14,8 +14,11 @@
     outline: 3px solid rgba(0,0,255,0.5) !important;
 }
 
-.nodeWrapper {
+.nodeWrapper:not(.inSchema) {
     position: absolute;
+}
+
+.nodeWrapper {
     transition: transform 0.1s ease-out;
 }
 

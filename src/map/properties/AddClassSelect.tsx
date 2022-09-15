@@ -1,19 +1,21 @@
 import { Select } from "@mantine/core";
 import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../../app/hooks";
-import { Arrow, Node, Class, Schema, elementType } from "../../app/schema";
+import { Arrow, Class, elementType, Node, Schema } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
+import { emptySelection, useSelection } from "../../etc/useSelectable";
 import { updateArrow, updateNode, updateSchema } from "../../reducers/mapFunctions";
 import { useMapId } from "../Map";
 
 interface AddClassSelectProps {
     elementType: elementType
-    element: Node | Arrow
+    element: Node | Arrow | Class
 }
 export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
+    const [selection, setSelection] = useSelection()
 
     const createClass = (newClass: Class) => {
         schema && updateSchema(firestore, mapId, "classes", [...schema.classes, newClass])
@@ -44,9 +46,14 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
         updateSchema(firestore, mapId, "classes", [])
     }
 
-    const theClass = element.classId && schema?.classes?.find((cls: Class) => cls.id === element.classId)
-    if (element.classId && !theClass) {
-        console.error(`Missing class with ID ${element.classId}`)
+    const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
+    const theClass = elementType === "class" ?
+        element :
+        classId && schema?.classes?.find(
+            (cls: Class) => cls.id === classId
+        )
+    if (elementType === "node" && classId && !theClass) {
+        console.error(`Missing class with ID ${classId}`)
     }
 
     return (
@@ -57,7 +64,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
             searchable
             creatable
             nothingFound={`Name a new ${elementType} type`}
-            value={element.classId}
+            value={classId}
             shadow="md"
             data={
                 (schema?.classes !== undefined) ? schema?.classes.map(
@@ -69,7 +76,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                 ) : []
             }
             dropdownPosition="top"
-            style={{position: "absolute"}}
+            style={{ position: "absolute" }}
             mt={-40}
             styles={(theme) => ({
                 input: {
@@ -97,7 +104,13 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     }
                     addClassToElement(selectedClass)
                 }
-            }} 
+            }}
+            onClick={(e) => {
+                // TODO FIX
+                if (elementType === "class" && !selection.classIds.includes(element.id)) {
+                    setSelection({...emptySelection, classIds: [element.id]})
+                }
+            }}
             onClickCapture={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
         />

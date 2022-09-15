@@ -17,8 +17,9 @@ export const SelectionContext = React.createContext<[
 export const useSelection = () => useContext(SelectionContext)
 
 
-export function useSelectable(id: string, type: "node" | "arrow") {
+export function useSelectable(id: string, type: "node" | "arrow" | "class") {
     const [selection, setSelection] = useSelection()
+    const typeIds = `${type}Ids`
     const selectionTypeIds = selection && selection[`${type}Ids`]
     const isSelected = selectionTypeIds?.includes(id)
 
@@ -32,17 +33,17 @@ export function useSelectable(id: string, type: "node" | "arrow") {
                 if (isSelected) {
                     setSelection({
                         ...selection,
-                        nodeIds: selectionTypeIds ? selectionTypeIds.filter((elementId: string) => elementId !== id) : []
+                        [typeIds]: selectionTypeIds ? selectionTypeIds.filter((elementId: string) => elementId !== id) : []
                     })
                 } else {
                     setSelection({
                         ...selection,
-                        nodeIds: [...selectionTypeIds, id]
+                        [typeIds]: [...selectionTypeIds, id]
                     })
                 }
             } else {
                 // replace selection
-                setSelection({...emptySelection, [`${type}Ids`]: [id] })
+                setSelection({...emptySelection, [typeIds]: [id] })
             }
         },
     }

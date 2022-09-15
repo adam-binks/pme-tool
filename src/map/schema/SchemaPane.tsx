@@ -2,8 +2,10 @@ import { Paper, Stack, Title } from "@mantine/core"
 import { MouseEvent, useEffect } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { Schema } from "../../app/schema"
+import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { updateAbstractProperties } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
+import Node from "../node/Node"
 import { globalProperties } from "../properties/globalProperties"
 import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
@@ -14,6 +16,8 @@ interface SchemaPaneProps {
 export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
+
+    const [selection, setSelection] = useSelection()
 
     useEffect(() => {
         if (firestore && schema && schema.properties) {
@@ -36,12 +40,15 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     }
 
     return (
-        <Paper 
+        <Paper
             className={styles.schemaPane}
             p="md"
             radius={0}
             shadow={"lg"}
-            onClick={(e: MouseEvent) => e.stopPropagation()}
+            onClick={(e: MouseEvent) => {
+                setSelection(emptySelection)
+                e.stopPropagation()
+            }}
         >
             <Stack>
                 <Title order={3}>Schema</Title>
@@ -49,7 +56,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                 <Title order={5}>Classes</Title>
 
                 {schema.classes && schema.classes.map(
-                    (theClass) => <p>Class</p>// <Node inSchema={true} node={} />
+                    (theClass) => <Node inSchema={true} theClass={theClass} />
                 )}
 
                 <Title order={5}>Headless properties</Title>

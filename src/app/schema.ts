@@ -26,7 +26,7 @@ export interface Arrow {
 }
 
 export type Element = Node | Arrow
-export type elementType = "node" | "arrow"
+export type elementType = "node" | "arrow" | "class"
 
 export interface Schema {
     id: string
