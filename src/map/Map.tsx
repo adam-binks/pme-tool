@@ -6,6 +6,7 @@ import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useXarrow } from "react-xarrows";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
 import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../reducers/paneReducer";
@@ -18,19 +19,6 @@ import { SchemaPane } from "./schema/SchemaPane";
 
 const MapContext = React.createContext<string>("")
 export const useMapId =() => useContext(MapContext)
-
-interface Selection {
-    nodeIds: string[]
-    arrowIds: string[]
-}
-const SelectionContext = React.createContext<[
-    selection: Selection,
-    setSelection: React.Dispatch<React.SetStateAction<{
-        nodeIds: string[];
-        arrowIds: string[];
-    }>>
-]>([ { nodeIds: [], arrowIds: [] }, () => { } ])
-export const useSelection = () => useContext(SelectionContext)
 
 export interface DragItem {
     type: string
@@ -50,7 +38,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
     const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
     const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`])
 
-    const [selection, setSelection] = useState<Selection>({ nodeIds: [], arrowIds: [] })
+    const [selection, setSelection] = useState<Selection>(emptySelection)
 
     const updateXArrow = useXarrow()
 
@@ -131,7 +119,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                         className={styles.MapMain}
                         onClick={(e) => {
                             // NB: includes schemePane etc
-                            setSelection({nodeIds: [], arrowIds: []});
+                            setSelection(emptySelection);
                             (document.activeElement as HTMLElement).blur()
                             addingArrowFrom && dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
                         }}
@@ -187,6 +175,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                     node && <NodeComponent
                                         node={node}
                                         key={node.id}
+                                        inSchema={false}
                                     />
                                 )}
                                 {arrows && Object.values(arrows).map((arrow: any) => {

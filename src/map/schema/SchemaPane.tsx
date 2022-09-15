@@ -49,7 +49,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                 <Title order={5}>Classes</Title>
 
                 {schema.classes && schema.classes.map(
-                    (theClass) => <p key={theClass.id}>{JSON.stringify(theClass)}</p>
+                    (theClass) => <p>Class</p>// <Node inSchema={true} node={} />
                 )}
 
                 <Title order={5}>Headless properties</Title>

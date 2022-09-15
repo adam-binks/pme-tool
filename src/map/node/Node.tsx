@@ -2,15 +2,14 @@ import { Card, Group, Stack } from "@mantine/core";
 import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
-import { toast } from "react-toastify";
-import { useXarrow } from "react-xarrows";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Node as NodeType, Property } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
+import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
-import { useMapId, useSelection } from "../Map";
+import { useMapId } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
 import PropertyComponent from "../properties/Property";
@@ -20,15 +19,16 @@ import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
 interface NodeProps {
-    node: NodeType,
+    node: NodeType
+    inSchema: boolean
 }
-export default function Node({ node }: NodeProps) {
+export default function Node({ node, inSchema }: NodeProps) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
-    const updateXArrow = useXarrow()
+    const firestore = useFirestore()
     const [{ isDragging }, drag] = useDrag(
         () => ({
-            type: ItemTypes.NODE,
+            type: inSchema ? ItemTypes.SCHEMA_NODE : ItemTypes.NODE,
             item: {
                 id: node.id,
                 x: node.x,
@@ -41,8 +41,7 @@ export default function Node({ node }: NodeProps) {
         [node],
     )
 
-    const [selection, setSelection] = useSelection()
-    const isSelected = selection.nodeIds && selection.nodeIds.includes(node.id)
+    const {isSelected, onClickSelectable} = useSelectable(node.id, "node")
 
     const [isHovered, setIsHovered] = useState(false)
 
@@ -52,7 +51,6 @@ export default function Node({ node }: NodeProps) {
 
     const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
 
-    const firestore = useFirestore()
 
     const updatePropertyValue = (property: Property, newValue: any) => {
         updateNodeProperties(firestore, mapId, node.id,
@@ -90,7 +88,6 @@ export default function Node({ node }: NodeProps) {
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {
-                        toast.info("ye")
                         if (addingArrowFrom) {
                             addArrow(firestore, mapId, {
                                 id: generateId(),
@@ -101,29 +98,13 @@ export default function Node({ node }: NodeProps) {
                             })
                             dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                         } else {
-                            if (e.shiftKey) {
-                                // toggle inclusion in selection
-                                if (isSelected) {
-                                    setSelection({
-                                        ...selection,
-                                        nodeIds: selection.nodeIds.filter(id => id !== node.id)
-                                    })
-                                } else {
-                                    setSelection({
-                                        ...selection,
-                                        nodeIds: [...selection.nodeIds, node.id]
-                                    })
-                                }
-                            } else {
-                                // replace selection
-                                setSelection({ nodeIds: [node.id], arrowIds: [] })
-                            }
+                            onClickSelectable(e)
                         }
                         e.stopPropagation()
                     }}
                     onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-                    onMouseEnter={() => { setIsHovered(true); updateXArrow() }}
-                    onMouseLeave={() => { setIsHovered(false); !isDragging && updateXArrow() }}
+                    onMouseEnter={() => { setIsHovered(true) }}
+                    onMouseLeave={() => { setIsHovered(false) }}
                 >
                     <p className={`${styles.debugNodeText} doNotPan`}>{node.id}</p>
 
