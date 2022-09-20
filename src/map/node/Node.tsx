@@ -51,7 +51,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
         [node],
     )
 
-    const { isSelected, onClickSelectable } = useSelectable(id, inSchema ? "node" : "class")
+    const { isSelected, onClickSelectable } = useSelectable(id, inSchema ? "class" : "node")
 
     const [isHovered, setIsHovered] = useState(false)
 

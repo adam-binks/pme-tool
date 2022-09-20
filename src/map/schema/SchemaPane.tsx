@@ -17,7 +17,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
 
-    const [selection, setSelection] = useSelection()
+    const [, setSelection] = useSelection()
 
     useEffect(() => {
         if (firestore && schema && schema.properties) {
@@ -29,7 +29,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                 updateAbstractProperties(firestore, mapId, [...missingGlobalProperties, ...schema.properties])
             }
         }
-    }, [])
+    }, [firestore, mapId, schema])
 
     if (!schema) {
         return (
@@ -53,11 +53,13 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             <Stack>
                 <Title order={3}>Schema</Title>
 
-                <Title order={5}>Classes</Title>
+                <Title order={5}>Node types</Title>
 
-                {schema.classes && schema.classes.map(
-                    (theClass) => <Node inSchema={true} theClass={theClass} />
-                )}
+                <Stack mt={30} spacing={50}>
+                    {schema.classes && schema.classes.map(
+                        (theClass) => <Node key={theClass.id} inSchema={true} theClass={theClass} />
+                    )}
+                </Stack>
 
                 <Title order={5}>Headless properties</Title>
 

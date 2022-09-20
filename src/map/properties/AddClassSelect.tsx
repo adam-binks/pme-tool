@@ -1,11 +1,11 @@
-import { Select } from "@mantine/core";
-import { useFirestore } from "react-redux-firebase";
-import { useAppSelector } from "../../app/hooks";
-import { Arrow, Class, elementType, Node, Schema } from "../../app/schema";
-import { generateId } from "../../etc/helpers";
-import { emptySelection, useSelection } from "../../etc/useSelectable";
-import { updateArrow, updateNode, updateSchema } from "../../reducers/mapFunctions";
-import { useMapId } from "../Map";
+import { Select } from "@mantine/core"
+import { useFirestore } from "react-redux-firebase"
+import { useAppSelector } from "../../app/hooks"
+import { Arrow, Class, elementType, Node, Schema } from "../../app/schema"
+import { generateId } from "../../etc/helpers"
+import { useSelectable } from "../../etc/useSelectable"
+import { updateArrow, updateNode, updateSchema } from "../../reducers/mapFunctions"
+import { useMapId } from "../Map"
 
 interface AddClassSelectProps {
     elementType: elementType
@@ -15,7 +15,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
-    const [selection, setSelection] = useSelection()
+    const { onClickSelectable } = useSelectable(element.id, elementType)
 
     const createClass = (newClass: Class) => {
         schema && updateSchema(firestore, mapId, "classes", [...schema.classes, newClass])
@@ -105,13 +105,10 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     addClassToElement(selectedClass)
                 }
             }}
-            onClick={(e) => {
-                // TODO FIX
-                if (elementType === "class" && !selection.classIds.includes(element.id)) {
-                    setSelection({...emptySelection, classIds: [element.id]})
-                }
+            onClickCapture={(e) => {
+                e.stopPropagation()
+                onClickSelectable(e)
             }}
-            onClickCapture={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
         />
     )

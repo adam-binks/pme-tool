@@ -26,6 +26,10 @@
     transform: scale(1.01, 1.01)
 }
 
+.inSchema .addClassSelect .mantine-Select-input {
+    background-color: red !important;
+}
+
 
 /* naked nodes */
 .isNaked .nodeCard {

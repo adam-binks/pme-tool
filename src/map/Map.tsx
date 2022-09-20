@@ -1,5 +1,5 @@
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
-import { Center, Text } from "@mantine/core";
+import { Skeleton } from "@mantine/core";
 import { useMouse } from "@mantine/hooks";
 import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
@@ -18,7 +18,7 @@ import NodeComponent from "./node/Node";
 import { SchemaPane } from "./schema/SchemaPane";
 
 const MapContext = React.createContext<string>("")
-export const useMapId =() => useContext(MapContext)
+export const useMapId = () => useContext(MapContext)
 
 export interface DragItem {
     type: string
@@ -75,7 +75,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
 
     const createNodeAtLocation = (e: React.MouseEvent) => {
         const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
-        const offset = {x: -20, y: -50} // to correct for naked nodes
+        const offset = { x: -20, y: -50 } // to correct for naked nodes
         const blankNode = getBlankNode(x + offset.x, y + offset.y)
         addNode(firestore, mapId, blankNode)
     }
@@ -100,9 +100,10 @@ export default function Map({ mapId, paneIndex }: MapProps) {
 
     if (!map) {
         return (
-            <Center dir="both">
-                <Text p="xl" color="dimmed">Loading map (ID: {mapId})...</Text>
-            </Center>
+            <>
+                <Skeleton />
+                {/* <Text p="xl" color="dimmed">Loading map (ID: {mapId})...</Text> */}
+            </>
         )
     }
     return (
@@ -121,7 +122,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                             // NB: includes schemePane etc
                             setSelection(emptySelection);
                             (document.activeElement as HTMLElement).blur()
-                            addingArrowFrom && dispatch(setAddingArrowFrom({mapId, addingArrowFrom: undefined}))
+                            addingArrowFrom && dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                         }}
                     >
                         <TransformWrapper
