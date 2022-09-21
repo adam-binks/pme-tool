@@ -1,7 +1,7 @@
 import { ActionIcon, Menu } from "@mantine/core"
 import { IconDotsVertical } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
-import { useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { AbstractProperty, Property } from "../../app/schema"
 import { updateNodeProperties } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
@@ -15,6 +15,7 @@ interface PropertyControlsProps {
 }
 export function PropertyControls({ abstractProperty, property, mt }: PropertyControlsProps) {
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
     const mapId = useMapId()
     const { elementType, elementId } = useElementId()
 
@@ -45,7 +46,7 @@ export function PropertyControls({ abstractProperty, property, mt }: PropertyCon
                         // remove property from element
                         switch (elementType) {
                             case "node":
-                                updateNodeProperties(firestore, mapId, elementId, 
+                                updateNodeProperties(firestore, dispatch, mapId, elementId, elementProperties,
                                     elementProperties.filter((prop: Property) => prop.id !== property.id)
                                 )
                                 break

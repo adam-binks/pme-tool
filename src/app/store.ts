@@ -1,11 +1,12 @@
-import { ThunkAction, Action, combineReducers, compose, createStore } from '@reduxjs/toolkit';
-import paneReducer from '../reducers/paneReducer';
-import firebase from 'firebase/compat/app'
+import { Action, combineReducers, compose, createStore, ThunkAction } from '@reduxjs/toolkit';
 import 'firebase/auth';
-import 'firebase/database';
+import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import { firestoreReducer, reduxFirestore, createFirestoreInstance, FirestoreReducer } from 'redux-firestore'
+import 'firebase/database';
 import { firebaseReducer } from 'react-redux-firebase';
+import { createFirestoreInstance, firestoreReducer, FirestoreReducer, reduxFirestore } from 'redux-firestore';
+import historyReducer from '../reducers/historyReducer';
+import paneReducer from '../reducers/paneReducer';
 import { firebaseConfig } from './firebase';
 import { FirebaseSchema } from './schema';
 
@@ -19,13 +20,15 @@ const createStoreWithFirebase = compose(reduxFirestore(firebase))(createStore)
 interface RootReducerState {
     firebase: ReturnType<typeof firebaseReducer>,
     firestore: FirestoreReducer.Reducer<FirebaseSchema>,
-    panes: ReturnType<typeof paneReducer>
+    panes: ReturnType<typeof paneReducer>,
+    history: ReturnType<typeof historyReducer>,
 }
 
 const rootReducer = combineReducers<RootReducerState>({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
     panes: paneReducer,
+    history: historyReducer,
 })
 
 export const store = createStoreWithFirebase(rootReducer, 

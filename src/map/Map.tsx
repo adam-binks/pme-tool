@@ -77,7 +77,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
         const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
         const offset = { x: -20, y: -50 } // to correct for naked nodes
         const blankNode = getBlankNode(x + offset.x, y + offset.y)
-        addNode(firestore, mapId, blankNode)
+        addNode(firestore, dispatch, mapId, blankNode)
     }
 
     const [, drop] = useDrop(
@@ -88,9 +88,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                 // correct for canvas zoom
                 const x = Math.round(item.x + (delta.x / zoomLevel))
                 const y = Math.round(item.y + (delta.y / zoomLevel))
-                updateNode(firestore, mapId, item.id, { x, y })
-
-                setTimeout(() => updateXArrow(), 100) // temporary hack - doesn't work if another moves it
+                updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
 
                 return undefined
             },

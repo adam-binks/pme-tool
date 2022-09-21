@@ -63,7 +63,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
 
 
     const updatePropertyValue = (property: Property, newValue: any) => {
-        node && updateNodeProperties(firestore, mapId, node.id,
+        node && updateNodeProperties(firestore, dispatch, mapId, node.id, node.properties,
             node.properties.map(existingProp => existingProp === property ?
                 { ...existingProp, value: newValue } : existingProp
             )
@@ -101,7 +101,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     ref={drag}
                     onClick={(e: MouseEvent) => {
                         if (addingArrowFrom) {
-                            addArrow(firestore, mapId, {
+                            addArrow(firestore, dispatch, mapId, {
                                 id: generateId(),
                                 source: addingArrowFrom,
                                 dest: id,

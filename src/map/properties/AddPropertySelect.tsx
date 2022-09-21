@@ -1,7 +1,7 @@
 import { Select, SelectProps } from "@mantine/core";
 import { useState } from "react";
 import { useFirestore } from "react-redux-firebase";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { elementHasTitle, updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
@@ -14,13 +14,14 @@ interface AddPropertySelectProps {
 export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const mapId = useMapId()
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
 
     const [isCreatingNewProperty, setIsCreatingNewProperty] = useState("")
 
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
 
     const createAbstractProperty = (newProperty: AbstractProperty) => {
-        updateSchema(firestore, mapId, "properties",
+        updateSchema(firestore, dispatch, mapId, "properties", schema?.properties ? schema.properties : [],
             [...(schema?.properties ? schema.properties : []), newProperty]
         )
     }
@@ -42,7 +43,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
             value: defaultPropertyValueByType[abstractProperty.type]
         }
 
-        updateNodeProperties(firestore, mapId, node.id, 
+        updateNodeProperties(firestore, dispatch, mapId, node.id, node.properties,
             // make the title the first property
             abstractProperty.type === "title" ? [newProperty, ...node.properties]
                                               : [...node.properties, newProperty]

@@ -1,7 +1,7 @@
 import { Textarea, TextInputProps, TextInput } from "@mantine/core"
 import { useContext } from "react"
 import { useFirestore } from "react-redux-firebase"
-import { useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { AbstractProperty } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { updateAbstractProperty } from "../../reducers/mapFunctions"
@@ -13,12 +13,13 @@ interface PropertyLabelProps {
 }
 export function PropertyLabel({ abstractProperty, labelProps }: PropertyLabelProps) {
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
     const mapId = useMapId()
     const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
     
     const batchedTextInput = useBatchedTextInput(
         abstractProperty.name,
-        (newValue) => updateAbstractProperty(firestore, mapId, abstractProperties,
+        (newValue) => updateAbstractProperty(firestore, dispatch, mapId, abstractProperties,
             abstractProperty.id, { name: newValue })
     )
 

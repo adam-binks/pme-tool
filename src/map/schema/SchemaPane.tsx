@@ -1,6 +1,7 @@
 import { Paper, Stack, Title } from "@mantine/core"
 import { MouseEvent, useEffect } from "react"
 import { useFirestore } from "react-redux-firebase"
+import { useAppDispatch } from "../../app/hooks"
 import { Schema } from "../../app/schema"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { updateAbstractProperties } from "../../reducers/mapFunctions"
@@ -15,6 +16,7 @@ interface SchemaPaneProps {
 }
 export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
     const mapId = useMapId()
 
     const [, setSelection] = useSelection()
@@ -26,7 +28,8 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             )
             if (missingGlobalProperties.length > 0) {
                 console.log("Adding missing global properties ", missingGlobalProperties)
-                updateAbstractProperties(firestore, mapId, [...missingGlobalProperties, ...schema.properties])
+                updateAbstractProperties(firestore, dispatch, mapId, schema.properties, 
+                    [...missingGlobalProperties, ...schema.properties])
             }
         }
     }, [firestore, mapId, schema])

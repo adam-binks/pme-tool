@@ -1,6 +1,6 @@
 import { Select } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
-import { useAppSelector } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Arrow, Class, elementType, Node, Schema } from "../../app/schema"
 import { generateId } from "../../etc/helpers"
 import { useSelectable } from "../../etc/useSelectable"
@@ -13,20 +13,31 @@ interface AddClassSelectProps {
 }
 export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
     const { onClickSelectable } = useSelectable(element.id, elementType)
 
+    const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
+    const theClass = elementType === "class" ?
+        element :
+        classId && schema?.classes?.find(
+            (cls: Class) => cls.id === classId
+        )
+    if (elementType === "node" && classId && !theClass) {
+        console.error(`Missing class with ID ${classId}`)
+    }
+
     const createClass = (newClass: Class) => {
-        schema && updateSchema(firestore, mapId, "classes", [...schema.classes, newClass])
+        schema && updateSchema(firestore, dispatch, mapId, "classes", schema.classes, [...schema.classes, newClass])
     }
 
     const addClassToElement = (newClass: Class) => {
         if (elementType === "node") {
-            updateNode(firestore, mapId, element.id, { classId: newClass.id })
+            updateNode(firestore, dispatch, mapId, element.id, { classId }, { classId: newClass.id })
         }
         if (elementType === "arrow") {
-            updateArrow(firestore, mapId, element.id, { classId: newClass.id })
+            updateArrow(firestore, dispatch, mapId, element.id, { classId }, { classId: newClass.id })
         }
     }
 
@@ -43,17 +54,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
 
     if (schema?.classes === undefined) {
         console.error("No schema.classes!")
-        updateSchema(firestore, mapId, "classes", [])
-    }
-
-    const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
-    const theClass = elementType === "class" ?
-        element :
-        classId && schema?.classes?.find(
-            (cls: Class) => cls.id === classId
-        )
-    if (elementType === "node" && classId && !theClass) {
-        console.error(`Missing class with ID ${classId}`)
+        updateSchema(firestore, dispatch, mapId, "classes", schema, [])
     }
 
     return (

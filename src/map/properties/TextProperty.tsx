@@ -1,6 +1,7 @@
 import { ActionIcon, Textarea } from "@mantine/core"
 import { IconHeading, IconLetterCase } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
+import { useAppDispatch } from "../../app/hooks"
 import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { elementHasTitle, getAbstractProperty, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
@@ -20,6 +21,7 @@ interface TextPropertyProps {
 export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
     const { element, elementType } = useElement()
     const firestore = useFirestore()
+    const dispatch = useAppDispatch()
     const mapId = useMapId()
     const abstractProperties = useAbstractProperties()
     const hasTitle = element && abstractProperties && elementHasTitle(element, abstractProperties)
@@ -49,7 +51,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                         // move to be first, and make it a title
                         const filteredProps = element?.properties.filter(prop => prop.id !== property?.id)
                         filteredProps &&
-                            updateElementProperties(firestore, mapId, element.id, elementType, [
+                            updateElementProperties(firestore, dispatch, mapId, element.id, elementType, element.properties, [
                                 {
                                     ...property,
                                     abstractPropertyId: "title",
@@ -74,7 +76,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                         if (!element?.id || !property) {
                             return
                         }
-                        updateElementProperties(firestore, mapId, element.id, elementType,
+                        updateElementProperties(firestore, dispatch, mapId, element.id, elementType, element.properties,
                             element.properties.map(prop => getAbstractProperty(prop, abstractProperties)?.type === "title" ?
                                 {
                                     ...prop,

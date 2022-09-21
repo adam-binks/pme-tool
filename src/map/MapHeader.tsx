@@ -1,10 +1,12 @@
+import { ActionIcon, CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
+import { IconCornerUpLeft, IconCornerUpRight } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
-import { useAppDispatch } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { Map } from "../app/schema"
+import { redo, undo } from "../reducers/historyReducer"
 import { renameMap } from "../reducers/mapFunctions"
 import { closePane } from "../reducers/paneReducer"
-import { Map } from "../app/schema"
 import styles from "./MapHeader.module.css"
-import { CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
 
 interface MapHeaderProps {
     map: Map
@@ -14,6 +16,8 @@ interface MapHeaderProps {
 export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
+
+    const history = useAppSelector(state => state.history[map.id])
 
     return (
         <Paper
@@ -30,11 +34,29 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
                     value={map.name}
                     variant="filled"
                     size="md"
-                    onChange={(e) => renameMap(firestore, map.id, e.target.value)}
+                    onChange={(e) => renameMap(firestore, dispatch, map.id, map.name, e.target.value)}
                 />
                 <Text size="xs" color="dimmed">
                     Map ID: {map.id}
                 </Text>
+                <Group>
+                    <ActionIcon
+                        title="Undo"
+                        size="lg"
+                        onClick={() => dispatch(undo(map.id))}
+                        disabled={!history || (history.undo.length === 0)}
+                    >
+                        <IconCornerUpLeft />
+                    </ActionIcon>
+                    <ActionIcon
+                        title="Redo"
+                        size="lg"
+                        onClick={() => dispatch(redo(map.id))}
+                        disabled={!history || (history.redo.length === 0)}
+                    >
+                        <IconCornerUpRight />
+                    </ActionIcon>
+                </Group>
                 <CloseButton
                     title="Close map"
                     onClick={() => dispatch(closePane(paneIndex))}
