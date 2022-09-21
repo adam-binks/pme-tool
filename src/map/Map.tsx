@@ -40,8 +40,6 @@ export default function Map({ mapId, paneIndex }: MapProps) {
 
     const [selection, setSelection] = useState<Selection>(emptySelection)
 
-    const updateXArrow = useXarrow()
-
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )

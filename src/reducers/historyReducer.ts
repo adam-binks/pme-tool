@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Command } from "../etc/firestoreHistory"
+import { last } from "../etc/helpers"
 
 interface HistorySliceState {
     [mapId: string]: {
@@ -9,20 +10,44 @@ interface HistorySliceState {
 }
 const initialState: HistorySliceState = {}
 
+function rollupDebouncedCommand(commands: Command[], prevCommands: Command[]) {
+    const prev = prevCommands && prevCommands[0]
+    const command = commands[0]
+    if (command.debounce && prev?.debounce 
+            && commands.length === 1 && prevCommands.length === 1
+            && command.debounce.target === prev.debounce.target
+            && command.debounce.timestamp.getTime() - prev.debounce.timestamp.getTime() < prev.debounce.intervalMs
+    ) {
+        // use the new command's action for redoing, but keep the old opposite so you can undo in one step
+        prev.act = command.act
+        return true
+    } else {
+        return false
+    }
+}
+
 export const historySlice = createSlice({
     name: 'history',
     initialState: initialState,
     reducers: {
-        addToUndoAndClearRedo: (state, action: PayloadAction<{mapId: string, commands: Command[]}>) => {
-            if (!state[action.payload.mapId]) {
-                state[action.payload.mapId] = {
+        addToUndoAndClearRedo: (state, action: PayloadAction<{ mapId: string, commands: Command[] }>) => {
+            const { mapId, commands } = action.payload
+
+            if (!state[mapId]) {
+                state[mapId] = {
                     undo: [],
                     redo: [],
                 }
             }
 
-            state[action.payload.mapId].undo.push(action.payload.commands)
-            state[action.payload.mapId].redo = []
+            const history = state[mapId]
+
+            if (!rollupDebouncedCommand(commands, last(history.undo))) {
+                console.log("pushed")
+                history.undo.push(action.payload.commands)
+            }
+
+            history.redo = []
         },
 
         undo: (state, action: PayloadAction<string>) => {

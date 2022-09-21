@@ -4,10 +4,19 @@ import { addToUndoAndClearRedo } from "../reducers/historyReducer";
 export interface Command {
     act: () => {}
     opposite: () => {} | void
+    debounce?: CommandDebounce
 }
-export function enact(dispatch: any, mapId: string, command: Command) {
-    dispatch(addToUndoAndClearRedo({ mapId, commands: [command] }))
-    command.act()
+export interface CommandDebounce {
+    target: string
+    intervalMs: number
+    timestamp: Date
+}
+
+export function enact(dispatch: any, mapId: string, command: Command, debounce?: CommandDebounce) {
+    if (debounce) {
+        command.debounce = debounce
+    }
+    enactAll(dispatch, mapId, [command])
 }
 
 export function enactAll(dispatch: any, mapId: string, commands: Command[]) {

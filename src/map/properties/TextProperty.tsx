@@ -4,6 +4,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
+import { CommandDebounce } from "../../etc/firestoreHistory"
 import { elementHasTitle, getAbstractProperty, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
 import { textUntitled } from "./globalProperties"
@@ -15,7 +16,7 @@ import { PropertyLabel } from "./PropertyLabel"
 interface TextPropertyProps {
     property: Property | undefined  // passed only if this is on a map node
     abstractProperty: AbstractProperty
-    updatePropertyValue: (property: Property, newValue: any) => void
+    updatePropertyValue: (property: Property, newValue: any, debounce?: CommandDebounce) => void
     textStyle: "text" | "title" | "text_untitled"
 }
 export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
@@ -34,7 +35,11 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     )
 
     const batchedTextInput = useBatchedTextInput(property?.value,
-        (newValue) => property && updatePropertyValue(property, newValue)
+        (newValue) => property && updatePropertyValue(property, newValue, {
+            target: `${property.id}-text-update`,
+            intervalMs: 2000,
+            timestamp: new Date(),
+        })
     )
 
     return (

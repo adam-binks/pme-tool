@@ -1,7 +1,7 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
 import { useAppSelector } from "../app/hooks"
 import { AbstractProperty, Arrow, Class, Element, elementType, Map, Node, Property } from "../app/schema"
-import { add, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
+import { add, CommandDebounce, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
 import { useMapId } from "../map/Map"
 import { globalProperties, textUntitled } from "../map/properties/globalProperties"
@@ -64,12 +64,13 @@ export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: No
 // if two users change diff properties on the same node simultaneously, one might overwrite the others' changes
 // I might fix this later (by moving to subcollections), but for now this is worth the save in dev time
 // this function is redundant with updateNode but we use it to make that refactoring easier
-export function updateNodeProperties(firestore: fs, dispatch: any, mapId: string, nodeId: string, currentProperties: Property[], newProperties: Property[]) {
+export function updateNodeProperties(firestore: fs, dispatch: any, mapId: string, nodeId: string,
+    currentProperties: Property[], newProperties: Property[], debounce?: CommandDebounce) {
     enact(dispatch, mapId, update(firestore,
         `maps/${mapId}/nodes/${nodeId}`,
         { properties: currentProperties },
         { properties: newProperties }
-    ))
+    ), debounce)
 }
 
 export function updateElementProperties(firestore: fs, dispatch: any, mapId: string, elementId: string,

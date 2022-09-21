@@ -4,6 +4,7 @@ import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AbstractProperty, Class, Node as NodeType, Property } from "../../app/schema";
+import { CommandDebounce } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
@@ -62,11 +63,11 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
     const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
 
 
-    const updatePropertyValue = (property: Property, newValue: any) => {
+    const updatePropertyValue = (property: Property, newValue: any, debounce?: CommandDebounce) => {
         node && updateNodeProperties(firestore, dispatch, mapId, node.id, node.properties,
             node.properties.map(existingProp => existingProp === property ?
                 { ...existingProp, value: newValue } : existingProp
-            )
+            ), debounce
         )
     }
 
