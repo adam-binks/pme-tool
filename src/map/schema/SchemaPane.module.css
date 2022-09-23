@@ -3,3 +3,13 @@
     width: 250px;
     z-index: 1; /* pop over arrows */
 }
+
+.PropertySuggestionsCard {
+    opacity: 1;
+    transition: all 0.2s ease-out;
+    background-color: rgb(249, 249, 249);
+}
+
+.PropertySuggestionsCard:hover {
+    opacity: 1;
+}

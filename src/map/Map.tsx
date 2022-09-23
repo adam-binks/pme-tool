@@ -4,7 +4,6 @@ import { useMouse } from "@mantine/hooks";
 import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
-import { useXarrow } from "react-xarrows";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
@@ -13,6 +12,7 @@ import { Pane, setAddingArrowFrom } from "../reducers/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
 import styles from './Map.module.css';
 import MapHeader from "./MapHeader";
+import { useMapHotkeys } from "./mapHotkeys";
 import { MouseFollower } from "./node/MouseFollower";
 import NodeComponent from "./node/Node";
 import { SchemaPane } from "./schema/SchemaPane";
@@ -43,6 +43,8 @@ export default function Map({ mapId, paneIndex }: MapProps) {
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
+
+    const hotkeysRef = useMapHotkeys(map?.id)
 
     const mapHeaderDivRef = useRef<HTMLDivElement>(null)
 
@@ -108,7 +110,8 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                 <div
                     className={styles.Map}
                     onDoubleClick={(e) => createNodeAtLocation(e)}
-                    ref={(el) => drop(el) && mouseRef}
+                    ref={(el) => drop(el) && mouseRef && hotkeysRef}
+                    tabIndex={-1} // make this focusable, so scoped hotkeys work
                 >
                     <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
 

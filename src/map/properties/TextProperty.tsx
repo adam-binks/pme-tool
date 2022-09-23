@@ -5,7 +5,8 @@ import { useAppDispatch } from "../../app/hooks"
 import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { CommandDebounce } from "../../etc/firestoreHistory"
-import { elementHasTitle, getAbstractProperty, updateElementProperties, useAbstractProperties, useElement } from "../../reducers/mapFunctions"
+import { updateElementProperties } from "../../reducers/mapFunctions"
+import { elementHasTitle, getAbstractProperty, useAllAbstractProperties, useElement } from "../../reducers/mapSelectors"
 import { useMapId } from "../Map"
 import { textUntitled } from "./globalProperties"
 import styles from "./Property.module.css"
@@ -24,7 +25,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
-    const abstractProperties = useAbstractProperties()
+    const abstractProperties = useAllAbstractProperties()
     const hasTitle = element && abstractProperties && elementHasTitle(element, abstractProperties)
 
     const label = (textStyle !== "text_untitled" && textStyle !== "title") && (
@@ -43,10 +44,10 @@ export default function TextProperty({ property, abstractProperty, updatePropert
     )
 
     return (
-        <div className="doNotPan" style={{position: "relative"}}>
+        <>
             <PropertyControls abstractProperty={abstractProperty} property={property} mt={label ? undefined : 7} />
             {
-                !hasTitle && <ActionIcon
+                element && !hasTitle && <ActionIcon
                     className={styles.propertyOverflowButton}
                     title="Transform into heading"
                     onClick={() => {
@@ -112,10 +113,11 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 variant="filled"
                 placeholder={abstractProperty.name}
                 autosize
+                autoFocus={textStyle === "text_untitled"}
                 maxRows={8}
                 disabled={property === undefined}
                 {...batchedTextInput}
             />
-        </div>
+        </>
     )
 }

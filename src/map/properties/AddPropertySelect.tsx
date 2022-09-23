@@ -2,16 +2,17 @@ import { Select, SelectProps } from "@mantine/core";
 import { useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { AbstractProperty, defaultPropertyValueByType, Node, PropertyType } from "../../app/schema";
-import { generateId } from "../../etc/helpers";
-import { elementHasTitle, updateNodeProperties, updateSchema } from "../../reducers/mapFunctions";
+import { AbstractProperty, Element, PropertyType } from "../../app/schema";
+import { enact, enactAll } from "../../etc/firestoreHistory";
+import { addPropertyToElementCommand, createNewPropertyAndAddToElementCommands } from "../../reducers/mapFunctions";
+import { elementHasTitle } from "../../reducers/mapSelectors";
 import { useMapId } from "../Map";
 import styles from './Property.module.css';
 
 interface AddPropertySelectProps {
-    node: Node
+    element: Element
 }
-export function AddPropertySelect({ node }: AddPropertySelectProps) {
+export function AddPropertySelect({ element }: AddPropertySelectProps) {
     const mapId = useMapId()
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
@@ -19,36 +20,6 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     const [isCreatingNewProperty, setIsCreatingNewProperty] = useState("")
 
     const schema = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
-
-    const createAbstractProperty = (newProperty: AbstractProperty) => {
-        updateSchema(firestore, dispatch, mapId, "properties", schema?.properties ? schema.properties : [],
-            [...(schema?.properties ? schema.properties : []), newProperty]
-        )
-    }
-
-    const createNewPropertyAndAddToNode = (name: string, type: PropertyType) => {
-        const abstractProperty = {
-            id: generateId(),
-            name,
-            type
-        }
-        createAbstractProperty(abstractProperty)
-        addPropertyToNode(abstractProperty)
-    }
-
-    const addPropertyToNode = (abstractProperty: AbstractProperty) => {
-        const newProperty = {
-            id: generateId(),
-            abstractPropertyId: abstractProperty.id,
-            value: defaultPropertyValueByType[abstractProperty.type]
-        }
-
-        updateNodeProperties(firestore, dispatch, mapId, node.id, node.properties,
-            // make the title the first property
-            abstractProperty.type === "title" ? [newProperty, ...node.properties]
-                                              : [...node.properties, newProperty]
-        )
-    }
 
     const sharedProps: Partial<SelectProps> = {
         className: `${styles.AddNewPropertySelect} doNotPan doNotZoom`,
@@ -61,7 +32,7 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
     }
 
     if (!isCreatingNewProperty) {
-        const hasTitle = schema.properties && elementHasTitle(node, schema.properties)
+        const hasTitle = schema.properties && elementHasTitle(element, schema.properties)
         return (
             <Select
                 key="Add property"
@@ -98,7 +69,9 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                             console.error(`Missing property ${property}`)
                             return
                         }
-                        addPropertyToNode(property)
+                        enact(dispatch, mapId, 
+                            addPropertyToElementCommand(firestore, mapId, element, property)
+                        )
                     }
                 }}
                 {...sharedProps}
@@ -116,7 +89,10 @@ export function AddPropertySelect({ node }: AddPropertySelectProps) {
                 data={propertyTypes}
                 onChange={(newValue) => {
                     if (newValue) {
-                        createNewPropertyAndAddToNode(isCreatingNewProperty, newValue as PropertyType)
+                        enactAll(dispatch, mapId, 
+                            createNewPropertyAndAddToElementCommands(firestore, mapId, schema, 
+                                isCreatingNewProperty, newValue as PropertyType, element)
+                        )
                         setIsCreatingNewProperty("")
                     }
                 }}

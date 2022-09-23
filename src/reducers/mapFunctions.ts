@@ -1,11 +1,8 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
-import { useAppSelector } from "../app/hooks"
-import { AbstractProperty, Arrow, Class, Element, elementType, Map, Node, Property } from "../app/schema"
+import { AbstractProperty, Arrow, Class, defaultPropertyValueByType, Element, elementType, getElementType, Map, Node, Property, PropertyType, Schema } from "../app/schema"
 import { add, CommandDebounce, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
-import { useMapId } from "../map/Map"
 import { globalProperties, textUntitled } from "../map/properties/globalProperties"
-import { useElementId } from "../map/properties/useElementId"
 
 type fs = ExtendedFirestoreInstance
 
@@ -73,17 +70,27 @@ export function updateNodeProperties(firestore: fs, dispatch: any, mapId: string
     ), debounce)
 }
 
-export function updateElementProperties(firestore: fs, dispatch: any, mapId: string, elementId: string,
+export function updateElementPropertiesCommand(firestore: fs, mapId: string, elementId: string,
     elementType: elementType, currentProperties: Property[], newProperties: Property[]) {
-    enact(dispatch, mapId, update(firestore,
+    return update(firestore,
         `maps/${mapId}/${elementType}s/${elementId}`,
         { properties: currentProperties },
         { properties: newProperties }
-    ))
+    )
+}
+
+export function updateElementProperties(firestore: fs, dispatch: any, mapId: string, elementId: string,
+    elementType: elementType, currentProperties: Property[], newProperties: Property[]) {
+    enact(dispatch, mapId, updateElementPropertiesCommand(firestore, mapId, elementId,
+        elementType, currentProperties, newProperties))
+}
+
+export function updateSchemaCommand(firestore: fs, mapId: string, pathFromSchemaRoot: string, current: unknown, value: unknown) {
+    return update(firestore, `maps/${mapId}`, { [`schema.${pathFromSchemaRoot}`]: current }, { [`schema.${pathFromSchemaRoot}`]: value })
 }
 
 export function updateSchema(firestore: fs, dispatch: any, mapId: string, pathFromSchemaRoot: string, current: unknown, value: unknown) {
-    enact(dispatch, mapId, update(firestore, `maps/${mapId}`, { [`schema.${pathFromSchemaRoot}`]: current }, { [`schema.${pathFromSchemaRoot}`]: value }))
+    enact(dispatch, mapId, updateSchemaCommand(firestore, mapId, pathFromSchemaRoot, current, value))
 }
 
 export function updateAbstractProperties(firestore: fs, dispatch: any, mapId: string, currrentAbstractProperties: AbstractProperty[], newAbstractProperties: AbstractProperty[]) {
@@ -98,12 +105,16 @@ export function updateAbstractProperty(firestore: fs, dispatch: any, mapId: stri
     ))
 }
 
-export function updateClass(firestore: fs, dispatch: any, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
-    updateSchema(firestore, dispatch, mapId, "classes", classes, classes.map(
+export function updateClassCommand(firestore: fs, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
+    return updateSchemaCommand(firestore, mapId, "classes", classes, classes.map(
         (cls) => cls.id === id ?
             { ...cls, ...changes }
             : cls
     ))
+}
+
+export function updateClass(firestore: fs, dispatch: any, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
+    enact(dispatch, mapId, updateClassCommand(firestore, mapId, classes, id, changes))
 }
 
 export function addArrow(firestore: fs, dispatch: any, mapId: string, arrow: Arrow) {
@@ -118,31 +129,45 @@ export function deleteArrowCommand(firestore: fs, mapId: string, arrow: Arrow) {
     return deleteDoc(firestore, `maps/${mapId}/arrows/${arrow.id}`, arrow)
 }
 
-export function elementHasTitle(element: Element, properties: AbstractProperty[]) {
-    const firstProp = element?.properties && element.properties[0]
-    if (!firstProp) { return false }
-    const abstractProp = properties.find(p => p.id === firstProp.abstractPropertyId)
-    return abstractProp?.type === "title"
+export function addPropertyToClassCommands(firestore: fs, mapId: string, property: AbstractProperty, classes: Class[], theClass: Class,
+    elementsOfClass: Element[]) {
+    const classCommand = updateClassCommand(firestore, mapId, classes, theClass.id, {
+        propertyIds: [...theClass.propertyIds, property.id],
+    })
+    const addPropertyCommands = elementsOfClass.map(element => addPropertyToElementCommand(firestore, mapId, element, property))
+
+    return [classCommand, ...addPropertyCommands]
 }
 
-function useGetElement(elementId: string, elementType: elementType) {
-    const mapId = useMapId()
-    return useAppSelector(state => state.firestore?.data &&
-        state.firestore.data[`${elementType}s.${mapId}`]
-        && state.firestore.data[`${elementType}s.${mapId}`][elementId]) as Element | undefined
+export function createAbstractPropertyCommand(firestore: fs, mapId: string, schema: Schema, newProperty: AbstractProperty) {
+    return updateSchemaCommand(firestore, mapId, "properties", schema?.properties ? schema.properties : [],
+        [...(schema?.properties ? schema.properties : []), newProperty]
+    )
 }
 
-export function useElement() {
-    const { elementId, elementType } = useElementId()
-    return { element: useGetElement(elementId, elementType), elementType }
+export function createNewPropertyAndAddToElementCommands(firestore: fs, mapId: string, schema: Schema, name: string, type: PropertyType,
+    element: Element) {
+    const abstractProperty = {
+        id: generateId(),
+        name,
+        type
+    }
+    return [
+        createAbstractPropertyCommand(firestore, mapId, schema, abstractProperty),
+        addPropertyToElementCommand(firestore, mapId, element, abstractProperty)
+    ]
 }
 
-export function useAbstractProperties() {
-    const mapId = useMapId()
-    return useAppSelector(state => state.firestore?.data?.maps &&
-        state.firestore?.data?.maps[mapId]?.schema?.properties)
-}
+export function addPropertyToElementCommand(firestore: fs, mapId: string, element: Element, abstractProperty: AbstractProperty) {
+    const newProperty: Property = {
+        id: generateId(),
+        abstractPropertyId: abstractProperty.id,
+        value: defaultPropertyValueByType[abstractProperty.type]
+    }
 
-export function getAbstractProperty(property: Property, abstractProperties: AbstractProperty[]) {
-    return abstractProperties.find((abstractProp) => abstractProp.id === property.abstractPropertyId)
+    return updateElementPropertiesCommand(firestore, mapId, element.id, getElementType(element), element.properties,
+        // make the title the first property
+        abstractProperty.type === "title" ? [newProperty, ...element.properties]
+            : [...element.properties, newProperty]
+    )
 }

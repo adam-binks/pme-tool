@@ -27,6 +27,13 @@ export interface Arrow {
 
 export type Element = Node | Arrow
 export type elementType = "node" | "arrow" | "class"
+export function getElementType(element: Element): elementType {
+    if ((element as Node).x && (element as Node).y) {
+        return "node"
+    } else {
+        return "arrow"
+    }
+}
 
 export interface Schema {
     id: string

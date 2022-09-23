@@ -31,7 +31,7 @@ export function PropertyControls({ abstractProperty, property, mt }: PropertyCon
             <Menu.Target>
                 <ActionIcon
                     className={styles.propertyOverflowButton}
-                    mx="xs"
+                    mx="5"
                     my={5}
                     style={{...(mt ? {marginTop: mt} : {}), position: "absolute", right: 0, zIndex: 2 }}
                     radius="xl"

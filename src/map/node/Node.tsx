@@ -15,6 +15,7 @@ import { AddClassSelect } from "../properties/AddClassSelect";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
 import PropertyComponent from "../properties/Property";
 import { ElementContext } from "../properties/useElementId";
+import { PropertyStack } from "../schema/PropertyStack";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
@@ -93,6 +94,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     shadow={isSelected ? "xl" : "sm"}
                     radius="md"
                     p="xs"
+                    withBorder={!isNaked}
                     className={
                         `${styles.nodeCard}
                     ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
@@ -123,7 +125,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
-                        {node && <NodeOverFlowMenu node={node} />}
+                        <NodeOverFlowMenu node={node} theClass={theClass} />
                     </Group>
 
                     <Stack spacing={5} className="doNotPan">
@@ -142,13 +144,15 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 key={abstractPropertyId}
                                 property={undefined}
                                 abstractProperty={abstractProperties.find((prop: AbstractProperty) => prop.id === abstractPropertyId)}
-                                updatePropertyValue={() => {}}
+                                updatePropertyValue={() => { }}
                             />
                         )}
                     </Stack>
 
+                    {theClass && <PropertyStack theClass={theClass} />}
+
                 </Card>
-                {node && isSelected && <AddPropertySelect node={node} />}
+                {node && isSelected && <AddPropertySelect element={node} />}
             </div>
         </ElementContext.Provider>
     )

@@ -31,7 +31,7 @@ export function useBatchedTextInput(firebaseValue: string, updateFirebaseValue: 
         },
         onBlur: () => {
             setIsFocused(false)
-            updateFirebaseValue(local)
+            if (firebaseValue !== local) updateFirebaseValue(local)
         },
         onChange: (e: React.ChangeEvent<(HTMLInputElement|HTMLTextAreaElement)>) => {
             setLocal(e.target.value)

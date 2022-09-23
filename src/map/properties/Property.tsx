@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { AbstractProperty, Property } from "../../app/schema";
 import CheckboxProperty from "./CheckboxProperty";
 import styles from "./Property.module.css";
@@ -12,7 +11,7 @@ interface PropertyProps {
 export default function PropertyComponent({ property, abstractProperty, updatePropertyValue }: PropertyProps) {
 
     if (!abstractProperty) {
-        toast.error(`Undefined prop ${property}`)
+        console.error(`Undefined prop ${property}`)
         return (<></>)
     }
 
@@ -40,7 +39,9 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
         }
 
     }
-
+    
     const propertyElement = getPropertyElement()
-    return <div className={styles.Property}>{propertyElement}</div>
+    return <div className={`${styles.Property} doNotPan`} style={{position: "relative"}}>
+        {propertyElement}
+    </div>
 }

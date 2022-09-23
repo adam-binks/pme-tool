@@ -43,7 +43,6 @@ export const historySlice = createSlice({
             const history = state[mapId]
 
             if (!rollupDebouncedCommand(commands, last(history.undo))) {
-                console.log("pushed")
                 history.undo.push(action.payload.commands)
             }
 
