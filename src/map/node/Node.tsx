@@ -10,7 +10,7 @@ import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
-import { useMapId } from "../Map";
+import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
 import PropertyComponent from "../properties/Property";
@@ -74,6 +74,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
 
     // naked nodes are styled differently
     const isNaked = node && !node.classId && node.properties?.length === 1
+    const zoomedOutMode = useZoomedOutMode() && node
 
     return (
         <ElementContext.Provider value={{ elementType: nodeElementType, elementId: id }}>
@@ -127,7 +128,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                         <NodeOverFlowMenu node={node} theClass={theClass} />
                     </Group>
 
-                    <Stack spacing={5} className="doNotPan">
+                    {!zoomedOutMode && <Stack spacing={5} className="doNotPan">
                         {node && node.properties.map(property =>
                             <PropertyComponent
                                 key={property.id}
@@ -146,7 +147,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 updatePropertyValue={() => { }}
                             />
                         )}
-                    </Stack>
+                    </Stack>}
 
                     {theClass && <PropertyStack theClass={theClass} />}
 

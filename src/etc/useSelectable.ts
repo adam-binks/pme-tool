@@ -41,8 +41,8 @@ export function useSelectable(id: string, type: "node" | "arrow" | "class") {
                         [typeIds]: [...selectionTypeIds, id]
                     })
                 }
-            } else {
-                // replace selection
+            } else if (!isSelected) {
+                // replace selection (unless this is already in the selection)
                 setSelection({...emptySelection, [typeIds]: [id] })
             }
         },
