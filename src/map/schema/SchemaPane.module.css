@@ -1,7 +1,8 @@
 .schemaPane {
     background-color: white;
-    width: 250px;
+    /* width: 370px; */
     z-index: 1; /* pop over arrows */
+    overflow-y: auto;
 }
 
 .PropertySuggestionsCard {

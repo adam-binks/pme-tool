@@ -17,6 +17,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
     const { onClickSelectable } = useSelectable(element.id, elementType)
+    const inSchema = elementType === "class"
 
     const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
     const theClass = elementType === "class" ?
@@ -77,7 +78,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                 ) : []
             }
             dropdownPosition="top"
-            style={{ position: "absolute", width: "200px" }}
+            style={inSchema ? {} : { position: "absolute", width: "200px" }}
             mt={-40}
             styles={(theme) => ({
                 input: {
