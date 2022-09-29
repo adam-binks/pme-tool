@@ -1,7 +1,7 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
-import { AbstractProperty, Arrow, Class, defaultPropertyValueByType, Element, elementType, getElementType, Map, Node, Property, PropertyType, Schema } from "../app/schema"
+import { AbstractProperty, Arrow, Class, defaultPropertyValueByType, Element, elementType, getElementType, Map, Node, Property, Schema } from "../app/schema"
 import { add, CommandDebounce, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
-import { generateId } from "../etc/helpers"
+import { deepcopy, generateId } from "../etc/helpers"
 import { globalProperties, textUntitled } from "../map/properties/globalProperties"
 
 type fs = ExtendedFirestoreInstance
@@ -26,7 +26,7 @@ export function renameMap(firestore: fs, dispatch: any, mapId: string, currentNa
     enact(dispatch, mapId, update(firestore, `maps/${mapId}`, { name: currentName }, { name: newName }))
 }
 
-export function getBlankNode(x: number, y: number): Node {
+export function getBlankNode(x: number = 0, y: number = 0): Node {
     const id = generateId()
     return {
         id,
@@ -41,12 +41,35 @@ export function getBlankNode(x: number, y: number): Node {
     }
 }
 
+export function getBlankNodeOfClass(theClass: Class, abstractProperties: AbstractProperty[]): Node {
+    return {
+        id: generateId(),
+        properties: theClass.propertyIds.map(propId => {
+            const prop = abstractProperties.find(p => p.id === propId)
+            if (!prop) console.error(`Missing property with id ${propId}`)
+            return {
+                id: generateId(),
+                abstractPropertyId: propId,
+                type: prop ? prop.type : "text",
+                value: prop ? defaultPropertyValueByType[prop.type] : undefined,
+            }
+        }),
+        classId: theClass.id,
+        x: 0,
+        y: 0,
+    }
+}
+
 export function addNode(firestore: fs, dispatch: any, mapId: string, node: Node) {
     enact(dispatch, mapId, add(firestore, `maps/${mapId}/nodes/${node.id}`, node))
 }
 
 export function updateNode(firestore: fs, dispatch: any, mapId: string, nodeId: string, current: Partial<Node>, changes: Partial<Node>) {
     enact(dispatch, mapId, update(firestore, `maps/${mapId}/nodes/${nodeId}`, current, changes))
+}
+
+export function updateElementCommand(firestore: fs, mapId: string, elementId: string, elementType: string, current: Partial<Element>, changes: Partial<Element>) {
+    return update(firestore, `maps/${mapId}/${elementType}s/${elementId}`, current, changes)
 }
 
 export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: Node, arrows: { [key: string]: Arrow }) {
@@ -106,16 +129,65 @@ export function updateAbstractProperty(firestore: fs, dispatch: any, mapId: stri
     ))
 }
 
+export function createClassCommand(firestore: fs, mapId: string, newClass: Class, classes: Class[]) {
+    return updateSchemaCommand(firestore, mapId, "classes", classes, [...classes, newClass])
+}
+
+export function addClassToElementCommands(firestore: fs, mapId: string, element: Element, newClass: Class, abstractProperties: AbstractProperty[]) {
+    const commands = []
+    let updatedProperties = deepcopy(element.properties)
+
+    // for each property on newClass, either add a new property to the node, or update an existing property
+    newClass.propertyIds.forEach(propId => {
+        if (updatedProperties.some(p => p.id === propId)) {
+            // this will rarely happen - probably just titles and text_untitled
+            return
+        }
+        const prop = abstractProperties.find(prop => prop.id === propId)
+        if (!prop) {
+            console.error(`Missing abstract property with id ${propId}`)
+            return
+        }
+
+        const matchingProp = updatedProperties.find(p => {
+            const instanceProp = abstractProperties.find(a => a.id === p.abstractPropertyId)
+            return instanceProp?.name === prop?.name && instanceProp?.type === prop?.type
+        })
+        if (matchingProp) {
+            matchingProp.abstractPropertyId = propId
+        } else {
+            updatedProperties = insertPropertyToProperties(updatedProperties, makeNewProperty(prop), prop)
+        }
+    })
+
+    commands.push(updateElementCommand(firestore, mapId, element.id, getElementType(element),
+        { classId: element.classId, properties: element.properties },
+        { classId: newClass.id, properties: updatedProperties }
+    ))
+
+    return commands
+}
+
+export function createNewClassAndAddToElementCommands(firestore: fs, mapId: string, element: Element, elementType: elementType,
+    className: string, classes: Class[], abstractProperties: AbstractProperty[]) {
+    const newClass: Class = {
+        id: generateId(),
+        name: className,
+        element: elementType,
+        propertyIds: element.properties.map(p => p.abstractPropertyId),
+    }
+    return [
+        createClassCommand(firestore, mapId, newClass, classes),
+        ...addClassToElementCommands(firestore, mapId, element, newClass, abstractProperties)
+    ]
+}
+
 export function updateClassCommand(firestore: fs, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
     return updateSchemaCommand(firestore, mapId, "classes", classes, classes.map(
         (cls) => cls.id === id ?
             { ...cls, ...changes }
             : cls
     ))
-}
-
-export function updateClass(firestore: fs, dispatch: any, mapId: string, classes: Class[], id: string, changes: Partial<Class>) {
-    enact(dispatch, mapId, updateClassCommand(firestore, mapId, classes, id, changes))
 }
 
 export function addArrow(firestore: fs, dispatch: any, mapId: string, arrow: Arrow) {
@@ -148,29 +220,32 @@ export function createAbstractPropertyCommand(firestore: fs, mapId: string, sche
     )
 }
 
-export function createNewPropertyAndAddToElementCommands(firestore: fs, mapId: string, schema: Schema, name: string, type: PropertyType,
+export function createNewPropertyAndAddToElementCommands(firestore: fs, mapId: string, schema: Schema, newProperty: AbstractProperty,
     element: Element) {
-    const abstractProperty = {
-        id: generateId(),
-        name,
-        type
-    }
     return [
-        createAbstractPropertyCommand(firestore, mapId, schema, abstractProperty),
-        addPropertyToElementCommand(firestore, mapId, element, abstractProperty)
+        createAbstractPropertyCommand(firestore, mapId, schema, newProperty),
+        addPropertyToElementCommand(firestore, mapId, element, newProperty)
     ]
 }
 
-export function addPropertyToElementCommand(firestore: fs, mapId: string, element: Element, abstractProperty: AbstractProperty) {
-    const newProperty: Property = {
+export function makeNewProperty(abstractProperty: AbstractProperty): Property {
+    return {
         id: generateId(),
         abstractPropertyId: abstractProperty.id,
         value: defaultPropertyValueByType[abstractProperty.type]
     }
+}
+
+function insertPropertyToProperties(properties: Property[], property: Property, abstractProperty: AbstractProperty) {
+    // make the title the first property
+    return abstractProperty.type === "title" ? [property, ...properties]
+        : [...properties, property]
+}
+
+export function addPropertyToElementCommand(firestore: fs, mapId: string, element: Element, abstractProperty: AbstractProperty) {
+    const newProperty = makeNewProperty(abstractProperty)
 
     return updateElementPropertiesCommand(firestore, mapId, element.id, getElementType(element), element.properties,
-        // make the title the first property
-        abstractProperty.type === "title" ? [newProperty, ...element.properties]
-            : [...element.properties, newProperty]
+        insertPropertyToProperties(element.properties, newProperty, abstractProperty)
     )
 }

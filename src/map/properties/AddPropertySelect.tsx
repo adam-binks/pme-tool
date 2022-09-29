@@ -4,6 +4,7 @@ import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AbstractProperty, Element, PropertyType } from "../../app/schema";
 import { enact, enactAll } from "../../etc/firestoreHistory";
+import { generateId } from "../../etc/helpers";
 import { addPropertyToElementCommand, createNewPropertyAndAddToElementCommands } from "../../reducers/mapFunctions";
 import { elementHasTitle } from "../../reducers/mapSelectors";
 import { useMapId } from "../Map";
@@ -42,7 +43,7 @@ export function AddPropertySelect({ element }: AddPropertySelectProps) {
                 nothingFound={"Type to name a new property"}
                 data={
                     schema?.properties ? schema?.properties.filter(
-                        (property: AbstractProperty) => 
+                        (property: AbstractProperty) =>
                             (property.type !== "text_untitled") &&
                             !(hasTitle && property.type === "title")
                     ).map(
@@ -69,7 +70,7 @@ export function AddPropertySelect({ element }: AddPropertySelectProps) {
                             console.error(`Missing property ${property}`)
                             return
                         }
-                        enact(dispatch, mapId, 
+                        enact(dispatch, mapId,
                             addPropertyToElementCommand(firestore, mapId, element, property)
                         )
                     }
@@ -89,9 +90,13 @@ export function AddPropertySelect({ element }: AddPropertySelectProps) {
                 data={propertyTypes}
                 onChange={(newValue) => {
                     if (newValue) {
-                        enactAll(dispatch, mapId, 
-                            createNewPropertyAndAddToElementCommands(firestore, mapId, schema, 
-                                isCreatingNewProperty, newValue as PropertyType, element)
+                        enactAll(dispatch, mapId,
+                            createNewPropertyAndAddToElementCommands(firestore, mapId, schema,
+                                {
+                                    id: generateId(),
+                                    name: isCreatingNewProperty,
+                                    type: newValue as PropertyType
+                                }, element)
                         )
                         setIsCreatingNewProperty("")
                     }

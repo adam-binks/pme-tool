@@ -56,7 +56,7 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
                     title="Add to everything of this type"
                     size="sm"
                     onClick={() => enactAll(dispatch, mapId, addPropertyToClassCommands(firestore, mapId, property, classes, 
-                            theClass, elementsOfClass))} //todo
+                            theClass, elementsOfClass))}
                 >
                     <IconPlus />
                 </ActionIcon>

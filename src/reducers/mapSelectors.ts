@@ -30,7 +30,7 @@ export function useNodesWithClass(classId: string, selector: (nodesOfClass: any)
 
 export function useMap(selector: (map: any) => any) {
     const mapId = useMapId()
-    return useFirestoreData(state => state?.maps[mapId] && selector(state.maps[mapId]))
+    return useFirestoreData(state => state?.maps && state.maps[mapId] && selector(state.maps[mapId]))
 }
 
 export function useSchema(selector: (schema: any) => any) {

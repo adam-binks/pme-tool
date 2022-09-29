@@ -10,4 +10,8 @@ export function last<x>(arr: x[]) {
 export function forceCast<T>(input: any): T {
     // @ts-ignore
     return input
-  }
+}
+
+export function deepcopy<T>(input: T) : T {
+    return JSON.parse(JSON.stringify(input))
+}

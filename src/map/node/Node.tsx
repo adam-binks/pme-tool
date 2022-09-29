@@ -9,7 +9,6 @@ import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
-import { useArrows } from "../../reducers/mapSelectors";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { useMapId } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
@@ -30,8 +29,6 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
-
-    const arrows = useArrows(arrows => arrows)
 
     const nodeElementType = (node && "node") || "class"
     const id = (node && node.id) || (theClass && theClass.id) || ""

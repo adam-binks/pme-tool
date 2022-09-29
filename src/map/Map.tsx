@@ -5,9 +5,10 @@ import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { Class, Node } from "../app/schema";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
-import { addNode, getBlankNode, updateNode } from "../reducers/mapFunctions";
+import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../reducers/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../reducers/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
 import styles from './Map.module.css';
@@ -73,22 +74,33 @@ export default function Map({ mapId, paneIndex }: MapProps) {
         }
     }
 
-    const createNodeAtLocation = (e: React.MouseEvent) => {
-        const { x, y } = screenCoordsToMapCoords(e.clientX, e.clientY)
+    const createNodeAtLocation = ({clientX, clientY}: {clientX: number, clientY: number}, node?: Node) => {
+        const { x, y } = screenCoordsToMapCoords(clientX, clientY)
         const offset = { x: -20, y: -50 } // to correct for naked nodes
-        const blankNode = getBlankNode(x + offset.x, y + offset.y)
-        addNode(firestore, dispatch, mapId, blankNode)
+        node = node || getBlankNode(x + offset.x, y + offset.y)
+        node.x = x + offset.x
+        node.y = y + offset.y
+        addNode(firestore, dispatch, mapId, node)
     }
 
     const [, drop] = useDrop(
         () => ({
-            accept: ItemTypes.NODE,
+            accept: [ItemTypes.NODE, ItemTypes.SCHEMA_NODE],
             drop(item: DragItem, monitor) {
-                const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-                // correct for canvas zoom
-                const x = Math.round(item.x + (delta.x / zoomLevel))
-                const y = Math.round(item.y + (delta.y / zoomLevel))
-                updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
+                if (monitor.getItemType() === ItemTypes.NODE) {
+                    const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+                    // correct for canvas zoom
+                    const x = Math.round(item.x + (delta.x / zoomLevel))
+                    const y = Math.round(item.y + (delta.y / zoomLevel))
+                    updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
+                }
+                if (monitor.getItemType() === ItemTypes.SCHEMA_NODE) {
+                    const theClass = map?.schema?.classes.find((c: Class) => c.id === item.id)
+                    const node = theClass && map?.schema?.properties && getBlankNodeOfClass(theClass, map?.schema?.properties)
+
+                    const coords = monitor.getClientOffset()
+                    coords && node && createNodeAtLocation({clientX: coords.x, clientY: coords.y}, node)
+                }
 
                 return undefined
             },
