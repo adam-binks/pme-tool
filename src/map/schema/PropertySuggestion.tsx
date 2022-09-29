@@ -1,6 +1,5 @@
 import { ActionIcon, Card, Group } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
-import { useRef } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch } from "../../app/hooks";
 import { AbstractProperty, Class, Element } from "../../app/schema";
@@ -17,15 +16,15 @@ interface PropertySuggestionProps {
     collapsed: boolean
     index: number
     elementsOfClass: Element[]
+    topOfStackRef: React.RefObject<HTMLDivElement>
 }
-export function PropertySuggestion({ theClass, property, collapsed, index, elementsOfClass }: PropertySuggestionProps) {
+export function PropertySuggestion({ theClass, property, collapsed, index, elementsOfClass, topOfStackRef }: PropertySuggestionProps) {
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
     const classes = useSchema((schema) => schema.classes)
     
-    const ref = useRef<HTMLDivElement>(null)
-    const height = collapsed && ref.current?.getBoundingClientRect()?.height
+    const height = collapsed && topOfStackRef?.current?.getBoundingClientRect()?.height
     const marginTop = (collapsed && height && index > 0) ? 5 - height : 0
     
     return (
@@ -34,11 +33,16 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
             shadow="xs"
             className={styles.PropertySuggestionsCard}
             withBorder
-            ref={ref}
+            {...index === 0 ? {ref: topOfStackRef} : {} }
             mt={marginTop}
             style={{
                 zIndex: 50 - index, // make the low index items show on top of the others
-                ...(collapsed ? {transform: `scale(${1 - 0.02 * index})`} : {transform: "scale(1)"}),
+                ...(collapsed ? {
+                    transform: `scale(${1 - 0.02 * index})`,
+                    height: topOfStackRef?.current?.getBoundingClientRect().height
+                } : {
+                    transform: "scale(1)"
+                }),
             }}
         >
             <Group noWrap>

@@ -1,4 +1,4 @@
-import { Paper, Stack, Title } from "@mantine/core"
+import { Paper, ScrollArea, Stack, Title } from "@mantine/core"
 import { MouseEvent, useEffect } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
@@ -27,7 +27,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             )
             if (missingGlobalProperties.length > 0) {
                 console.log("Adding missing global properties ", missingGlobalProperties)
-                updateAbstractProperties(firestore, dispatch, mapId, schema.properties, 
+                updateAbstractProperties(firestore, dispatch, mapId, schema.properties,
                     [...missingGlobalProperties, ...schema.properties])
             }
         }
@@ -42,28 +42,29 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     }
 
     return (
-        <Paper
-            className={styles.schemaPane}
-            p="md"
-            radius={0}
-            shadow={"lg"}
-            onClick={(e: MouseEvent) => {
-                setSelection(emptySelection)
-                e.stopPropagation()
-            }}
-        >
-            <Stack>
-                <Title order={3}>Schema</Title>
+        <ScrollArea style={{ height: "300px" }}>
+            <Paper
+                className={styles.schemaPane}
+                p="md"
+                radius={0}
+                shadow={"lg"}
+                onClick={(e: MouseEvent) => {
+                    setSelection(emptySelection)
+                    e.stopPropagation()
+                }}
+            >
+                <Stack>
+                    <Title order={3}>Schema</Title>
 
-                <Title order={5}>Node types</Title>
+                    <Title order={5}>Node types</Title>
 
-                <Stack mt={30} spacing={50}>
-                    {schema.classes && schema.classes.map(
-                        (theClass) => <Node key={theClass.id} inSchema={true} theClass={theClass} />
-                    )}
-                </Stack>
+                    <Stack mt={30} spacing={50}>
+                        {schema.classes && schema.classes.map(
+                            (theClass) => <Node key={theClass.id} inSchema={true} theClass={theClass} />
+                        )}
+                    </Stack>
 
-                {/* <Title order={5}>Headless properties</Title>
+                    {/* <Title order={5}>Headless properties</Title>
 
                 {schema.properties && schema.properties.map(
                     (property) => <PropertyComponent
@@ -73,7 +74,8 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                         updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
                     />
                 )} */}
-            </Stack>
-        </Paper>
+                </Stack>
+            </Paper>
+        </ScrollArea>
     )
 }

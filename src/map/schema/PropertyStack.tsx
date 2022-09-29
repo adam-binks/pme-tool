@@ -1,5 +1,5 @@
 import { Card, Text } from "@mantine/core"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { AbstractProperty, Class, Node } from "../../app/schema"
 import { useAbstractProperties, useNodesWithClass } from "../../reducers/mapSelectors"
 import { PropertySuggestion } from "./PropertySuggestion"
@@ -12,24 +12,32 @@ export function PropertyStack({ theClass }: PropertyStackProps) {
 
     const elementsOfClass = useNodesWithClass(theClass.id, (nodesOfClass) => nodesOfClass)
     const abstractPropertyIds = new Set(elementsOfClass ? elementsOfClass.flatMap(
-        (node: Node) => { return node.properties.map(prop => prop.abstractPropertyId) }
+        (node: Node) => {
+            return node.properties.map(prop => prop.abstractPropertyId)
+                .filter(propId => !theClass.propertyIds.includes(propId))
+        }
     ) as string[] : [])
 
     const abstractProperties = useAbstractProperties(props => props.filter(
         (p: AbstractProperty) => abstractPropertyIds.has(p.id)
     ))
 
+    const topOfStackRef = useRef<HTMLDivElement>(null)
 
     if (!(abstractProperties?.length > 0)) return <></>
 
     return (
-        <Card.Section p={5}
+        <Card.Section
             onMouseEnter={() => setCollapsed(false)}
             onMouseLeave={() => setCollapsed(true)}
+            p={"xs"}
+            m={5}
+            style={{background: "#eee", borderRadius: "10px"}}
         >
-            <Text color="dimmed" align="center" size={"sm"}>Suggested properties</Text>
+            <Text color="dimmed" align="center" size={"xs"}>Add to all {theClass.name}s</Text>
             {abstractProperties.map((property: AbstractProperty, index: number) =>
                 <PropertySuggestion
+                    topOfStackRef={topOfStackRef}
                     key={property.id}
                     property={property}
                     collapsed={collapsed}

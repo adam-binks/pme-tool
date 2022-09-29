@@ -25,7 +25,7 @@ export function NodeOverFlowMenu({ node, theClass }: NodeOverFlowMenuProps) {
             <Menu.Dropdown>
                 <Menu.Item
                     onClick={() => {
-                        node && deleteNode(firestore, dispatch, mapId, node, arrows ? Object.values(arrows) : [])
+                        node && deleteNode(firestore, dispatch, mapId, node, arrows)
                         theClass && console.error("Not yet implemented")
                     }}
                     icon={<IconTrash size={14} />}>

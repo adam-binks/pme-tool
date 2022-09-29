@@ -7,6 +7,7 @@
 .PropertySuggestionsCard {
     opacity: 1;
     transition: all 0.2s ease-out;
+    transition-property: height, margin-top, transform;
     background-color: rgb(249, 249, 249);
 }
 

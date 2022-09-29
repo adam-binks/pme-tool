@@ -20,6 +20,10 @@ export function useNodes(selector: (nodes: any) => any) {
     return useElements("node", selector)
 }
 
+export function useArrows(selector: (arrows: any) => any) {
+    return useElements("arrow", selector)
+}
+
 export function useNodesWithClass(classId: string, selector: (nodesOfClass: any) => any) {
     return useNodes((nodes) => selector((Object.values(nodes) as any).filter((node: Node) => node?.classId === classId)))
 }

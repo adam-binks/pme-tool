@@ -9,6 +9,7 @@ import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../reducers/mapFunctions";
+import { useArrows } from "../../reducers/mapSelectors";
 import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer";
 import { useMapId } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
@@ -29,6 +30,8 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
+
+    const arrows = useArrows(arrows => arrows)
 
     const nodeElementType = (node && "node") || "class"
     const id = (node && node.id) || (theClass && theClass.id) || ""
@@ -91,7 +94,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                 {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
                 {node && (isSelected || node.classId) && <AddClassSelect element={node} elementType={nodeElementType} />}
                 <Card
-                    shadow={isSelected ? "xl" : "sm"}
+                    shadow={isSelected ? "xl" : "xs"}
                     radius="md"
                     p="xs"
                     withBorder={!isNaked}
@@ -121,7 +124,6 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <p className={`${styles.debugNodeText} doNotPan`}>{id}</p>
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}

@@ -77,12 +77,13 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                 ) : []
             }
             dropdownPosition="top"
-            style={{ position: "absolute" }}
+            style={{ position: "absolute", width: "200px" }}
             mt={-40}
             styles={(theme) => ({
                 input: {
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
+                    outline: `1px solid ${theme.colors["gray"][3]}`,
                 }
             })}
             pb={5}

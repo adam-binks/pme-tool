@@ -49,10 +49,11 @@ export function updateNode(firestore: fs, dispatch: any, mapId: string, nodeId: 
     enact(dispatch, mapId, update(firestore, `maps/${mapId}/nodes/${nodeId}`, current, changes))
 }
 
-export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: Node, arrows: Arrow[]) {
+export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: Node, arrows: { [key: string]: Arrow }) {
+    const arrowsList = Object.values(arrows ? arrows : {})
     enactAll(dispatch, mapId, [
         deleteDoc(firestore, `maps/${mapId}/nodes/${node.id}`, node),
-        ...arrows.filter(arrow => arrow.source === node.id || arrow.dest === node.id)
+        ...arrowsList.filter(arrow => arrow && (arrow.source === node.id || arrow.dest === node.id))
             .map(arrow => deleteArrowCommand(firestore, mapId, arrow))
     ])
 }
@@ -134,7 +135,9 @@ export function addPropertyToClassCommands(firestore: fs, mapId: string, propert
     const classCommand = updateClassCommand(firestore, mapId, classes, theClass.id, {
         propertyIds: [...theClass.propertyIds, property.id],
     })
-    const addPropertyCommands = elementsOfClass.map(element => addPropertyToElementCommand(firestore, mapId, element, property))
+    const addPropertyCommands = elementsOfClass
+        .filter(element => !element.properties.some(prop => prop.abstractPropertyId === property.id))
+        .map(element => addPropertyToElementCommand(firestore, mapId, element, property))
 
     return [classCommand, ...addPropertyCommands]
 }
