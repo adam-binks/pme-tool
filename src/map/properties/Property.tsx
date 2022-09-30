@@ -7,8 +7,9 @@ interface PropertyProps {
     property: Property | undefined  // passed only if this is on a map node
     abstractProperty: AbstractProperty
     updatePropertyValue: (property: Property, newValue: any) => void
+    zoomedOutMode?: boolean
 }
-export default function PropertyComponent({ property, abstractProperty, updatePropertyValue }: PropertyProps) {
+export default function PropertyComponent({ property, abstractProperty, updatePropertyValue, zoomedOutMode }: PropertyProps) {
 
     if (!abstractProperty) {
         console.error(`Undefined prop ${property}`)
@@ -25,6 +26,7 @@ export default function PropertyComponent({ property, abstractProperty, updatePr
                     abstractProperty={abstractProperty}
                     updatePropertyValue={updatePropertyValue}
                     textStyle={abstractProperty.type}
+                    zoomedOutMode={zoomedOutMode === true}
                 />
 
             case "checkbox":

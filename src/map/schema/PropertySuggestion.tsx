@@ -24,7 +24,7 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
     const mapId = useMapId()
     const classes = useSchema((schema) => schema.classes)
     
-    const height = collapsed && topOfStackRef?.current?.getBoundingClientRect()?.height
+    const height = collapsed && topOfStackRef?.current?.offsetHeight //.getBoundingClientRect()?.height
     const marginTop = (collapsed && height && index > 0) ? 5 - height : 0
     
     return (
@@ -37,9 +37,9 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
             mt={marginTop}
             style={{
                 zIndex: 50 - index, // make the low index items show on top of the others
-                ...(collapsed ? {
+                ...(collapsed && height ? {
                     transform: `scale(${1 - 0.02 * index})`,
-                    height: topOfStackRef?.current?.getBoundingClientRect().height
+                    height
                 } : {
                     transform: "scale(1)"
                 }),

@@ -19,15 +19,15 @@ interface TextPropertyProps {
     abstractProperty: AbstractProperty
     updatePropertyValue: (property: Property, newValue: any, debounce?: CommandDebounce) => void
     textStyle: "text" | "title" | "text_untitled"
+    zoomedOutMode: boolean
 }
-export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle }: TextPropertyProps) {
+export default function TextProperty({ property, abstractProperty, updatePropertyValue, textStyle, zoomedOutMode }: TextPropertyProps) {
     const { element, elementType } = useElement()
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
     const abstractProperties = useAllAbstractProperties()
     const hasTitle = element && abstractProperties && elementHasTitle(element, abstractProperties)
-    const arrows = useArrows((arrows) => arrows)
 
     const label = (textStyle !== "text_untitled" && textStyle !== "title") && (
         <PropertyLabel
@@ -43,6 +43,8 @@ export default function TextProperty({ property, abstractProperty, updatePropert
             timestamp: new Date(),
         })
     )
+
+    const fontScaler = zoomedOutMode ? 2 : 1
 
     return (
         <>
@@ -103,9 +105,11 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 label={label}
                 styles={{
                     input: (textStyle === "title") ? {
-                        fontSize: "105%",
+                        fontSize: `${105 * fontScaler}%`,
                         fontWeight: "bold"
-                    } : undefined,
+                    } : {
+                        fontSize: `${14 * fontScaler}px`,
+                    },
                     label: {
                         width: "95%"
                     }

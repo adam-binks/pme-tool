@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useThrottle } from "use-lodash-debounce-throttle";
 
 export function useBatchedTextInput(firebaseValue: string, updateFirebaseValue: (newValue: string) => void) {
-    const [local, setLocal] = useState("")
+    const [local, setLocal] = useState(firebaseValue)
     const [isFocused, setIsFocused] = useState(false)
     
     // TODO - update local from firebase if not edited for x seconds

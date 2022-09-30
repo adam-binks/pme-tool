@@ -74,7 +74,8 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
 
     // naked nodes are styled differently
     const isNaked = node && !node.classId && node.properties?.length === 1
-    const zoomedOutMode = useZoomedOutMode() && node
+    const zoomedOutMode = useZoomedOutMode() && node !== undefined
+    const propertiesToRender = zoomedOutMode ? [node.properties[0]] : node?.properties
 
     return (
         <ElementContext.Provider value={{ elementType: nodeElementType, elementId: id }}>
@@ -128,8 +129,8 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                         <NodeOverFlowMenu node={node} theClass={theClass} />
                     </Group>
 
-                    {!zoomedOutMode && <Stack spacing={5} className="doNotPan">
-                        {node && node.properties.map(property =>
+                    <Stack spacing={5} className="doNotPan">
+                        {propertiesToRender && propertiesToRender.map(property =>
                             <PropertyComponent
                                 key={property.id}
                                 property={property}
@@ -137,6 +138,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                     abstractProperties?.find((prop: AbstractProperty) => prop.id === property.abstractPropertyId)
                                 }
                                 updatePropertyValue={updatePropertyValue}
+                                zoomedOutMode={zoomedOutMode}
                             />
                         )}
                         {theClass && theClass.propertyIds.map(abstractPropertyId =>
@@ -145,9 +147,10 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 property={undefined}
                                 abstractProperty={abstractProperties.find((prop: AbstractProperty) => prop.id === abstractPropertyId)}
                                 updatePropertyValue={() => { }}
+                                zoomedOutMode={false}
                             />
                         )}
-                    </Stack>}
+                    </Stack>
 
                     {theClass && <PropertyStack theClass={theClass} />}
 
