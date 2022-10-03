@@ -5,8 +5,8 @@ import 'firebase/compat/firestore';
 import 'firebase/database';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer, FirestoreReducer, reduxFirestore } from 'redux-firestore';
-import historyReducer from '../reducers/historyReducer';
-import paneReducer from '../reducers/paneReducer';
+import historyReducer from '../state/historyReducer';
+import paneReducer from '../state/paneReducer';
 import { firebaseConfig } from './firebase';
 import { FirebaseSchema } from './schema';
 

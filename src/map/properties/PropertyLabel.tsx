@@ -4,7 +4,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { AbstractProperty } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
-import { updateAbstractProperty } from "../../reducers/mapFunctions"
+import { updateAbstractProperty } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface PropertyLabelProps {

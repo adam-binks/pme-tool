@@ -1,6 +1,6 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { useAppDispatch } from "../app/hooks";
-import { redo, undo } from "../reducers/historyReducer";
+import { redo, undo } from "../state/historyReducer";
 
 function addCmd(hotkeys: string[]) {
     const hotkeysWithCmd = hotkeys.filter(hotkey => hotkey.includes("ctrl"))

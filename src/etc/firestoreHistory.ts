@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase";
-import { addToUndoAndClearRedo } from "../reducers/historyReducer";
+import { addToUndoAndClearRedo } from "../state/historyReducer";
 
 export interface Command {
     act: () => {}

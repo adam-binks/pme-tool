@@ -3,7 +3,7 @@ import { IconDots, IconTrash } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Class, Node } from "../../app/schema"
-import { deleteNode } from "../../reducers/mapFunctions"
+import { deleteNode } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface NodeOverFlowMenuProps {

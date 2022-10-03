@@ -3,9 +3,9 @@ import { IconCornerUpLeft, IconCornerUpRight } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { Map } from "../app/schema"
-import { redo, undo } from "../reducers/historyReducer"
-import { renameMap } from "../reducers/mapFunctions"
-import { closePane } from "../reducers/paneReducer"
+import { redo, undo } from "../state/historyReducer"
+import { renameMap } from "../state/mapFunctions"
+import { closePane } from "../state/paneReducer"
 import styles from "./MapHeader.module.css"
 
 interface MapHeaderProps {

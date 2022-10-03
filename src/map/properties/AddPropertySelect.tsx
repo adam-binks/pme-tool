@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AbstractProperty, Element, PropertyType } from "../../app/schema";
 import { enact, enactAll } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
-import { addPropertyToElementCommand, createNewPropertyAndAddToElementCommands } from "../../reducers/mapFunctions";
-import { elementHasTitle } from "../../reducers/mapSelectors";
+import { addPropertyToElementCommand, createNewPropertyAndAddToElementCommands } from "../../state/mapFunctions";
+import { elementHasTitle } from "../../state/mapSelectors";
 import { useMapId } from "../Map";
 import styles from './Property.module.css';
 

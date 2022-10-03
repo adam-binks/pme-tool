@@ -1,7 +1,7 @@
 import { Card, Text } from "@mantine/core"
 import { useRef, useState } from "react"
 import { AbstractProperty, Class, Node } from "../../app/schema"
-import { useAbstractProperties, useNodesWithClass } from "../../reducers/mapSelectors"
+import { useAbstractProperties, useNodesWithClass } from "../../state/mapSelectors"
 import { PropertySuggestion } from "./PropertySuggestion"
 
 interface PropertyStackProps {

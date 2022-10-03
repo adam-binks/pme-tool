@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Arrow, Class, Element, elementType, Node, Schema } from "../../app/schema"
 import { enactAll } from "../../etc/firestoreHistory"
 import { useSelectable } from "../../etc/useSelectable"
-import { addClassToElementCommands, createNewClassAndAddToElementCommands, updateSchema } from "../../reducers/mapFunctions"
+import { addClassToElementCommands, createNewClassAndAddToElementCommands, updateSchema } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface AddClassSelectProps {

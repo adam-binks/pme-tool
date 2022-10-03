@@ -1,6 +1,6 @@
 import Xarrow from "react-xarrows"
 import { useAppSelector } from "../../app/hooks"
-import { Pane } from "../../reducers/paneReducer"
+import { Pane } from "../../state/paneReducer"
 import { useMapId } from "../Map"
 
 interface MouseFollowerProps {

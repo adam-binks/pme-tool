@@ -3,7 +3,7 @@ import { IconArrowNarrowRight, IconArrowRight } from "@tabler/icons"
 import { MouseEvent, useContext, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Node } from "../../app/schema"
-import { Pane, setAddingArrowFrom } from "../../reducers/paneReducer"
+import { Pane, setAddingArrowFrom } from "../../state/paneReducer"
 import { useMapId } from "../Map"
 
 interface AddArrowButtonProps {

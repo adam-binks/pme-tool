@@ -1,8 +1,8 @@
 import { Button, Group, Paper, Title } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
-import { createMap } from "../reducers/mapFunctions"
-import { openPane } from "../reducers/paneReducer"
+import { createMap } from "../state/mapFunctions"
+import { openPane } from "../state/paneReducer"
 import { useAppDispatch } from "./hooks"
 
 export default function Header() {
