@@ -10,8 +10,9 @@ import { useMapId } from "../Map"
 interface AddClassSelectProps {
     elementType: elementType
     element: Element | Class
+    zoomedOutMode?: boolean
 }
-export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
+export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClassSelectProps) {
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
@@ -33,6 +34,8 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
         console.error("No schema.classes!")
         updateSchema(firestore, dispatch, mapId, "classes", schema, [])
     }
+
+    const fontScaler = zoomedOutMode ? 2 : 1
 
     return (
         <Select
@@ -61,6 +64,7 @@ export function AddClassSelect({ elementType, element }: AddClassSelectProps) {
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
                     outline: `1px solid ${theme.colors["gray"][3]}`,
+                    fontSize: `${14 * fontScaler}px`
                 }
             })}
             pb={5}

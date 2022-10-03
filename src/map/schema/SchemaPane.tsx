@@ -8,7 +8,6 @@ import { updateAbstractProperties } from "../../reducers/mapFunctions"
 import { useMapId } from "../Map"
 import Node from "../node/Node"
 import { globalProperties } from "../properties/globalProperties"
-import PropertyComponent from "../properties/Property"
 import styles from "./SchemaPane.module.css"
 
 interface SchemaPaneProps {
@@ -45,7 +44,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     return (
         <Paper
             className={styles.schemaPane}
-            p={0}
+            p={5}
             radius={0}
             shadow={"lg"}
             onClick={(e: MouseEvent) => {
@@ -65,7 +64,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                         )}
                     </Stack>
 
-                    <Title order={5}>Headless properties</Title>
+                    {/* <Title order={5}>Headless properties</Title>
 
                     {schema.properties && schema.properties.map(
                         (property) => <PropertyComponent
@@ -74,7 +73,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                             property={undefined}
                             updatePropertyValue={() => { console.error("updatePropertyValue called on schema element") }}
                         />
-                    )}
+                    )} */}
                 </Stack>
             </ScrollArea>
         </Paper >

@@ -91,7 +91,8 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                 style={node && { left: node.x, top: node.y }}
             >
                 {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
-                {node && (isSelected || node.classId) && <AddClassSelect element={node} elementType={nodeElementType} />}
+                {node && (isSelected || node.classId) && 
+                    <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
                     radius="md"

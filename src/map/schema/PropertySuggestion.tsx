@@ -45,7 +45,7 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
                 }),
             }}
         >
-            <Group noWrap>
+            {<Group style={(index !== 0 && collapsed) ? {display: "none"} : {}} noWrap>
                 <PropertyComponent
                     property={undefined}
                     abstractProperty={property}
@@ -60,7 +60,7 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
                 >
                     <IconPlus />
                 </ActionIcon>
-            </Group>
+            </Group>}
         </Card>
     )
 }

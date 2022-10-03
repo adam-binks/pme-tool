@@ -1,6 +1,6 @@
 .schemaPane {
     background-color: white;
-    /* width: 370px; */
+    /* width: 240px; */
     z-index: 1; /* pop over arrows */
     overflow-y: auto;
 }

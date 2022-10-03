@@ -6,7 +6,7 @@ import { AbstractProperty, Property } from "../../app/schema"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { CommandDebounce } from "../../etc/firestoreHistory"
 import { updateElementProperties } from "../../reducers/mapFunctions"
-import { elementHasTitle, getAbstractProperty, useAllAbstractProperties, useArrows, useElement } from "../../reducers/mapSelectors"
+import { elementHasTitle, getAbstractProperty, useAllAbstractProperties, useElement } from "../../reducers/mapSelectors"
 import { useMapId } from "../Map"
 import { textUntitled } from "./globalProperties"
 import styles from "./Property.module.css"
@@ -44,7 +44,7 @@ export default function TextProperty({ property, abstractProperty, updatePropert
         })
     )
 
-    const fontScaler = zoomedOutMode ? 2 : 1
+    const fontScaler = element ? (zoomedOutMode ? 2 : 1) : 0.7
 
     return (
         <>
