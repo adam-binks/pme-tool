@@ -1,19 +1,19 @@
-import { Card, Group, Stack } from "@mantine/core";
+import { Card, Group } from "@mantine/core";
 import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { AbstractProperty, Class, Node as NodeType, Property } from "../../app/schema";
+import { Class, Node as NodeType, Property } from "../../app/schema";
 import { CommandDebounce } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow, updateNodeProperties } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
+import { Editor } from "../editor/Editor";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { AddPropertySelect } from "../properties/AddPropertySelect";
-import PropertyComponent from "../properties/Property";
 import { ElementContext } from "../properties/useElementId";
 import { PropertyStack } from "../schema/PropertyStack";
 import { AddArrowButton } from "./AddArrowButton";
@@ -91,8 +91,9 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                 style={node && { left: node.x, top: node.y }}
             >
                 {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
-                {node && (isSelected || node.classId) && 
+                {node && (isSelected || node.classId) &&
                     <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
+
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
                     radius="md"
@@ -111,6 +112,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 id: generateId(),
                                 source: addingArrowFrom,
                                 dest: id,
+                                content: "",
                                 properties: [],
                                 classId: null,
                             })
@@ -124,13 +126,16 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} theClass={theClass} />
                     </Group>
 
-                    <Stack spacing={5} className="doNotPan">
+                    {node && <Editor 
+                        element={node}
+                    />}
+
+                    {/* <Stack spacing={5} className="doNotPan">
                         {propertiesToRender && propertiesToRender.map(property =>
                             <PropertyComponent
                                 key={property.id}
@@ -151,7 +156,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 zoomedOutMode={false}
                             />
                         )}
-                    </Stack>
+                    </Stack> */}
 
                     {theClass && <PropertyStack theClass={theClass} />}
 

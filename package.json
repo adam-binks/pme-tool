@@ -4,9 +4,12 @@
   "homepage": "https://adambinks.me/pme-tool",
   "private": true,
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.1",
     "@emotion/react": "^11.10.0",
     "@firebase/firestore": "^3.4.11",
     "@kokarn/react-zoom-pan-pinch": "^2.1.5",
+    "@lezer/generator": "^1.1.1",
+    "@lezer/lr": "^1.2.3",
     "@mantine/core": "^5.2.7",
     "@mantine/hooks": "^5.2.7",
     "@mantine/notifications": "^5.2.7",
@@ -19,8 +22,10 @@
     "@types/node": "^17.0.35",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.5",
+    "@uiw/react-codemirror": "^4.12.4",
     "ajv": "^8.11.0",
     "assert": "^2.0.0",
+    "codemirror": "^6.0.1",
     "firebase": "^9.8.4",
     "gh-pages": "^4.0.0",
     "lodash": "^4.17.21",
@@ -68,5 +73,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.18",
+    "tailwindcss": "^3.2.1"
   }
 }

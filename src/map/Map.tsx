@@ -162,6 +162,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                     velocityDisabled: true
                                 }}
                                 wheel={{
+                                    wheelDisabled: true,
                                     excluded: [
                                         "doNotZoom",
                                         "mantine-Select-dropdown",

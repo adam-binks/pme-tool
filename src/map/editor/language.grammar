@@ -1,0 +1,32 @@
+@top Content { expression* }
+
+expression {
+    Property
+}
+
+Property {
+    "::" PropertyName "::" PropertyValue
+}
+
+PropertyValue {
+    BooleanValue
+}
+
+BooleanValue {
+    True | False
+}
+
+True {
+    "true" | "yes" | "on" | "T" | "Y"
+}
+
+False {
+    "false" | "no" | "off" | "F" | "N"
+}
+
+@tokens {
+    PropertyName { $[a-zA-Z_0-9]+ }
+    space { $[ \t\n\r]+ }
+}
+
+@skip { space }

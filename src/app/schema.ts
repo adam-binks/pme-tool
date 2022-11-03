@@ -12,6 +12,7 @@ export interface Map {
 export interface Node {
     id: string
     classId: string | null
+    content:  string
     properties: Property[]
     x: number
     y: number
@@ -19,6 +20,7 @@ export interface Node {
 
 export interface Arrow {
     id: string
+    content: string
     properties: Property[]
     source: string
     dest: string

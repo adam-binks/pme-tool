@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useThrottle } from "use-lodash-debounce-throttle";
 
-export function useBatchedTextInput(firebaseValue: string, updateFirebaseValue: (newValue: string) => void) {
+export function useBatchedTextInput(
+    firebaseValue: string,
+    updateFirebaseValue: (newValue: string) => void,
+    onChangeFunctionUsesValue: boolean = false
+) {
     const [local, setLocal] = useState(firebaseValue)
     const [isFocused, setIsFocused] = useState(false)
-    
+
     // TODO - update local from firebase if not edited for x seconds
     // I think this method should work, not certain why it's not
-    
+
     // const [firebaseAndLocalMatchSinceChange, setFirebaseAndLocalMatchSinceChange] = useState(false)
     // if (isFocused && !firebaseAndLocalMatchSinceChange && firebaseValue === local) {
     //     setFirebaseAndLocalMatchSinceChange(true)
@@ -33,9 +37,13 @@ export function useBatchedTextInput(firebaseValue: string, updateFirebaseValue: 
             setIsFocused(false)
             if (firebaseValue !== local) updateFirebaseValue(local)
         },
-        onChange: (e: React.ChangeEvent<(HTMLInputElement|HTMLTextAreaElement)>) => {
+        onChange: (e: React.ChangeEvent<(HTMLInputElement | HTMLTextAreaElement)>) => {
             setLocal(e.target.value)
             throttledUpdateFirebaseValue(e.target.value)
+        },
+        onChangeValue: (value: string) => {
+            setLocal(value)
+            throttledUpdateFirebaseValue(value)
         },
         value: isFocused ? local : firebaseValue,
     }

@@ -30,6 +30,7 @@ export function getBlankNode(x: number = 0, y: number = 0): Node {
     const id = generateId()
     return {
         id,
+        content: "",
         properties: [{
             id: generateId(),
             abstractPropertyId: textUntitled,
@@ -44,6 +45,7 @@ export function getBlankNode(x: number = 0, y: number = 0): Node {
 export function getBlankNodeOfClass(theClass: Class, abstractProperties: AbstractProperty[]): Node {
     return {
         id: generateId(),
+        content: "",
         properties: theClass.propertyIds.map(propId => {
             const prop = abstractProperties.find(p => p.id === propId)
             if (!prop) console.error(`Missing property with id ${propId}`)
