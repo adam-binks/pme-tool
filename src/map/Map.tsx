@@ -158,6 +158,9 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                         "mantine-Select-item",
                                         "mantine-Group-root",
                                         "mantine-Stack-root",
+                                        "cm-editor",
+                                        "cm-content",
+                                        "cm-line",
                                     ],
                                     velocityDisabled: true
                                 }}

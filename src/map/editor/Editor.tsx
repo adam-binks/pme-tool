@@ -1,4 +1,3 @@
-import { javascript } from '@codemirror/lang-javascript';
 import { Extension } from "@codemirror/state";
 import CodeMirror from "@uiw/react-codemirror";
 import { EditorView } from "codemirror";
@@ -10,6 +9,8 @@ import { enact } from "../../etc/firestoreHistory";
 import { updateElementCommand } from "../../state/mapFunctions";
 import { useMapId } from "../Map";
 import { checkboxPlugin } from './checkbox';
+import { pmelang } from './language';
+import { highlighting } from "./syntaxHighlighting";
 
 
 
@@ -21,8 +22,9 @@ const extensions: Extension[] = [
         }
     }),
     EditorView.lineWrapping,
-    javascript(),
     checkboxPlugin,
+    pmelang(),
+    highlighting,
 ]
 
 interface EditorProps {

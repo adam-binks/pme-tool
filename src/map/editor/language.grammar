@@ -1,11 +1,21 @@
-@top Content { expression* }
+@top Content { line* }
 
-expression {
-    Property
+line {
+    Property |
+    Plaintext endline |
+    newline
+}
+
+Plaintext {
+    anything+
 }
 
 Property {
-    "::" PropertyName "::" PropertyValue
+    "=" PropertyName "=" space? PropertyValue
+}
+
+PropertyName {
+    anything+
 }
 
 PropertyValue {
@@ -13,7 +23,7 @@ PropertyValue {
 }
 
 BooleanValue {
-    True | False
+    (True | False) (space | endline)
 }
 
 True {
@@ -24,9 +34,14 @@ False {
     "false" | "no" | "off" | "F" | "N"
 }
 
-@tokens {
-    PropertyName { $[a-zA-Z_0-9]+ }
-    space { $[ \t\n\r]+ }
+endline {
+    newline | eof
 }
 
-@skip { space }
+@tokens {
+    newline { $[\r\n]+ }
+    eof { @eof }
+    anything { ![\n\r\=] }
+    space { $[\t ]+ }
+    "="
+}

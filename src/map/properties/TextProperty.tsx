@@ -121,7 +121,10 @@ export default function TextProperty({ property, abstractProperty, updatePropert
                 autoFocus={textStyle === "text_untitled"}
                 maxRows={8}
                 disabled={property === undefined}
-                {...batchedTextInput}
+                onBlur={batchedTextInput.onBlur}
+                onFocus={batchedTextInput.onFocus}
+                onChange={batchedTextInput.onChange}
+                value={batchedTextInput.value}
             />
         </>
     )

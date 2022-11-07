@@ -51,11 +51,9 @@ function checkboxes(view: EditorView) {
         syntaxTree(view.state).iterate({
             from, to,
             enter: (node) => {
-                if (node.name == "BooleanLiteral") {
-                    let isTrue = view.state.doc.sliceString(node.from, node.to) == "true"
+                if (node.name === "True" || node.name === "False") {
                     let deco = Decoration.replace({
-                        widget: new CheckboxWidget(isTrue),
-
+                        widget: new CheckboxWidget(node.name === "True"),
                     })
                     widgets.push(deco.range(node.from, node.to))
                 }

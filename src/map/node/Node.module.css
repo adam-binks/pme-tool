@@ -24,7 +24,7 @@
 }
 
 .nodeWrapper:hover {
-    transform: scale(1.01, 1.01)
+    /* transform: scale(1.01, 1.01) */
 }
 
 .inSchema .addClassSelect .mantine-Select-input {
@@ -56,7 +56,7 @@
 }
 
 .nodeWrapper.isSelected {
-    transform: scale(1.03, 1.03);
+    /* transform: scale(1.03, 1.03); */
 }
 
 

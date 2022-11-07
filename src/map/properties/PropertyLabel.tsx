@@ -36,7 +36,10 @@ export function PropertyLabel({ abstractProperty, labelProps }: PropertyLabelPro
             // onChange={(e) => updateAbstractProperty(firestore, mapId, abstractProperties,
             //      abstractProperty.id, { name: e.target.value })}
             {...labelProps}
-            {...batchedTextInput}
+            onBlur={batchedTextInput.onBlur}
+            onFocus={batchedTextInput.onFocus}
+            onChange={batchedTextInput.onChange}
+            value={batchedTextInput.value}
         />
     )
 }
