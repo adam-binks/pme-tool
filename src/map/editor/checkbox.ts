@@ -52,10 +52,13 @@ function checkboxes(view: EditorView) {
             from, to,
             enter: (node) => {
                 if (node.name === "True" || node.name === "False") {
-                    let deco = Decoration.replace({
-                        widget: new CheckboxWidget(node.name === "True"),
-                    })
-                    widgets.push(deco.range(node.from, node.to))
+                    // BooleanValue matches on endline
+                    if (node.node.parent?.name === "BooleanValue") {
+                        let deco = Decoration.replace({
+                            widget: new CheckboxWidget(node.name === "True"),
+                        })
+                        widgets.push(deco.range(node.from, node.to))
+                    }
                 }
             }
         })

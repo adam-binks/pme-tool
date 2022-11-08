@@ -27,7 +27,7 @@ export function useSelectable(id: string, type: "node" | "arrow" | "class") {
         selection,
         setSelection,
         isSelected,
-        onClickSelectable: (e: React.MouseEvent) => {
+        onMousedownSelectable: (e: React.MouseEvent) => {
             if (e.shiftKey) {
                 // toggle inclusion in selection
                 if (isSelected) {

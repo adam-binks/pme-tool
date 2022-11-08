@@ -21,11 +21,11 @@ const parserWithMetadata = parser.configure({
     ]
 })
 
-const pmeLanguage = LRLanguage.define({
+export const pmeLanguage = LRLanguage.define({
     parser: parserWithMetadata,
     languageData: {
         commentTokens: { line: ";" }
-    }
+    },
 })
 
 export function pmelang() {

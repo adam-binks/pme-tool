@@ -2,14 +2,14 @@
 import {LRParser} from "@lezer/lr"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "$OQQOPOOOOOO'#Cg'#CgO]OPO'#CeOhOPO'#C^OOOO'#Ci'#CiOmOPO'#CiOOOO'#Cf'#CfQQOPOOOOOO-E6e-E6eOuOPO'#C`O}OPO,58xOOOO'#Cv'#CvOOOO,59T,59TOOOO-E6d-E6dO!tOQO1G.dOOOO'#Cc'#CcOOOO'#Cd'#CdO!{OQO'#CbOOOO'#Ca'#CaOOOO7+$O7+$OO!SOQO7+$OOOOO,58|,58|OOOO<<Gj<<Gj",
-  stateData: "#W~ORRO^POkSO~O^POkXXlXX~O^PO~OkZOlZO~O^PORSX~OR^O~O`_Oa_Ob_Oc_Od_Oe`Of`Og`Oh`Oi`O~O_dO~P!SO_eOkZOlZO~O",
-  goto: "!rkPPlPpsy}}!R!V!]P!hPPPPPPPPPPPP!lTSOVRYRQc^RfdTb^dTa^dTTOVQVOR]VSQOVSWQXRXRTUOVQ[TRea",
-  nodeNames: "⚠ Content Property = PropertyName PropertyValue BooleanValue True False Plaintext",
-  maxTerm: 28,
+  states: "$bQQOPOOOOOO'#Cg'#CgO]OPO'#CiOhOPO'#C^OOOO'#Ci'#CiOOOO'#Cf'#CfQQOPOOOOOO-E6e-E6eOOOO'#Cm'#CmOOOO,59T,59TOmOPO'#C`OuOPO,58xOOOO-E6d-E6dO!cOQO1G.dO]OPO'#CbOOOO'#Cd'#CdOOOO'#Ce'#CeO!jOQO'#CcOOOO'#Ca'#CaOOOO7+$O7+$OOzOQO7+$OO]OPO,58|OOOO,58|,58|OOOO,58},58}OOOO<<Gj<<GjOOOO1G.h1G.h",
+  stateData: "!u~ORRO^PObSO~O^PObWOcWO~O^PO~O^PORSX~OR]O~O`^Od_Oe_Of_Og`Oh`Oi`O~O_dO~PzO_gObWOcWO~O",
+  goto: "!obPPcPgjppttx!OP!_PPP!cTSOURZRQc]RhdTb]dTa]dQUOR[USQOUUVQYeQYRRe^TTOUQXQQf^QgaRie",
+  nodeNames: "⚠ Content Property = PropertyName PropertyValue PlaintextValue BooleanValue True False",
+  maxTerm: 25,
   skippedNodes: [0],
   repeatNodeCount: 2,
-  tokenData: "'S~RlOX!yXY#OYZ#hZ]!y]^#h^p!ypq#Oq!_!y!_!`#s!`!h!y!h!i#x!i!p!y!p!q$P!q!v!y!v!w$W!w!{!y!{!|$_!|#Y!y#Y#Z$f#Z#b!y#b#c%V#c#d%d#d#h!y#h#i&P#i#m!y#m#n&j#n~!y~~&}P#OO^PR#VQ^P_QXY#]pq#]Q#bQ_QXY#]pq#]~#mQk~YZ#h]^#h~#xOR~R$POhQ^PR$WOiQ^PR$_OcQ^PR$fOdQ^PR$kP^P#T#U$nQ$qP#`#a$tQ$wP#g#h$zQ$}P#X#Y%QQ%VOeQR%[P^P#c#d%_Q%dOfQR%iQ^P#Y#Z%o#b#c%zQ%rP#Y#Z%uQ%zOgQQ&PObQR&UP^P#f#g&XQ&[P#i#j&_Q&bP#X#Y&eQ&jO`QR&oP^P#X#Y&rQ&uP#g#h&xQ&}OaQ~'SOl~",
+  tokenData: "&Y~RdOX!aXY!hYZ#QZ]!a]^#Q^p!apq!hq!_!a!_!`#]!`#Y!a#Y#Z#b#Z#b!a#b#c$T#c#d$d#d#h!a#h#i%R#i#m!a#m#n%n#n~!a~~&TR!hO^P`QR!oQ^P_QXY!upq!uQ!zQ_QXY!upq!u~#VQb~YZ#Q]^#Q~#bOR~R#iP^P`Q#T#U#lQ#oP#`#a#rQ#uP#g#h#xQ#{P#X#Y$OQ$TOgQR$[P^P`Q#c#d$_Q$dOhQR$kQ^P`Q#Y#Z$q#b#c$|Q$tP#Y#Z$wQ$|OiQQ%ROfQR%YP^P`Q#f#g%]Q%`P#i#j%cQ%fP#X#Y%iQ%nOdQR%uP^P`Q#X#Y%xQ%{P#g#h&OQ&TOeQ~&YOc~",
   tokenizers: [0, 1],
   topRules: {"Content":[0,1]},
   tokenPrec: 0

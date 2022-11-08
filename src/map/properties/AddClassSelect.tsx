@@ -17,7 +17,7 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
     const dispatch = useAppDispatch()
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
-    const { onClickSelectable } = useSelectable(element.id, elementType)
+    const { onMousedownSelectable } = useSelectable(element.id, elementType)
     const inSchema = elementType === "class"
 
     const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
@@ -93,9 +93,9 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
                     )
                 }
             }}
-            onClickCapture={(e) => {
+            onMouseDownCapture={(e) => {
                 e.stopPropagation()
-                onClickSelectable(e)
+                onMousedownSelectable(e)
             }}
             onDoubleClick={(e) => e.stopPropagation()}
         />

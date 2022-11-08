@@ -1,4 +1,6 @@
 import { Extension } from "@codemirror/state";
+import { clsx } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
 import CodeMirror from "@uiw/react-codemirror";
 import { EditorView } from "codemirror";
 import { useDispatch } from "react-redux";
@@ -9,7 +11,8 @@ import { enact } from "../../etc/firestoreHistory";
 import { updateElementCommand } from "../../state/mapFunctions";
 import { useMapId } from "../Map";
 import { checkboxPlugin } from './checkbox';
-import { pmelang } from './language';
+import { pmelang, pmeLanguage } from './language';
+import { panel } from "./panel";
 import { highlighting } from "./syntaxHighlighting";
 
 
@@ -24,7 +27,9 @@ const extensions: Extension[] = [
     EditorView.lineWrapping,
     checkboxPlugin,
     pmelang(),
+    pmeLanguage.data.of({ closeBrackets: { brackets: ["="] } }),
     highlighting,
+    panel(),
 ]
 
 interface EditorProps {
@@ -47,7 +52,7 @@ export function Editor({ element }: EditorProps) {
     return (
         <div className="pt-2">
             <CodeMirror
-                className={"doNotPan text-left"}
+                className={clsx("doNotPan text-left")}
                 extensions={extensions}
                 value={batched.value}
                 onChange={batched.onChangeValue}

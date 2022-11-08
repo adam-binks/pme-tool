@@ -13,7 +13,6 @@ import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
 import { Editor } from "../editor/Editor";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
-import { AddPropertySelect } from "../properties/AddPropertySelect";
 import { ElementContext } from "../properties/useElementId";
 import { PropertyStack } from "../schema/PropertyStack";
 import { AddArrowButton } from "./AddArrowButton";
@@ -53,7 +52,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
         [node],
     )
 
-    const { isSelected, onClickSelectable } = useSelectable(id, inSchema ? "class" : "node")
+    const { isSelected, onMousedownSelectable } = useSelectable(id, inSchema ? "class" : "node")
 
     const [isHovered, setIsHovered] = useState(false)
 
@@ -118,7 +117,7 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                             })
                             dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                         } else {
-                            onClickSelectable(e)
+                            onMousedownSelectable(e)
                         }
                         e.stopPropagation()
                     }}
@@ -135,33 +134,9 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                         element={node}
                     />}
 
-                    {/* <Stack spacing={5} className="doNotPan">
-                        {propertiesToRender && propertiesToRender.map(property =>
-                            <PropertyComponent
-                                key={property.id}
-                                property={property}
-                                abstractProperty={
-                                    abstractProperties?.find((prop: AbstractProperty) => prop.id === property.abstractPropertyId)
-                                }
-                                updatePropertyValue={updatePropertyValue}
-                                zoomedOutMode={zoomedOutMode}
-                            />
-                        )}
-                        {theClass && theClass.propertyIds.map(abstractPropertyId =>
-                            <PropertyComponent
-                                key={abstractPropertyId}
-                                property={undefined}
-                                abstractProperty={abstractProperties.find((prop: AbstractProperty) => prop.id === abstractPropertyId)}
-                                updatePropertyValue={() => { }}
-                                zoomedOutMode={false}
-                            />
-                        )}
-                    </Stack> */}
-
                     {theClass && <PropertyStack theClass={theClass} />}
 
                 </Card>
-                {node && isSelected && <AddPropertySelect element={node} />}
             </div>
         </ElementContext.Provider>
     )

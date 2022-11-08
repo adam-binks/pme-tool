@@ -139,6 +139,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                 setSelection(emptySelection);
                                 (document.activeElement as HTMLElement).blur()
                                 addingArrowFrom && dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
+                                console.log("clear!")
                             }}
                         >
                             <TransformWrapper

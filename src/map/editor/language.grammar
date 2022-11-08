@@ -2,11 +2,11 @@
 
 line {
     Property |
-    Plaintext endline |
+    plainline { plaintext endline } |
     newline
 }
 
-Plaintext {
+plaintext {
     anything+
 }
 
@@ -19,6 +19,7 @@ PropertyName {
 }
 
 PropertyValue {
+    PlaintextValue { anythingNotSpace plaintext? endline } |
     BooleanValue
 }
 
@@ -27,11 +28,11 @@ BooleanValue {
 }
 
 True {
-    "true" | "yes" | "on" | "T" | "Y"
+    "true" | "yes" | "on"
 }
 
 False {
-    "false" | "no" | "off" | "F" | "N"
+    "false" | "no" | "off"
 }
 
 endline {
@@ -42,6 +43,7 @@ endline {
     newline { $[\r\n]+ }
     eof { @eof }
     anything { ![\n\r\=] }
+    anythingNotSpace { ![\n\r\=\t ] }
     space { $[\t ]+ }
     "="
 }
