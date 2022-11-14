@@ -13,7 +13,6 @@ export interface Node {
     id: string
     classId: string | null
     content:  string
-    properties: Property[]
     x: number
     y: number
 }
@@ -21,7 +20,6 @@ export interface Node {
 export interface Arrow {
     id: string
     content: string
-    properties: Property[]
     source: string
     dest: string
     classId: string | null
@@ -39,7 +37,6 @@ export function getElementType(element: Element): elementType {
 
 export interface Schema {
     id: string
-    properties: AbstractProperty[]
     classes: Class[]
 }
 
@@ -47,14 +44,9 @@ export interface Schema {
 export interface Class {
     id: string
     name: string
-    propertyIds: string[]
+    content: string
+    propertyIds: string[] // todo remove
     element: elementType
-}
-
-export interface Property {
-    id: string
-    abstractPropertyId: string
-    value: any
 }
 
 export interface AbstractProperty {

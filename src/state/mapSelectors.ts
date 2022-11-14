@@ -1,5 +1,5 @@
 import { useAppSelector } from "../app/hooks"
-import { AbstractProperty, Element, elementType, Node, Property } from "../app/schema"
+import { AbstractProperty, Element, elementType, Node } from "../app/schema"
 import { useMapId } from "../map/Map"
 import { useElementId } from "../map/properties/useElementId"
 
@@ -41,12 +41,12 @@ export function useAbstractProperties(selector: (abstractProperties: any) => any
     return useSchema(schema => schema.properties && selector(schema.properties))
 }
 
-export function elementHasTitle(element: Element, properties: AbstractProperty[]) {
-    const firstProp = element?.properties && element.properties[0]
-    if (!firstProp) { return false }
-    const abstractProp = properties.find(p => p.id === firstProp.abstractPropertyId)
-    return abstractProp?.type === "title"
-}
+// export function elementHasTitle(element: Element, properties: AbstractProperty[]) {
+//     const firstProp = element?.properties && element.properties[0]
+//     if (!firstProp) { return false }
+//     const abstractProp = properties.find(p => p.id === firstProp.abstractPropertyId)
+//     return abstractProp?.type === "title"
+// }
 
 function useGetElement(elementId: string, elementType: elementType) {
     const mapId = useMapId()
@@ -58,12 +58,12 @@ export function useElement() {
     return { element: useGetElement(elementId, elementType), elementType }
 }
 
-export function useAllAbstractProperties() {
-    const mapId = useMapId()
-    return useAppSelector(state => state.firestore?.data?.maps &&
-        state.firestore?.data?.maps[mapId]?.schema?.properties)
-}
+// export function useAllAbstractProperties() {
+//     const mapId = useMapId()
+//     return useAppSelector(state => state.firestore?.data?.maps &&
+//         state.firestore?.data?.maps[mapId]?.schema?.properties)
+// }
 
-export function getAbstractProperty(property: Property, abstractProperties: AbstractProperty[]) {
-    return abstractProperties.find((abstractProp) => abstractProp.id === property.abstractPropertyId)
-}
+// export function getAbstractProperty(property: Property, abstractProperties: AbstractProperty[]) {
+//     return abstractProperties.find((abstractProp) => abstractProp.id === property.abstractPropertyId)
+// }

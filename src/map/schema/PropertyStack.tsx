@@ -1,6 +1,6 @@
 import { Card, Text } from "@mantine/core"
 import { useRef, useState } from "react"
-import { AbstractProperty, Class, Node } from "../../app/schema"
+import { AbstractProperty, Class } from "../../app/schema"
 import { useAbstractProperties, useNodesWithClass } from "../../state/mapSelectors"
 import { PropertySuggestion } from "./PropertySuggestion"
 
@@ -11,16 +11,16 @@ export function PropertyStack({ theClass }: PropertyStackProps) {
     const [collapsed, setCollapsed] = useState(true)
 
     const elementsOfClass = useNodesWithClass(theClass.id, (nodesOfClass) => nodesOfClass)
-    const abstractPropertyIds = new Set(elementsOfClass ? elementsOfClass.flatMap(
-        (node: Node) => {
-            return node.properties.map(prop => prop.abstractPropertyId)
-                .filter(propId => !theClass.propertyIds.includes(propId))
-        }
-    ) as string[] : [])
+    const abstractPropertyIds = new Set([])//elementsOfClass ? elementsOfClass.flatMap(
+        // (node: Node) => {
+        //     return node.properties.map(prop => prop.abstractPropertyId)
+        //         .filter(propId => !theClass.propertyIds.includes(propId))
+        // }
+    // ) as string[] : [])
 
-    const abstractProperties = useAbstractProperties(props => props.filter(
-        (p: AbstractProperty) => abstractPropertyIds.has(p.id)
-    ))
+    const abstractProperties: any = []// useAbstractProperties(props => props.filter(
+    //     (p: AbstractProperty) => abstractPropertyIds.has(p.id)
+    // ))
 
     const topOfStackRef = useRef<HTMLDivElement>(null)
 

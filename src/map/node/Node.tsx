@@ -3,14 +3,15 @@ import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Class, Node as NodeType, Property } from "../../app/schema";
-import { CommandDebounce } from "../../etc/firestoreHistory";
+import { Class, getElementType, Node as NodeType } from "../../app/schema";
+import { enact } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { addArrow, updateNodeProperties } from "../../state/mapFunctions";
+import { addArrow, updateElementCommand } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
 import { Editor } from "../editor/Editor";
+import { Property } from "../editor/expose_properties";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
@@ -20,11 +21,11 @@ import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
 interface NodeProps {
-    node?: NodeType
+    node: NodeType
     theClass?: Class
     inSchema: boolean
 }
-export default function Node({ node = undefined, theClass = undefined, inSchema }: NodeProps) {
+export default function Node({ node, theClass = undefined, inSchema }: NodeProps) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
@@ -60,21 +61,15 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
 
-    const abstractProperties = useAppSelector(state => state.firestore.data.maps[mapId].schema.properties)
-
-
-    const updatePropertyValue = (property: Property, newValue: any, debounce?: CommandDebounce) => {
-        node && updateNodeProperties(firestore, dispatch, mapId, node.id, node.properties,
-            node.properties.map(existingProp => existingProp === property ?
-                { ...existingProp, value: newValue } : existingProp
-            ), debounce
-        )
-    }
+    const updateContent = (newValue: string) => enact(dispatch, mapId, updateElementCommand(
+        firestore, mapId, node.id, getElementType(node),
+        { content: node.content },
+        { content: newValue }
+    ))
 
     // naked nodes are styled differently
-    const isNaked = node && !node.classId && node.properties?.length === 1
+    const isNaked = node && !node.classId //&& node.properties?.length === 1
     const zoomedOutMode = useZoomedOutMode() && node !== undefined
-    const propertiesToRender = zoomedOutMode ? [node.properties[0]] : node?.properties
 
     return (
         <ElementContext.Provider value={{ elementType: nodeElementType, elementId: id }}>
@@ -90,8 +85,6 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                 style={node && { left: node.x, top: node.y }}
             >
                 {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
-                {node && (isSelected || node.classId) &&
-                    <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
 
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
@@ -100,9 +93,9 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     withBorder={!isNaked}
                     className={
                         `${styles.nodeCard}
-                    ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
-                    ${isDragging ? styles.isDragging : ""}
-                    doNotPan`
+                        ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
+                        ${isDragging ? styles.isDragging : ""}
+                        doNotPan`
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {
@@ -112,7 +105,6 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                                 source: addingArrowFrom,
                                 dest: id,
                                 content: "",
-                                properties: [],
                                 classId: null,
                             })
                             dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
@@ -124,7 +116,10 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
                     onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
-                >
+                    >
+                    {node && (isSelected || node.classId) &&
+                        <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
+                        
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} theClass={theClass} />
@@ -132,6 +127,8 @@ export default function Node({ node = undefined, theClass = undefined, inSchema 
 
                     {node && <Editor 
                         element={node}
+                        updateContent={updateContent}
+                        onUpdateProperties={(properties: Property[]) => {}}
                     />}
 
                     {theClass && <PropertyStack theClass={theClass} />}

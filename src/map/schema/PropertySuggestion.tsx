@@ -4,10 +4,8 @@ import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch } from "../../app/hooks";
 import { AbstractProperty, Class, Element } from "../../app/schema";
 import { enactAll } from "../../etc/firestoreHistory";
-import { addPropertyToClassCommands } from "../../state/mapFunctions";
 import { useSchema } from "../../state/mapSelectors";
 import { useMapId } from "../Map";
-import PropertyComponent from "../properties/Property";
 import styles from "./SchemaPane.module.css";
 
 interface PropertySuggestionProps {
@@ -46,17 +44,16 @@ export function PropertySuggestion({ theClass, property, collapsed, index, eleme
             }}
         >
             {<Group style={(index !== 0 && collapsed) ? {display: "none"} : {}} noWrap>
-                <PropertyComponent
+                {/* <PropertyComponent
                     property={undefined}
                     abstractProperty={property}
                     updatePropertyValue={() => { }}
                     key={property.id}
-                />
+                /> */}
                 <ActionIcon
                     title="Add to everything of this type"
                     size="sm"
-                    onClick={() => enactAll(dispatch, mapId, addPropertyToClassCommands(firestore, mapId, property, classes, 
-                            theClass, elementsOfClass))}
+                    onClick={() => alert("todo")}
                 >
                     <IconPlus />
                 </ActionIcon>

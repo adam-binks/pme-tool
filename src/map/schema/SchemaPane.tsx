@@ -1,13 +1,11 @@
 import { Paper, ScrollArea, Stack, Title } from "@mantine/core"
-import { MouseEvent, useEffect } from "react"
+import { MouseEvent } from "react"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Schema } from "../../app/schema"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
-import { updateAbstractProperties } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
-import Node from "../node/Node"
-import { globalProperties } from "../properties/globalProperties"
+import SchemaEntry from "./SchemaEntry"
 import styles from "./SchemaPane.module.css"
 
 interface SchemaPaneProps {
@@ -20,18 +18,18 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     const [, setSelection] = useSelection()
 
-    useEffect(() => {
-        if (firestore && schema && schema.properties) {
-            const missingGlobalProperties = globalProperties.filter(
-                globalProp => !schema.properties.find(prop => prop.id === globalProp.id)
-            )
-            if (missingGlobalProperties.length > 0) {
-                console.log("Adding missing global properties ", missingGlobalProperties)
-                updateAbstractProperties(firestore, dispatch, mapId, schema.properties,
-                    [...missingGlobalProperties, ...schema.properties])
-            }
-        }
-    }, [firestore, mapId, schema])
+    // useEffect(() => {
+    //     if (firestore && schema && schema.properties) {
+    //         const missingGlobalProperties = globalProperties.filter(
+    //             globalProp => !schema.properties.find(prop => prop.id === globalProp.id)
+    //         )
+    //         if (missingGlobalProperties.length > 0) {
+    //             console.log("Adding missing global properties ", missingGlobalProperties)
+    //             updateAbstractProperties(firestore, dispatch, mapId, schema.properties,
+    //                 [...missingGlobalProperties, ...schema.properties])
+    //         }
+    //     }
+    // }, [firestore, mapId, schema])
 
     if (!schema) {
         return (
@@ -60,7 +58,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
                     <Stack mt={30} spacing={50}>
                         {schema.classes && schema.classes.map(
-                            (theClass) => <Node key={theClass.id} inSchema={true} theClass={theClass} />
+                            (theClass) => <SchemaEntry key={theClass.id} theClass={theClass} />
                         )}
                     </Stack>
 

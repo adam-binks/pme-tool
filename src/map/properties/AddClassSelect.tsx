@@ -57,7 +57,7 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
                 ) : []
             }
             dropdownPosition="top"
-            style={inSchema ? {} : { position: "absolute", width: "200px" }}
+            // style={inSchema ? {} : { position: "absolute", width: "200px" }}
             mt={-40}
             styles={(theme) => ({
                 input: {
@@ -75,8 +75,8 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
             onCreate={(input) => {
                 if (input) {
                     schema && !inSchema && enactAll(dispatch, mapId,
-                        createNewClassAndAddToElementCommands(firestore, mapId, element as Element, elementType, 
-                            input, schema.classes, schema.properties)
+                        createNewClassAndAddToElementCommands(firestore, mapId, element as Element, elementType,
+                            input, schema.classes, []) // todo content
                     )
                     return undefined
                 }
@@ -89,14 +89,16 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
                         return
                     }
                     schema && !inSchema && enactAll(dispatch, mapId,
-                        addClassToElementCommands(firestore, mapId, element as Element, selectedClass, schema.properties)
+                        addClassToElementCommands(firestore, mapId, element as Element, selectedClass, [])
                     )
                 }
             }}
+            onClick={(e) => e.stopPropagation()}
             onMouseDownCapture={(e) => {
                 e.stopPropagation()
                 onMousedownSelectable(e)
-            }}
+            }
+            }
             onDoubleClick={(e) => e.stopPropagation()}
         />
     )
