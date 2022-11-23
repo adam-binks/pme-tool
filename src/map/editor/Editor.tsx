@@ -5,18 +5,17 @@ import { useFirestore } from "react-redux-firebase";
 import { Class, Element } from "../../app/schema";
 import { useBatchedTextInput } from "../../etc/batchedTextInput";
 import { useMapId } from "../Map";
-import { Property } from "./expose_properties";
-import { extensions } from "./extensions";
+import { ExtensionParams, extensions } from "./extensions";
 
 
 export function Editor({
     element,
     updateContent,
-    onUpdateProperties,
+    extensionParams,
 }: {
     element: Element | Class
     updateContent: (newContent: string) => void
-    onUpdateProperties: (properties: Property[]) => void
+    extensionParams: ExtensionParams
 }) {
     const firestore = useFirestore()
     const dispatch = useDispatch()
@@ -31,7 +30,7 @@ export function Editor({
         <div className="pt-2">
             <CodeMirror
                 className={clsx("doNotPan text-left")}
-                extensions={extensions(onUpdateProperties)}
+                extensions={extensions(extensionParams)}
                 value={batched.value}
                 onChange={batched.onChangeValue}
                 onFocus={batched.onFocus}

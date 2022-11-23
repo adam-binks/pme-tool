@@ -1,5 +1,5 @@
 import { Card, Group } from "@mantine/core";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useDebounce } from "use-lodash-debounce-throttle";
@@ -8,10 +8,11 @@ import { Class } from "../../app/schema";
 import { enact, enactAll } from "../../etc/firestoreHistory";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
+import { setLocalClass, useLocalClass } from "../../state/localReducer";
+import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
 import { useNodesWithClass, useSchema } from "../../state/mapSelectors";
 import { Editor } from "../editor/Editor";
-import { Property } from "../editor/expose_properties";
+import { Property } from "../editor/exposeProperties";
 import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
 import { NodeOverFlowMenu } from "../node/NodeOverflowMenu";
@@ -19,7 +20,7 @@ import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
 import { PropertyStack } from "./PropertyStack";
 
- 
+
 export default function SchemaEntry({
     theClass
 }: {
@@ -30,6 +31,7 @@ export default function SchemaEntry({
     const firestore = useFirestore()
     const classes: Class[] = useSchema((schema) => schema.classes)
     const nodesWithClass = useNodesWithClass(theClass.id, (nodesOfClass) => nodesOfClass)
+    const localClass = useLocalClass(mapId, theClass.id)
 
     if (theClass.id === "") {
         console.error("Missing class!")
@@ -57,15 +59,25 @@ export default function SchemaEntry({
         { content: newValue }
     ))
 
-    const [properties, setProperties] = useState<Property[]>([])
+    useEffect(() => {
+        if (localClass === undefined) {
+            dispatch(setLocalClass({
+                mapId: mapId, class: {
+                    id: theClass.id,
+                    properties: getPropertiesFromContent(theClass.content)
+                }
+            }))
+        }
+    }, [localClass, dispatch])
+    
     const updateProperties = useDebounce((newProperties: Property[]) => {
-        if (properties !== newProperties) {
+        if (localClass?.properties !== newProperties) {
             enactAll(
-                dispatch, 
-                mapId, 
-                updateSchemaPropertiesCommands(firestore, mapId, nodesWithClass, newProperties)
+                dispatch,
+                mapId,
+                updateSchemaPropertiesCommands(firestore, mapId, nodesWithClass, localClass?.properties || [], newProperties)
             )
-            setProperties(newProperties)
+            dispatch(setLocalClass({ mapId, class: { properties: newProperties } }))
         }
     }, 200)
 
@@ -108,7 +120,12 @@ export default function SchemaEntry({
                     <Editor
                         element={theClass}
                         updateContent={updateContent}
-                        onUpdateProperties={(newProperties) => updateProperties(newProperties)}
+                        extensionParams={{
+                            onUpdateProperties: (newProperties) => updateProperties(newProperties),
+                            propertiesToHighlight: localClass ? localClass.properties.map(
+                                (p: Property) => ({ name: p.name, highlight: "in schema" })
+                            ) : [],
+                        }}
                     />
 
                     <PropertyStack theClass={theClass} />

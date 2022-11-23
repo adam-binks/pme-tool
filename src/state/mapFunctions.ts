@@ -2,7 +2,7 @@ import { ExtendedFirestoreInstance } from "react-redux-firebase"
 import { AbstractProperty, Arrow, Class, Element, elementType, getElementType, Map, Node, Schema } from "../app/schema"
 import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
-import { getProperties, Property } from "../map/editor/expose_properties"
+import { getProperties, Property } from "../map/editor/exposeProperties"
 import { parser } from "../map/editor/parser"
 
 type fs = ExtendedFirestoreInstance
@@ -207,21 +207,55 @@ export function createAbstractPropertyCommand(firestore: fs, mapId: string, sche
     // )
 }
 
-export function updateSchemaPropertiesCommands(firestore: fs, mapId: string, elementsOfClass: Element[], newProperties: Property[]) {
+export function getSyntaxTree(content: string) {
+    return parser.parse(content)
+}
+
+export function getPropertiesFromContent(content: string) {
+    const tree = getSyntaxTree(content)
+    return getProperties(tree, (from, to) => content.substring(from, to))
+}
+
+export function updateSchemaPropertiesCommands(firestore: fs, mapId: string, elementsOfClass: Element[],
+    oldProperties: Property[], newProperties: Property[]) {
     const commands: Command[] = []
-    console.log(elementsOfClass)
     elementsOfClass.forEach(element => {
-        const tree = parser.parse(element.content)
-        const properties = getProperties(tree, (from, to) => element.content.substring(from, to))
-        let textToAppend = ""
-        newProperties.forEach(newProp => {
-            if (!properties.some(prop => prop.name === newProp.name)) {
-                textToAppend = textToAppend + `\n${blankPropertyString(newProp)}`
+        const properties = getPropertiesFromContent(element.content)
+        let content = element.content
+
+        // remove old properties that aren't in new properties, and have no value
+        oldProperties.forEach(oldProp => {
+            if (newProperties.some(p => p.name === oldProp.name)) {
+                return
+            }
+
+            const prop = properties.find(p => p.name === oldProp.name)
+            if (prop && (!prop.value || !prop.value.trim() || prop.value.trim() === " ")) {
+                // first try and remove a leading newline, if it exists
+                content = content.replace("\n" + prop.content, "")
+                // then try and remove a trailing newline, if it exists
+                content = content.replace(prop.content + "\n", "")
+                // otherwise this is the only content, so just remove it
+                content = content.replace(prop.content, "")
             }
         })
+
+        // add new properties
+        let lastStart = content.length
+        // iterate backwards to insert properties right before the one after them
+        for (let i = newProperties.length - 1; i >= 0; i--) {
+            const newProp = newProperties[i];
+            if (!properties.some(prop => prop.name === newProp.name)) {
+                const insertAtEnd = lastStart === content.length
+                const propString = (insertAtEnd ? "\n" : "") + blankPropertyString(newProp) + (!insertAtEnd ? "\n" : "")
+                content = content.slice(0, lastStart) + propString + content.slice(lastStart)
+            }
+            lastStart = content.indexOf(newProp.content)
+        }
+
         commands.push(updateElementCommand(firestore, mapId, element.id, getElementType(element),
             { content: element.content },
-            { content: element.content + textToAppend}
+            { content }
         ))
     })
 

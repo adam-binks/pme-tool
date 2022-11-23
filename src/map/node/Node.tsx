@@ -8,10 +8,11 @@ import { enact } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
+import { useClassProperties } from "../../state/localReducer";
 import { addArrow, updateElementCommand } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
 import { Editor } from "../editor/Editor";
-import { Property } from "../editor/expose_properties";
+import { Property } from "../editor/exposeProperties";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
@@ -67,6 +68,8 @@ export default function Node({ node, theClass = undefined, inSchema }: NodeProps
         { content: newValue }
     ))
 
+    const classProperties = useClassProperties(mapId, node.classId)
+
     // naked nodes are styled differently
     const isNaked = node && !node.classId //&& node.properties?.length === 1
     const zoomedOutMode = useZoomedOutMode() && node !== undefined
@@ -116,19 +119,24 @@ export default function Node({ node, theClass = undefined, inSchema }: NodeProps
                     onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
-                    >
+                >
                     {node && (isSelected || node.classId) &&
                         <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
-                        
+
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} theClass={theClass} />
                     </Group>
 
-                    {node && <Editor 
+                    {node && <Editor
                         element={node}
                         updateContent={updateContent}
-                        onUpdateProperties={(properties: Property[]) => {}}
+                        extensionParams={{
+                            onUpdateProperties: (properties: Property[]) => { },
+                            propertiesToHighlight: classProperties.map(
+                                (p: Property) => ({ name: p.name, highlight: "in schema" })
+                            ),
+                        }}
                     />}
 
                     {theClass && <PropertyStack theClass={theClass} />}

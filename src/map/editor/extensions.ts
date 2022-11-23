@@ -3,10 +3,10 @@ import { Extension } from "@codemirror/state";
 import { EditorView } from "codemirror";
 import { autocomplete, autocompleteTheme } from "./autocomplete";
 import { checkboxPlugin } from './checkbox';
-import { exposeProperties, Property } from "./expose_properties";
+import { exposeProperties, Property } from "./exposeProperties";
 import { pmelang, pmeLanguage } from './language';
 import { panel } from "./panel";
-import { highlighting } from "./syntaxHighlighting";
+import { dynamicHighlighting, highlighting, PropertiesToHighlight } from "./syntaxHighlighting";
 
 const staticExtensions: Extension[] = [
     EditorView.baseTheme({
@@ -28,9 +28,15 @@ const staticExtensions: Extension[] = [
     panel(),
 ]
 
-export function extensions(onUpdateProperties: (properties: Property[]) => void): Extension[] {
+export interface ExtensionParams {
+    onUpdateProperties: (properties: Property[]) => void
+    propertiesToHighlight: PropertiesToHighlight
+}
+
+export function extensions({onUpdateProperties, propertiesToHighlight} : ExtensionParams): Extension[] {
     return [
         ...staticExtensions,
         exposeProperties(onUpdateProperties),
+        dynamicHighlighting(propertiesToHighlight),//(propertiesToHighlight),
     ]
 }

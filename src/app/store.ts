@@ -6,6 +6,7 @@ import 'firebase/database';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer, FirestoreReducer, reduxFirestore } from 'redux-firestore';
 import historyReducer from '../state/historyReducer';
+import localReducer from '../state/localReducer';
 import paneReducer from '../state/paneReducer';
 import { firebaseConfig } from './firebase';
 import { FirebaseSchema } from './schema';
@@ -20,6 +21,7 @@ const createStoreWithFirebase = compose(reduxFirestore(firebase))(createStore)
 interface RootReducerState {
     firebase: ReturnType<typeof firebaseReducer>,
     firestore: FirestoreReducer.Reducer<FirebaseSchema>,
+    local: ReturnType<typeof localReducer>,
     panes: ReturnType<typeof paneReducer>,
     history: ReturnType<typeof historyReducer>,
 }
@@ -27,6 +29,7 @@ interface RootReducerState {
 const rootReducer = combineReducers<RootReducerState>({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
+    local: localReducer,
     panes: paneReducer,
     history: historyReducer,
 })
