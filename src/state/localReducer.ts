@@ -47,14 +47,13 @@ export const localSlice = createSlice({
     name: 'local',
     initialState: initialState,
     reducers: {
-        setLocalClass(state, action: PayloadAction<{ mapId: string, class: Partial<LocalClass> }>) {
+        setLocalClass(state, action: PayloadAction<{ mapId: string, classId: string, class: Partial<LocalClass> }>) {
             const map = getOrCreateLocalMap(state, action.payload.mapId)
-            const existingClass = map.classes.find(c => c.id === action.payload.class.id)
-            if (existingClass) {
-                Object.assign(existingClass, action.payload.class)
-            } else {
-                map.classes.push({ ...getBlankClassPartial(), ...action.payload.class } as LocalClass)
-            }
+            const existingClass = map.classes.find(c => c.id === action.payload.classId)
+            console.log({existingClass})
+            map.classes = map.classes.filter(c => c !== existingClass)
+            map.classes.push({ ...(existingClass || getBlankClassPartial()), ...action.payload.class } as LocalClass)
+            console.log({classes: map.classes})
         }
     }
 })

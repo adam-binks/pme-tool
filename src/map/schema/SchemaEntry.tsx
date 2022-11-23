@@ -62,22 +62,24 @@ export default function SchemaEntry({
     useEffect(() => {
         if (localClass === undefined) {
             dispatch(setLocalClass({
-                mapId: mapId, class: {
+                mapId, 
+                classId: theClass.id,
+                class: {
                     id: theClass.id,
                     properties: getPropertiesFromContent(theClass.content)
                 }
             }))
         }
-    }, [localClass, dispatch])
+    }, [])
     
     const updateProperties = useDebounce((newProperties: Property[]) => {
-        if (localClass?.properties !== newProperties) {
+        if (localClass && localClass.properties !== newProperties) {
             enactAll(
                 dispatch,
                 mapId,
                 updateSchemaPropertiesCommands(firestore, mapId, nodesWithClass, localClass?.properties || [], newProperties)
             )
-            dispatch(setLocalClass({ mapId, class: { properties: newProperties } }))
+            dispatch(setLocalClass({ mapId, classId: theClass.id, class: { properties: newProperties } }))
         }
     }, 200)
 

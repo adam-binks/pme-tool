@@ -12,18 +12,14 @@ export const highlighting = syntaxHighlighting(HighlightStyle.define([
 ]))
 
 export type PropertiesToHighlight = { name: string, highlight: "in schema" }[]
-export const getPropertyMatcher = (propertiesToHighlight: PropertiesToHighlight) => {
-    console.log(`\=` +
-        propertiesToHighlight.map(p => `(${escapeRegExp(p.name)})`).join("|") +
-        `\=`)
-    return new MatchDecorator({
-        // generates regex like "\=(prop 1)|(prop 2)|(prop 3)\="
-        regexp: new RegExp(`\=` +
-            propertiesToHighlight.map(p => `(${escapeRegExp(p.name)})`).join("|") +
-            `\=`, "g"),
-        decoration: match => { return Decoration.mark({ class: "cm-in-schema" }); },
-    });
-}
+export const getPropertyMatcher = (propertiesToHighlight: PropertiesToHighlight) => new MatchDecorator({
+    // generates regex like "\=(prop 1)|(prop 2)|(prop 3)\="
+    regexp: new RegExp( "\=(?:" + 
+        propertiesToHighlight.map(p => `(?:${escapeRegExp(p.name)})`).join("|") +
+        `)\=`,
+        "g"),
+    decoration: match => { return Decoration.mark({ class: "cm-in-schema" }); },
+})
 
 export const dynamicHighlighting = (propertiesToHighlight: PropertiesToHighlight) => [
     ViewPlugin.fromClass(class {
