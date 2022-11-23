@@ -3,49 +3,39 @@ import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Class, getElementType, Node as NodeType } from "../../app/schema";
-import { enact } from "../../etc/firestoreHistory";
+import { Node as NodeType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { useClassProperties } from "../../state/localReducer";
-import { addArrow, updateElementCommand } from "../../state/mapFunctions";
+import { addArrow } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
-import { Editor } from "../editor/Editor";
-import { Property } from "../editor/exposeProperties";
+import { TextElement } from "../editor/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
-import { PropertyStack } from "../schema/PropertyStack";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
 interface NodeProps {
     node: NodeType
-    theClass?: Class
-    inSchema: boolean
 }
-export default function Node({ node, theClass = undefined, inSchema }: NodeProps) {
+export default function Node({ node }: NodeProps) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
 
-    const nodeElementType = (node && "node") || "class"
-    const id = (node && node.id) || (theClass && theClass.id) || ""
-    if (id === "") {
-        console.error("Missing node or class!")
+    if (node.id === "") {
+        console.error("Missing node!")
     }
 
     const [{ isDragging }, drag] = useDrag(
         () => ({
-            type: inSchema ? ItemTypes.SCHEMA_NODE : ItemTypes.NODE,
-            item: node !== undefined ? {
+            type: ItemTypes.NODE,
+            item: {
                 id: node.id,
                 x: node.x,
                 y: node.y
-            } : {
-                id: theClass?.id
             },
             collect: (monitor) => ({
                 isDragging: monitor.isDragging(),
@@ -54,41 +44,29 @@ export default function Node({ node, theClass = undefined, inSchema }: NodeProps
         [node],
     )
 
-    const { isSelected, onMousedownSelectable } = useSelectable(id, inSchema ? "class" : "node")
-
+    const { isSelected, onMousedownSelectable } = useSelectable(node.id, "node")
     const [isHovered, setIsHovered] = useState(false)
 
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     )
 
-    const updateContent = (newValue: string) => enact(dispatch, mapId, updateElementCommand(
-        firestore, mapId, node.id, getElementType(node),
-        { content: node.content },
-        { content: newValue }
-    ))
-
-    const classProperties = useClassProperties(mapId, node.classId)
-
     // naked nodes are styled differently
-    const isNaked = node && !node.classId //&& node.properties?.length === 1
+    const isNaked = node && !node.classId
     const zoomedOutMode = useZoomedOutMode() && node !== undefined
 
     return (
-        <ElementContext.Provider value={{ elementType: nodeElementType, elementId: id }}>
+        <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
             <div
                 className={`
                 ${styles.nodeWrapper}
-                ${inSchema ? styles.inSchema : ""}
                 ${isSelected ? styles.isSelected : ""}
                 ${isNaked ? styles.isNaked : ""}
                 ${isHovered ? styles.isHovered : ""}
             `}
-                id={`node.${id}`}
+                id={`node.${node.id}`}
                 style={node && { left: node.x, top: node.y }}
             >
-                {theClass && <AddClassSelect element={theClass} elementType={nodeElementType} />}
-
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
                     radius="md"
@@ -106,7 +84,7 @@ export default function Node({ node, theClass = undefined, inSchema }: NodeProps
                             addArrow(firestore, dispatch, mapId, {
                                 id: generateId(),
                                 source: addingArrowFrom,
-                                dest: id,
+                                dest: node.id,
                                 content: "",
                                 classId: null,
                             })
@@ -121,26 +99,14 @@ export default function Node({ node, theClass = undefined, inSchema }: NodeProps
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
                     {node && (isSelected || node.classId) &&
-                        <AddClassSelect element={node} elementType={nodeElementType} zoomedOutMode={zoomedOutMode} />}
+                        <AddClassSelect element={node} elementType={"node"} zoomedOutMode={zoomedOutMode} />}
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
-                        <NodeOverFlowMenu node={node} theClass={theClass} />
+                        <NodeOverFlowMenu node={node} theClass={undefined} />
                     </Group>
 
-                    {node && <Editor
-                        element={node}
-                        updateContent={updateContent}
-                        extensionParams={{
-                            onUpdateProperties: (properties: Property[]) => { },
-                            propertiesToHighlight: classProperties.map(
-                                (p: Property) => ({ name: p.name, highlight: "in schema" })
-                            ),
-                        }}
-                    />}
-
-                    {theClass && <PropertyStack theClass={theClass} />}
-
+                    <TextElement element={node} elementType={"node"} />
                 </Card>
             </div>
         </ElementContext.Provider>

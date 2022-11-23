@@ -50,10 +50,8 @@ export const localSlice = createSlice({
         setLocalClass(state, action: PayloadAction<{ mapId: string, classId: string, class: Partial<LocalClass> }>) {
             const map = getOrCreateLocalMap(state, action.payload.mapId)
             const existingClass = map.classes.find(c => c.id === action.payload.classId)
-            console.log({existingClass})
             map.classes = map.classes.filter(c => c !== existingClass)
             map.classes.push({ ...(existingClass || getBlankClassPartial()), ...action.payload.class } as LocalClass)
-            console.log({classes: map.classes})
         }
     }
 })

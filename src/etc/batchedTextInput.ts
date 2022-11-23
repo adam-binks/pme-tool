@@ -1,10 +1,10 @@
+import { ViewUpdate } from "@codemirror/view";
 import React, { useState } from "react";
 import { useThrottle } from "use-lodash-debounce-throttle";
 
 export function useBatchedTextInput(
     firebaseValue: string,
-    updateFirebaseValue: (newValue: string) => void,
-    onChangeFunctionUsesValue: boolean = false
+    updateFirebaseValue: (newValue: string) => void
 ) {
     const [local, setLocal] = useState(firebaseValue)
     const [isFocused, setIsFocused] = useState(false)
@@ -41,7 +41,7 @@ export function useBatchedTextInput(
             setLocal(e.target.value)
             throttledUpdateFirebaseValue(e.target.value)
         },
-        onChangeValue: (value: string) => {
+        onChangeValue: (value: string, viewUpdate: ViewUpdate) => {
             setLocal(value)
             throttledUpdateFirebaseValue(value)
         },

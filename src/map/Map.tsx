@@ -196,7 +196,6 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                         node && <NodeComponent
                                             node={node}
                                             key={node.id}
-                                            inSchema={false}
                                         />
                                     )}
                                     {arrows && Object.values(arrows).map((arrow: any) => {

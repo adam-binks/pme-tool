@@ -1,14 +1,14 @@
 import { Select } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { Arrow, Class, Element, elementType, Node, Schema } from "../../app/schema"
+import { Arrow, Class, Element, elementType, elementTypeInclClass, Node, Schema } from "../../app/schema"
 import { enactAll } from "../../etc/firestoreHistory"
 import { useSelectable } from "../../etc/useSelectable"
 import { addClassToElementCommands, createNewClassAndAddToElementCommands, updateSchema } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface AddClassSelectProps {
-    elementType: elementType
+    elementType: elementTypeInclClass
     element: Element | Class
     zoomedOutMode?: boolean
 }

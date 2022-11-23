@@ -17,7 +17,6 @@ import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
 import { NodeOverFlowMenu } from "../node/NodeOverflowMenu";
 import { AddClassSelect } from "../properties/AddClassSelect";
-import { ElementContext } from "../properties/useElementId";
 import { PropertyStack } from "./PropertyStack";
 
 
@@ -62,7 +61,7 @@ export default function SchemaEntry({
     useEffect(() => {
         if (localClass === undefined) {
             dispatch(setLocalClass({
-                mapId, 
+                mapId,
                 classId: theClass.id,
                 class: {
                     id: theClass.id,
@@ -71,7 +70,7 @@ export default function SchemaEntry({
             }))
         }
     }, [])
-    
+
     const updateProperties = useDebounce((newProperties: Property[]) => {
         if (localClass && localClass.properties !== newProperties) {
             enactAll(
@@ -84,56 +83,54 @@ export default function SchemaEntry({
     }, 200)
 
     return (
-        <ElementContext.Provider value={{ elementType: "class", elementId: theClass.id }}>
-            <div
-                className={`
+        <div
+            className={`
                 ${styles.nodeWrapper}
                 ${styles.inSchema}
                 ${isSelected ? styles.isSelected : ""}
                 ${isHovered ? styles.isHovered : ""}
             `}
-                id={`class.${theClass.id}`}
-            >
-                <AddClassSelect element={theClass} elementType={"class"} />
+            id={`class.${theClass.id}`}
+        >
+            <AddClassSelect element={theClass} elementType={"class"} />
 
-                <Card
-                    shadow={isSelected ? "xl" : "xs"}
-                    radius="md"
-                    p="xs"
-                    withBorder={true}
-                    className={
-                        `${styles.nodeCard}
+            <Card
+                shadow={isSelected ? "xl" : "xs"}
+                radius="md"
+                p="xs"
+                withBorder={true}
+                className={
+                    `${styles.nodeCard}
                         ${isDragging ? styles.isDragging : ""}
                         doNotPan`
-                    }
-                    ref={drag}
-                    onClick={(e: MouseEvent) => {
-                        onMousedownSelectable(e)
-                        e.stopPropagation()
+                }
+                ref={drag}
+                onClick={(e: MouseEvent) => {
+                    onMousedownSelectable(e)
+                    e.stopPropagation()
+                }}
+                onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
+                onMouseEnter={() => { setIsHovered(true) }}
+                onMouseLeave={() => { setIsHovered(false) }}
+            >
+                <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
+                    <NodeOverFlowMenu node={undefined} theClass={theClass} />
+                </Group>
+
+                <Editor
+                    element={theClass}
+                    updateContent={updateContent}
+                    extensionParams={{
+                        onUpdateProperties: (newProperties) => updateProperties(newProperties),
+                        propertiesToHighlight: localClass ? localClass.properties.map(
+                            (p: Property) => ({ name: p.name, highlight: "in schema" })
+                        ) : [],
                     }}
-                    onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-                    onMouseEnter={() => { setIsHovered(true) }}
-                    onMouseLeave={() => { setIsHovered(false) }}
-                >
-                    <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        <NodeOverFlowMenu node={undefined} theClass={theClass} />
-                    </Group>
+                />
 
-                    <Editor
-                        element={theClass}
-                        updateContent={updateContent}
-                        extensionParams={{
-                            onUpdateProperties: (newProperties) => updateProperties(newProperties),
-                            propertiesToHighlight: localClass ? localClass.properties.map(
-                                (p: Property) => ({ name: p.name, highlight: "in schema" })
-                            ) : [],
-                        }}
-                    />
+                <PropertyStack theClass={theClass} />
 
-                    <PropertyStack theClass={theClass} />
-
-                </Card>
-            </div>
-        </ElementContext.Provider>
+            </Card>
+        </div>
     )
 }

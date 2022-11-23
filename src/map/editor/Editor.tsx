@@ -1,10 +1,7 @@
 import { clsx } from "@mantine/core";
 import CodeMirror from "@uiw/react-codemirror";
-import { useDispatch } from "react-redux";
-import { useFirestore } from "react-redux-firebase";
 import { Class, Element } from "../../app/schema";
 import { useBatchedTextInput } from "../../etc/batchedTextInput";
-import { useMapId } from "../Map";
 import { ExtensionParams, extensions } from "./extensions";
 
 
@@ -17,10 +14,6 @@ export function Editor({
     updateContent: (newContent: string) => void
     extensionParams: ExtensionParams
 }) {
-    const firestore = useFirestore()
-    const dispatch = useDispatch()
-    const mapId = useMapId()
-
     const batched = useBatchedTextInput(
         element.content,
         updateContent
