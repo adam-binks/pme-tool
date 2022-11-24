@@ -1,15 +1,15 @@
-import styles from "./Arrow.module.css";
+import { clsx } from "@mantine/core"
 
 const MARGIN = 10
 const NODE_WIDTH = 200
 
 interface SvgArrowProps {
+    children: React.ReactNode,
     source: { x: number, y: number }
     dest: { x: number, y: number }
+    colour: string,
 }
-export function SvgArrow({ source, dest }: SvgArrowProps) {
-
-
+export function SvgArrow({ children, source, dest, colour }: SvgArrowProps) {
     const sourceX = source.x + NODE_WIDTH / 2
     const destX = dest.x + NODE_WIDTH / 2
 
@@ -29,18 +29,25 @@ export function SvgArrow({ source, dest }: SvgArrowProps) {
         <div style={{ position: "absolute", left: x, top: y, zIndex: -1 }}>
             <svg width={w} height={h} pointerEvents="stroke">
                 <path
-                    className={styles.svgArrow}
+                    className={clsx(
+                        "opacity-50 hover:opacity-100",
+                        colour === "indigo" && "stroke-indigo-500",
+                        colour === "purple" && "stroke-purple-500",
+                    )}
                     d={`M ${sX} ${sY} L ${dX} ${dY}`}
-                    stroke="blue"
                     strokeWidth={5}
                 />
             </svg>
-            <div style={{
-                position: "absolute",
-                left: w / 2,
-                top: h / 2,
-                transform: "translate(-50%, -50%)"
-            }}>
+            <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    position: "absolute",
+                    left: w / 2,
+                    top: h / 2,
+                    transform: "translate(-50%, -50%)"
+                }}
+            >
+                {children}
             </div>
         </div>
     )

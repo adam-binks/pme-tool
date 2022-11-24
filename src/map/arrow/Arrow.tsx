@@ -1,4 +1,8 @@
+import { clsx } from "@mantine/core"
+import { IconPencil } from "@tabler/icons"
 import { Arrow } from "../../app/schema"
+import { useSelectable } from "../../etc/useSelectable"
+import { TextElement } from "../element/TextElement"
 import { ElementContext } from "../properties/useElementId"
 import { SvgArrow } from "./SvgArrow"
 
@@ -9,50 +13,37 @@ interface ArrowProps {
     strokeWidthScaler: number
 }
 export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler }: ArrowProps) {
-    // const firestore = useFirestore()
-    // const mapId = useMapId()
+    const { isSelected, onMousedownSelectable } = useSelectable(arrow.id, "arrow")
 
-    // const sourceId = `node.${arrow.source}`
-    // const destId = `node.${arrow.dest}`
-
-    // const updateXArrow = useXarrow()
-
-    // if (!document.getElementById(sourceId) || !document.getElementById(destId)) {
-    //     setTimeout(updateXArrow, 200)
-    //     console.log('no id ', {source: document.getElementById(sourceId), dest: document.getElementById(destId)})
-    //     return (<p>No id</p>)
-    // }
-
-    // // console.log({source: `node.${arrow.source}`, dest: `node.${arrow.dest}`})
-
-    // var selfLoopArrowProps = {}
-    // if (arrow.source === arrow.dest) {
-    //     selfLoopArrowProps = {
-    //         _cpx1Offset: 50 * strokeWidthScaler,
-    //         _cpy1Offset: -50 * strokeWidthScaler,
-    //         _cpx2Offset: 50 * strokeWidthScaler,
-    //         _cpy2Offset: 30 * strokeWidthScaler,
-    //         startAnchor: "right",
-    //         endAnchor: "right",
-    //     }
-    // }
+    const emptyMode = !arrow.content && !isSelected
+    const colour = isSelected ? "indigo" : "purple"
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
                 source={source}
                 dest={dest}
-            />
-        </ElementContext.Provider>
+                colour={colour}
+            >
+                <div className={clsx(`bg-white border-4 rounded-lg w-28 hover:border-opacity-100`,
+                    emptyMode ? "w-8" : "w-28",
+                    isSelected ? "border-opacity-100" : "border-opacity-50",
+                    colour === "indigo" && "border-indigo-500",
+                    colour === "purple" && "border-purple-500",
+                )}
+                    onMouseDown={onMousedownSelectable}
+                >
+                    {
+                        emptyMode ?
+                            <IconPencil color="grey" className="pointer-events-none" />
+                            :
+                            <TextElement
+                                element={arrow}
+                                elementType="arrow"
+                                codemirrorProps={isSelected ? {autoFocus: true} : {}}
+                            />
+                    }
+                </div>
+            </SvgArrow>
+        </ElementContext.Provider >
     )
-
-    // return (
-    //     <Xarrow 
-    //         start={`node.${arrow.source}`}
-    //         end={`node.${arrow.dest}`}
-    //         curveness={0.5}
-    //         strokeWidth={3 * strokeWidthScaler}
-    //         {...selfLoopArrowProps}
-    //         labels={{middle: <button onClick={() => deleteArrow(firestore, mapId, arrow.id)}>Delete</button>}}
-    //     />
-    // )
 }

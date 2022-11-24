@@ -1,20 +1,23 @@
+import { ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch } from "../../app/hooks";
 import { Element, elementType } from "../../app/schema";
 import { enact } from "../../etc/firestoreHistory";
 import { useClassProperties } from "../../state/localReducer";
 import { updateElementCommand } from "../../state/mapFunctions";
+import { Editor } from "../editor/Editor";
+import { Property } from "../editor/exposeProperties";
 import { useMapId } from "../Map";
-import { Editor } from "./Editor";
-import { Property } from "./exposeProperties";
 
 export function TextElement({
     element,
     elementType,
+    codemirrorProps,
 } :
 {
     element: Element,
     elementType: elementType,
+    codemirrorProps?: Partial<ReactCodeMirrorProps>
 }) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
@@ -38,6 +41,7 @@ export function TextElement({
                     (p: Property) => ({ name: p.name, highlight: "in schema" })
                 ),
             }}
+            codemirrorProps={codemirrorProps}
         />
     )
 }

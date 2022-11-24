@@ -34,12 +34,16 @@ function createPanel(view: EditorView) {
 
 const helpTheme = EditorView.baseTheme({
     ".cm-help-panel": {
+        border: "none",
         display: "none",
     },
     "&.cm-focused .cm-help-panel": {
         display: "block",
         padding: "5px 10px",
         fontSize: "small"
+    },
+    ".cm-panels": {
+        border: "none",
     }
 })
 

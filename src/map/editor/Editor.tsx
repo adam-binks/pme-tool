@@ -1,5 +1,5 @@
 import { clsx } from "@mantine/core";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { Class, Element } from "../../app/schema";
 import { useBatchedTextInput } from "../../etc/batchedTextInput";
 import { ExtensionParams, extensions } from "./extensions";
@@ -9,10 +9,12 @@ export function Editor({
     element,
     updateContent,
     extensionParams,
+    codemirrorProps,
 }: {
     element: Element | Class
     updateContent: (newContent: string) => void
     extensionParams: ExtensionParams
+    codemirrorProps?: ReactCodeMirrorProps
 }) {
     const batched = useBatchedTextInput(
         element.content,
@@ -36,6 +38,7 @@ export function Editor({
                     highlightSelectionMatches: false,
                     autocompletion: false,
                 }}
+                {...codemirrorProps}
             />
         </div>
     )
