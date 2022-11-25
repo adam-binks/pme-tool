@@ -1,27 +1,27 @@
-import { Select } from "@mantine/core"
+import { clsx, Select } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { Arrow, Class, Element, elementType, elementTypeInclClass, Node, Schema } from "../../app/schema"
+import { Arrow, Class, Element, elementType, Node, Schema } from "../../app/schema"
 import { enactAll } from "../../etc/firestoreHistory"
 import { useSelectable } from "../../etc/useSelectable"
 import { addClassToElementCommands, createNewClassAndAddToElementCommands, updateSchema } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface AddClassSelectProps {
-    elementType: elementTypeInclClass
+    elementType: elementType
     element: Element | Class
     zoomedOutMode?: boolean
+    inSchema?: boolean
 }
-export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClassSelectProps) {
+export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }: AddClassSelectProps) {
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
     const schema: Schema | undefined = useAppSelector(state => state.firestore.data.maps[mapId]?.schema)
     const { onMousedownSelectable } = useSelectable(element.id, elementType)
-    const inSchema = elementType === "class"
 
-    const classId = elementType === "class" ? element.id : (element as Node | Arrow).classId
-    const theClass = elementType === "class" ?
+    const classId = inSchema ? element.id : (element as Node | Arrow).classId
+    const theClass = inSchema ?
         element :
         classId && schema?.classes?.find(
             (cls: Class) => cls.id === classId
@@ -40,31 +40,39 @@ export function AddClassSelect({ elementType, element, zoomedOutMode }: AddClass
     return (
         <Select
             key="Select type"
-            className={`doNotPan doNotZoom`}
-            placeholder={`＋ Set type`}
+            className={clsx(`doNotPan doNotZoom mx-auto`,
+                elementType === "arrow" && "w-20",
+            )}
+            placeholder={`＋ Type`}
             searchable
             creatable
             nothingFound={`Name a new ${elementType} type`}
             value={classId}
             shadow="md"
             data={
-                (schema?.classes !== undefined) ? schema?.classes.map(
-                    (theClass: Class) => ({
-                        value: theClass.id,
-                        label: theClass.name,
-                        group: `Existing ${elementType} types`
-                    })
-                ) : []
+                (schema?.classes !== undefined) ? schema?.classes
+                    .filter((cls: Class) => cls.element === elementType)
+                    .map(
+                        (theClass: Class) => ({
+                            value: theClass.id,
+                            label: theClass.name,
+                            group: `Existing ${elementType} types`
+                        })
+                    ) : []
             }
             dropdownPosition="top"
-            // style={inSchema ? {} : { position: "absolute", width: "200px" }}
             mt={-40}
             styles={(theme) => ({
                 input: {
+                    textAlign: "center",
+                    padding: "0 12px",
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
                     outline: `1px solid ${theme.colors["gray"][3]}`,
-                    fontSize: `${14 * fontScaler}px`
+                    fontSize: `${(elementType === "arrow" ? 10 : 14) * fontScaler}px`
+                },
+                rightSection: {
+                    display: "none",
                 }
             })}
             pb={5}

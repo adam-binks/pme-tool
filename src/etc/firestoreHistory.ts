@@ -20,6 +20,11 @@ export function enact(dispatch: any, mapId: string, command: Command, debounce?:
 }
 
 export function enactAll(dispatch: any, mapId: string, commands: Command[]) {
+    if (!commands || commands[0] === undefined) {
+        console.error("Error: can't enact undefined commands")
+        return
+    }
+
     dispatch(addToUndoAndClearRedo({ mapId, commands }))
     commands.forEach(command => command.act())
 }

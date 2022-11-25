@@ -2,15 +2,16 @@ import { ActionIcon, Menu } from "@mantine/core"
 import { IconDots, IconTrash } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { Class, Node } from "../../app/schema"
-import { deleteNode } from "../../state/mapFunctions"
+import { Arrow, Class } from "../../app/schema"
+import { enact } from "../../etc/firestoreHistory"
+import { deleteArrowCommand } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
-interface NodeOverFlowMenuProps {
-    node: Node | undefined
+interface ArrowOverFlowMenuProps {
+    arrow: Arrow | undefined
     theClass: Class | undefined
 }
-export function NodeOverFlowMenu({ node, theClass }: NodeOverFlowMenuProps) {
+export function ArrowOverFlowMenu({ arrow, theClass }: ArrowOverFlowMenuProps) {
     const mapId = useMapId()
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
@@ -25,7 +26,7 @@ export function NodeOverFlowMenu({ node, theClass }: NodeOverFlowMenuProps) {
             <Menu.Dropdown>
                 <Menu.Item
                     onClick={() => {
-                        node && deleteNode(firestore, dispatch, mapId, node, arrows)
+                        arrow && enact(dispatch, mapId, deleteArrowCommand(firestore, mapId, arrow))
                         theClass && console.error("Not yet implemented")
                     }}
                     icon={<IconTrash size={14} />}>

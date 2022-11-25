@@ -4,6 +4,7 @@ import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firesto
 import { generateId } from "../etc/helpers"
 import { getProperties, Property } from "../map/editor/exposeProperties"
 import { parser } from "../map/editor/parser"
+import { DEFAULT_NODE_WIDTH } from "../map/node/Node"
 
 type fs = ExtendedFirestoreInstance
 
@@ -34,6 +35,7 @@ export function getBlankNode(x: number = 0, y: number = 0): Node {
         x,
         y,
         classId: null,
+        width: DEFAULT_NODE_WIDTH,
     }
 }
 
@@ -54,6 +56,7 @@ export function getBlankNodeOfClass(theClass: Class, abstractProperties: Abstrac
         classId: theClass.id,
         x: 0,
         y: 0,
+        width: DEFAULT_NODE_WIDTH,
     }
 }
 
@@ -172,7 +175,6 @@ export function createNewClassAndAddToElementCommands(firestore: fs, mapId: stri
         name: className,
         element: elementType,
         content: "",
-        propertyIds: [],
     }
     return [
         createClassCommand(firestore, mapId, newClass, classes),
@@ -222,36 +224,8 @@ export function updateSchemaPropertiesCommands(firestore: fs, mapId: string, ele
     elementsOfClass.forEach(element => {
         const properties = getPropertiesFromContent(element.content)
         let content = element.content
-
-        // remove old properties that aren't in new properties, and have no value
-        oldProperties.forEach(oldProp => {
-            if (newProperties.some(p => p.name === oldProp.name)) {
-                return
-            }
-
-            const prop = properties.find(p => p.name === oldProp.name)
-            if (prop && (!prop.value || !prop.value.trim() || prop.value.trim() === " ")) {
-                // first try and remove a leading newline, if it exists
-                content = content.replace("\n" + prop.content, "")
-                // then try and remove a trailing newline, if it exists
-                content = content.replace(prop.content + "\n", "")
-                // otherwise this is the only content, so just remove it
-                content = content.replace(prop.content, "")
-            }
-        })
-
-        // add new properties
-        let lastStart = content.length
-        // iterate backwards to insert properties right before the one after them
-        for (let i = newProperties.length - 1; i >= 0; i--) {
-            const newProp = newProperties[i];
-            if (!properties.some(prop => prop.name === newProp.name)) {
-                const insertAtEnd = lastStart === content.length
-                const propString = (insertAtEnd ? "\n" : "") + blankPropertyString(newProp) + (!insertAtEnd ? "\n" : "")
-                content = content.slice(0, lastStart) + propString + content.slice(lastStart)
-            }
-            lastStart = content.indexOf(newProp.content)
-        }
+        content = removeValuelessOldPropertiesNotInSchemaProperties(oldProperties, newProperties, properties, content)
+        content = addSchemaPropertiesNotAlreadyInContent(content, newProperties, properties)
 
         commands.push(updateElementCommand(firestore, mapId, element.id, getElementType(element),
             { content: element.content },
@@ -260,6 +234,40 @@ export function updateSchemaPropertiesCommands(firestore: fs, mapId: string, ele
     })
 
     return commands
+}
+
+function addSchemaPropertiesNotAlreadyInContent(content: string, schemaProperties: Property[], currentProperties: Property[]) {
+    let lastStart = content.length
+    // iterate backwards to insert properties right before the one after them
+    for (let i = schemaProperties.length - 1; i >= 0; i--) {
+        const newProp = schemaProperties[i]
+        if (!currentProperties.some(prop => prop.name === newProp.name)) {
+            const insertAtEnd = lastStart === content.length
+            const propString = (insertAtEnd ? "\n" : "") + blankPropertyString(newProp) + (!insertAtEnd ? "\n" : "")
+            content = content.slice(0, lastStart) + propString + content.slice(lastStart)
+        }
+        lastStart = content.indexOf(newProp.content)
+    }
+    return content
+}
+
+function removeValuelessOldPropertiesNotInSchemaProperties(oldSchemaProperties: Property[], newSchemaProperties: Property[], properties: Property[], content: string) {
+    oldSchemaProperties.forEach(oldProp => {
+        if (newSchemaProperties.some(p => p.name === oldProp.name)) {
+            return
+        }
+
+        const prop = properties.find(p => p.name === oldProp.name)
+        if (prop && (!prop.value || !prop.value.trim() || prop.value.trim() === " ")) {
+            // first try and remove a leading newline, if it exists
+            content = content.replace("\n" + prop.content, "")
+            // then try and remove a trailing newline, if it exists
+            content = content.replace(prop.content + "\n", "")
+            // otherwise this is the only content, so just remove it
+            content = content.replace(prop.content, "")
+        }
+    })
+    return content
 }
 
 function blankPropertyString(property: Property) {

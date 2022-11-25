@@ -20,7 +20,7 @@ function createPanel(view: EditorView) {
     dom.className = "cm-help-panel"
     let btn = dom.appendChild(document.createElement("button"))
     btn.className = "cm-button"
-    btn.textContent = "Add a property"
+    btn.textContent = "Add a =property="
     btn.addEventListener("click", () => {
         insertBlankLine({state: view.state, dispatch: view.dispatch})
         view.dispatch(view.state.replaceSelection("= ="))
@@ -44,6 +44,10 @@ const helpTheme = EditorView.baseTheme({
     },
     ".cm-panels": {
         border: "none",
+        background: "none",
+    },
+    ".cm-button": {
+        borderRadius: "5px",
     }
 })
 

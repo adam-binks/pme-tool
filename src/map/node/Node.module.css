@@ -1,8 +1,3 @@
-.nodeCard {
-    width: 200px;
-    overflow: visible;
-}
-
 .nodeCard.isDragging {
     opacity: 0.2;
 }
@@ -13,24 +8,6 @@
 .isSelected.isNaked .nodeCard {
     outline: 3px solid rgba(0,0,255,0.5) !important;
 }
-
-.nodeWrapper:not(.inSchema) {
-    position: absolute;
-}
-
-.nodeWrapper {
-    width: 200px;
-    transition: transform 0.1s ease-out;
-}
-
-.nodeWrapper:hover {
-    /* transform: scale(1.01, 1.01) */
-}
-
-.inSchema .addClassSelect .mantine-Select-input {
-    background-color: red !important;
-}
-
 
 /* naked nodes */
 .isNaked .nodeCard {
@@ -53,10 +30,6 @@
 }
 .isNaked:hover .nodeControls {
     opacity: 1;
-}
-
-.nodeWrapper.isSelected {
-    /* transform: scale(1.03, 1.03); */
 }
 
 

@@ -13,16 +13,19 @@ export interface Node {
     id: string
     classId: string | null
     content:  string
+    width: number
     x: number
     y: number
 }
 
 export interface Arrow {
     id: string
+    classId: string | null
+    colour: string
     content: string
+    width: number
     source: string
     dest: string
-    classId: string | null
 }
 
 export type Element = Node | Arrow
@@ -41,12 +44,10 @@ export interface Schema {
     classes: Class[]
 }
 
-
 export interface Class {
     id: string
     name: string
     content: string
-    propertyIds: string[] // todo remove
     element: elementType
 }
 

@@ -1,4 +1,4 @@
-import { Card, Group } from "@mantine/core";
+import { Card, clsx, Group } from "@mantine/core";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -10,7 +10,7 @@ import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { setLocalClass, useLocalClass } from "../../state/localReducer";
 import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
-import { useNodesWithClass, useSchema } from "../../state/mapSelectors";
+import { useElementsWithClass, useSchema } from "../../state/mapSelectors";
 import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
 import { useMapId } from "../Map";
@@ -29,7 +29,7 @@ export default function SchemaEntry({
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const classes: Class[] = useSchema((schema) => schema.classes)
-    const nodesWithClass = useNodesWithClass(theClass.id, (nodesOfClass) => nodesOfClass)
+    const elementsWithClass = useElementsWithClass(theClass.element, theClass.id, (elementsWithClass) => elementsWithClass)
     const localClass = useLocalClass(mapId, theClass.id)
 
     if (theClass.id === "") {
@@ -76,61 +76,65 @@ export default function SchemaEntry({
             enactAll(
                 dispatch,
                 mapId,
-                updateSchemaPropertiesCommands(firestore, mapId, nodesWithClass, localClass?.properties || [], newProperties)
+                updateSchemaPropertiesCommands(firestore, mapId, elementsWithClass, localClass?.properties || [], newProperties)
             )
             dispatch(setLocalClass({ mapId, classId: theClass.id, class: { properties: newProperties } }))
         }
     }, 200)
 
     return (
-        <div
-            className={`
-                ${styles.nodeWrapper}
-                ${styles.inSchema}
-                ${isSelected ? styles.isSelected : ""}
-                ${isHovered ? styles.isHovered : ""}
-            `}
-            id={`class.${theClass.id}`}
-        >
-            <AddClassSelect element={theClass} elementType={"class"} />
-
-            <Card
-                shadow={isSelected ? "xl" : "xs"}
-                radius="md"
-                p="xs"
-                withBorder={true}
-                className={
-                    `${styles.nodeCard}
-                        ${isDragging ? styles.isDragging : ""}
-                        doNotPan`
-                }
-                ref={drag}
-                onClick={(e: MouseEvent) => {
-                    onMousedownSelectable(e)
-                    e.stopPropagation()
-                }}
-                onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
-                onMouseEnter={() => { setIsHovered(true) }}
-                onMouseLeave={() => { setIsHovered(false) }}
+        <div className={clsx("flex flex-row m-auto")}>
+            {/* {theClass.element === "arrow" && <div>Arr</div>} */}
+            <div
+                className={clsx(
+                    isSelected && styles.isSelected,
+                    isHovered && styles.isHovered,
+                )}
+                id={`class.${theClass.id}`}
             >
-                <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                    <NodeOverFlowMenu node={undefined} theClass={theClass} />
-                </Group>
+                <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} />
 
-                <Editor
-                    element={theClass}
-                    updateContent={updateContent}
-                    extensionParams={{
-                        onUpdateProperties: (newProperties) => updateProperties(newProperties),
-                        propertiesToHighlight: localClass ? localClass.properties.map(
-                            (p: Property) => ({ name: p.name, highlight: "in schema" })
-                        ) : [],
+                <Card
+                    shadow={isSelected ? "xl" : "xs"}
+                    radius="md"
+                    p="xs"
+                    withBorder={true}
+                    className={clsx(
+                        isDragging && styles.isDragging,
+                        "doNotPan",
+                        theClass.element === "node" && "overflow-visible w-48",
+                        theClass.element === "arrow" && "",
+                    )
+                    }
+                    ref={drag}
+                    onClick={(e: MouseEvent) => {
+                        onMousedownSelectable(e)
+                        e.stopPropagation()
                     }}
-                />
+                    onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
+                    onMouseEnter={() => { setIsHovered(true) }}
+                    onMouseLeave={() => { setIsHovered(false) }}
+                >
+                    <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
+                        <NodeOverFlowMenu node={undefined} theClass={theClass} />
+                    </Group>
 
-                <PropertyStack theClass={theClass} />
+                    <Editor
+                        element={theClass}
+                        updateContent={updateContent}
+                        extensionParams={{
+                            onUpdateProperties: (newProperties) => updateProperties(newProperties),
+                            propertiesToHighlight: localClass ? localClass.properties.map(
+                                (p: Property) => ({ name: p.name, highlight: "in schema" })
+                            ) : [],
+                        }}
+                    />
 
-            </Card>
+                    <PropertyStack theClass={theClass} />
+
+                </Card>
+            </div>
+            {/* {theClass.element === "arrow" && <div>Arr</div>} */}
         </div>
     )
 }

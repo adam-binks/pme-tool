@@ -1,7 +1,7 @@
 import { Card, Text } from "@mantine/core"
 import { useRef, useState } from "react"
 import { AbstractProperty, Class } from "../../app/schema"
-import { useAbstractProperties, useNodesWithClass } from "../../state/mapSelectors"
+import { useElementsWithClass } from "../../state/mapSelectors"
 import { PropertySuggestion } from "./PropertySuggestion"
 
 interface PropertyStackProps {
@@ -10,7 +10,7 @@ interface PropertyStackProps {
 export function PropertyStack({ theClass }: PropertyStackProps) {
     const [collapsed, setCollapsed] = useState(true)
 
-    const elementsOfClass = useNodesWithClass(theClass.id, (nodesOfClass) => nodesOfClass)
+    const elementsOfClass = useElementsWithClass(theClass.element, theClass.id, (nodesOfClass) => nodesOfClass)
     const abstractPropertyIds = new Set([])//elementsOfClass ? elementsOfClass.flatMap(
         // (node: Node) => {
         //     return node.properties.map(prop => prop.abstractPropertyId)

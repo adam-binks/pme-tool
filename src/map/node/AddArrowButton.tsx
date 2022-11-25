@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core"
-import { IconArrowNarrowRight, IconArrowRight } from "@tabler/icons"
-import { MouseEvent, useContext, useRef, useState } from "react"
+import { IconArrowNarrowRight } from "@tabler/icons"
+import { MouseEvent } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Node } from "../../app/schema"
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer"
@@ -34,7 +34,7 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
             }}
             variant={addingFromThis ? "filled" : "subtle"}
             radius="xl"
-            size="md"
+            size="sm"
             color={addingFromThis ? "yellow" : "gray"}
             id={addingFromThis ? "addingArrowFromButton" : ""}
             title="Add arrow"

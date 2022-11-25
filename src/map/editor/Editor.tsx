@@ -22,24 +22,22 @@ export function Editor({
     )
 
     return (
-        <div className="pt-2">
-            <CodeMirror
-                className={clsx("doNotPan text-left")}
-                extensions={extensions(extensionParams)}
-                value={batched.value}
-                onChange={batched.onChangeValue}
-                onFocus={batched.onFocus}
-                onBlur={batched.onBlur}
-                basicSetup={{
-                    lineNumbers: false,
-                    foldGutter: false,
-                    bracketMatching: false,
-                    highlightActiveLine: false,
-                    highlightSelectionMatches: false,
-                    autocompletion: false,
-                }}
-                {...codemirrorProps}
-            />
-        </div>
+        <CodeMirror
+            className={clsx("doNotPan text-left")}
+            extensions={extensions(extensionParams)}
+            value={batched.value}
+            onChange={batched.onChangeValue}
+            onFocus={batched.onFocus}
+            onBlur={batched.onBlur}
+            basicSetup={{
+                lineNumbers: false,
+                foldGutter: false,
+                bracketMatching: false,
+                highlightActiveLine: false,
+                highlightSelectionMatches: false,
+                autocompletion: false,
+            }}
+            {...codemirrorProps}
+        />
     )
 }

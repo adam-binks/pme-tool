@@ -1,4 +1,4 @@
-import { Card, Group } from "@mantine/core";
+import { Card, clsx, Group } from "@mantine/core";
 import { MouseEvent, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -9,6 +9,8 @@ import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addArrow } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
+import { DEFAULT_ARROW_WIDTH } from "../arrow/Arrow";
+import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
@@ -16,6 +18,8 @@ import { ElementContext } from "../properties/useElementId";
 import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
+
+export const DEFAULT_NODE_WIDTH = 200 // px
 
 interface NodeProps {
     node: NodeType
@@ -58,14 +62,12 @@ export default function Node({ node }: NodeProps) {
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
             <div
-                className={`
-                ${styles.nodeWrapper}
-                ${isSelected ? styles.isSelected : ""}
-                ${isNaked ? styles.isNaked : ""}
-                ${isHovered ? styles.isHovered : ""}
-            `}
+                className={clsx("group/element absolute",
+                    isSelected && styles.isSelected,
+                    isHovered && styles.isHovered,
+                )}
                 id={`node.${node.id}`}
-                style={node && { left: node.x, top: node.y }}
+                style={{ left: node.x, top: node.y, width: node.width }}
             >
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
@@ -76,7 +78,7 @@ export default function Node({ node }: NodeProps) {
                         `${styles.nodeCard}
                         ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
                         ${isDragging ? styles.isDragging : ""}
-                        doNotPan`
+                        doNotPan group-hover/element:bg-gray-100 overflow-visible`
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {
@@ -87,6 +89,8 @@ export default function Node({ node }: NodeProps) {
                                 dest: node.id,
                                 content: "",
                                 classId: null,
+                                colour: "purple",
+                                width: DEFAULT_ARROW_WIDTH,
                             })
                             dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                         } else {
@@ -107,8 +111,10 @@ export default function Node({ node }: NodeProps) {
                     </Group>
 
                     <TextElement element={node} elementType={"node"} />
+
+                    <ResizeElement element={{id: node.id, width: node.width}} elementType={"node"} />
                 </Card>
             </div>
-        </ElementContext.Provider>
+        </ElementContext.Provider >
     )
 }

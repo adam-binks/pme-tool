@@ -7,14 +7,10 @@ import { exposeProperties, Property } from "./exposeProperties";
 import { pmelang, pmeLanguage } from './language';
 import { panel } from "./panel";
 import { dynamicHighlighting, highlighting, PropertiesToHighlight } from "./syntaxHighlighting";
+import { theme } from "./theme";
 
 const staticExtensions: Extension[] = [
-    EditorView.baseTheme({
-        ".cm-content": {
-            fontFamily: "sans-serif",
-            fontSize: "14px",
-        }
-    }),
+    theme,
     EditorView.lineWrapping,
     checkboxPlugin,
     pmelang(),

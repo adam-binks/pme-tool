@@ -13,6 +13,10 @@ const initialState: HistorySliceState = {}
 function rollupDebouncedCommand(commands: Command[], prevCommands: Command[]) {
     const prev = prevCommands && prevCommands[0]
     const command = commands[0]
+    if (command === undefined) {
+        console.error("Undefined command")
+    }
+
     if (command.debounce && prev?.debounce 
             && commands.length === 1 && prevCommands.length === 1
             && command.debounce.target === prev.debounce.target
