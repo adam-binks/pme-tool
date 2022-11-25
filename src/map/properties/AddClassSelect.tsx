@@ -22,10 +22,10 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
 
     const classId = inSchema ? element.id : (element as Node | Arrow).classId
     const theClass = inSchema ?
-        element :
-        classId && schema?.classes?.find(
+        element as Class :
+        classId ? schema?.classes?.find(
             (cls: Class) => cls.id === classId
-        )
+        ) : undefined
     if (elementType === "node" && classId && !theClass) {
         console.error(`Missing class with ID ${classId}`)
     }
@@ -84,7 +84,7 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
                 if (input) {
                     schema && !inSchema && enactAll(dispatch, mapId,
                         createNewClassAndAddToElementCommands(firestore, mapId, element as Element, elementType,
-                            input, schema.classes, []) // todo content
+                            input, schema.classes)
                     )
                     return undefined
                 }
@@ -97,7 +97,7 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
                         return
                     }
                     schema && !inSchema && enactAll(dispatch, mapId,
-                        addClassToElementCommands(firestore, mapId, element as Element, selectedClass, [])
+                        addClassToElementCommands(firestore, mapId, element as Element, theClass, selectedClass)
                     )
                 }
             }}

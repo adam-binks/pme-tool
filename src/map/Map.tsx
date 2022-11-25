@@ -100,7 +100,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                 }
                 if (monitor.getItemType() === ItemTypes.SCHEMA_NODE) {
                     const theClass = map?.schema?.classes.find((c: Class) => c.id === item.id)
-                    const node = theClass && map?.schema?.properties && getBlankNodeOfClass(theClass, map?.schema?.properties)
+                    const node = theClass && getBlankNodeOfClass(theClass)
 
                     const coords = monitor.getClientOffset()
                     coords && node && createNodeAtLocation({ clientX: coords.x, clientY: coords.y }, node)

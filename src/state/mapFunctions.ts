@@ -1,5 +1,5 @@
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
-import { AbstractProperty, Arrow, Class, Element, elementType, getElementType, Map, Node, Schema } from "../app/schema"
+import { Arrow, Class, Element, elementType, getElementType, Map, Node } from "../app/schema"
 import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
 import { getProperties, Property } from "../map/editor/exposeProperties"
@@ -39,20 +39,12 @@ export function getBlankNode(x: number = 0, y: number = 0): Node {
     }
 }
 
-export function getBlankNodeOfClass(theClass: Class, abstractProperties: AbstractProperty[]): Element {
+export function getBlankNodeOfClass(theClass: Class): Element {
+    const schemaProperties = getPropertiesFromContent(theClass.content)
+    const content = addSchemaPropertiesNotAlreadyInContent("", schemaProperties, [])
     return {
         id: generateId(),
-        content: "",
-        // properties: theClass.propertyIds.map(propId => {
-        //     const prop = abstractProperties.find(p => p.id === propId)
-        //     if (!prop) console.error(`Missing property with id ${propId}`)
-        //     return {
-        //         id: generateId(),
-        //         abstractPropertyId: propId,
-        //         type: prop ? prop.type : "text",
-        //         value: prop ? defaultPropertyValueByType[prop.type] : undefined,
-        //     }
-        // }),
+        content: content,
         classId: theClass.id,
         x: 0,
         y: 0,
@@ -81,34 +73,6 @@ export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: No
     ])
 }
 
-// NB: this is bad for multiplayer
-// if two users change diff properties on the same node simultaneously, one might overwrite the others' changes
-// I might fix this later (by moving to subcollections), but for now this is worth the save in dev time
-// this function is redundant with updateNode but we use it to make that refactoring easier
-// export function updateNodeProperties(firestore: fs, dispatch: any, mapId: string, nodeId: string,
-//     currentProperties: Property[], newProperties: Property[], debounce?: CommandDebounce) {
-//     enact(dispatch, mapId, update(firestore,
-//         `maps/${mapId}/nodes/${nodeId}`,
-//         { properties: currentProperties },
-//         { properties: newProperties }
-//     ), debounce)
-// }
-
-// export function updateElementPropertiesCommand(firestore: fs, mapId: string, elementId: string,
-//     elementType: elementType, currentProperties: Property[], newProperties: Property[]) {
-//     return update(firestore,
-//         `maps/${mapId}/${elementType}s/${elementId}`,
-//         { properties: currentProperties },
-//         { properties: newProperties }
-//     )
-// }
-
-// export function updateElementProperties(firestore: fs, dispatch: any, mapId: string, elementId: string,
-//     elementType: elementType, currentProperties: Property[], newProperties: Property[]) {
-//     enact(dispatch, mapId, updateElementPropertiesCommand(firestore, mapId, elementId,
-//         elementType, currentProperties, newProperties))
-// }
-
 export function updateSchemaCommand(firestore: fs, mapId: string, pathFromSchemaRoot: string, current: unknown, value: unknown) {
     return update(firestore, `maps/${mapId}`, { [`schema.${pathFromSchemaRoot}`]: current }, { [`schema.${pathFromSchemaRoot}`]: value })
 }
@@ -117,59 +81,27 @@ export function updateSchema(firestore: fs, dispatch: any, mapId: string, pathFr
     enact(dispatch, mapId, updateSchemaCommand(firestore, mapId, pathFromSchemaRoot, current, value))
 }
 
-export function updateAbstractProperties(firestore: fs, dispatch: any, mapId: string, currrentAbstractProperties: AbstractProperty[], newAbstractProperties: AbstractProperty[]) {
-    updateSchema(firestore, dispatch, mapId, "properties", currrentAbstractProperties, newAbstractProperties)
-}
-
-export function updateAbstractProperty(firestore: fs, dispatch: any, mapId: string, abstractProperties: AbstractProperty[], id: string, changes: Partial<AbstractProperty>) {
-    updateSchema(firestore, dispatch, mapId, "properties", abstractProperties, abstractProperties.map(
-        (prop) => prop.id === id ?
-            { ...prop, ...changes }
-            : prop
-    ))
-}
-
 export function createClassCommand(firestore: fs, mapId: string, newClass: Class, classes: Class[]) {
     return updateSchemaCommand(firestore, mapId, "classes", classes, [...classes, newClass])
 }
 
-export function addClassToElementCommands(firestore: fs, mapId: string, element: Element, newClass: Class, abstractProperties: AbstractProperty[]) {
+export function addClassToElementCommands(firestore: fs, mapId: string, element: Element, oldClass: Class | undefined, newClass: Class) {
+    const currentProperties = getPropertiesFromContent(element.content)
+    const newClassProperties = getPropertiesFromContent(newClass.content)
+    const oldClassProperties = oldClass ? getPropertiesFromContent(oldClass.content) : []
+    
+    let content = element.content
+    content = removeValuelessOldPropertiesNotInSchemaProperties(oldClassProperties, newClassProperties, currentProperties, content)
+    content = addSchemaPropertiesNotAlreadyInContent(content, newClassProperties, currentProperties)
+
     return [updateElementCommand(firestore, mapId, element.id, getElementType(element),
-        { classId: element.classId },
-        { classId: newClass.id }
+        { classId: element.classId, content: element.content },
+        { classId: newClass.id, content }
     )]
-
-    // const commands = []
-    // let updatedProperties = deepcopy(element.properties)
-
-    // // for each property on newClass, either add a new property to the node, or update an existing property
-    // newClass.propertyIds.forEach(propId => {
-    //     if (updatedProperties.some(p => p.id === propId)) {
-    //         // this will rarely happen - probably just titles and text_untitled
-    //         return
-    //     }
-    //     const prop = abstractProperties.find(prop => prop.id === propId)
-    //     if (!prop) {
-    //         console.error(`Missing abstract property with id ${propId}`)
-    //         return
-    //     }
-
-    //     const matchingProp = updatedProperties.find(p => {
-    //         const instanceProp = abstractProperties.find(a => a.id === p.abstractPropertyId)
-    //         return instanceProp?.name === prop?.name && instanceProp?.type === prop?.type
-    //     })
-    //     if (matchingProp) {
-    //         matchingProp.abstractPropertyId = propId
-    //     } else {
-    //         updatedProperties = insertPropertyToProperties(updatedProperties, makeNewProperty(prop), prop)
-    //     }
-    // })
-
-    // return commands
 }
 
 export function createNewClassAndAddToElementCommands(firestore: fs, mapId: string, element: Element, elementType: elementType,
-    className: string, classes: Class[], abstractProperties: AbstractProperty[]) {
+    className: string, classes: Class[]) {
     const newClass: Class = {
         id: generateId(),
         name: className,
@@ -178,7 +110,10 @@ export function createNewClassAndAddToElementCommands(firestore: fs, mapId: stri
     }
     return [
         createClassCommand(firestore, mapId, newClass, classes),
-        ...addClassToElementCommands(firestore, mapId, element, newClass, abstractProperties)
+        updateElementCommand(firestore, mapId, element.id, elementType, 
+            { classId: element.classId }, 
+            { classId: newClass.id }
+        )
     ]
 }
 
@@ -200,13 +135,6 @@ export function updateArrow(firestore: fs, dispatch: any, mapId: string, arrowId
 
 export function deleteArrowCommand(firestore: fs, mapId: string, arrow: Arrow) {
     return deleteDoc(firestore, `maps/${mapId}/arrows/${arrow.id}`, arrow)
-}
-
-export function createAbstractPropertyCommand(firestore: fs, mapId: string, schema: Schema, newProperty: AbstractProperty) {
-    return []
-    // return updateSchemaCommand(firestore, mapId, "properties", schema?.properties ? schema.properties : [],
-    //     [...(schema?.properties ? schema.properties : []), newProperty]
-    // )
 }
 
 export function getSyntaxTree(content: string) {
@@ -243,7 +171,9 @@ function addSchemaPropertiesNotAlreadyInContent(content: string, schemaPropertie
         const newProp = schemaProperties[i]
         if (!currentProperties.some(prop => prop.name === newProp.name)) {
             const insertAtEnd = lastStart === content.length
-            const propString = (insertAtEnd ? "\n" : "") + blankPropertyString(newProp) + (!insertAtEnd ? "\n" : "")
+            const propString = ((insertAtEnd && content.trim() !== "") ? "\n" : "") 
+                + blankPropertyString(newProp) 
+                + (!insertAtEnd ? "\n" : "")
             content = content.slice(0, lastStart) + propString + content.slice(lastStart)
         }
         lastStart = content.indexOf(newProp.content)

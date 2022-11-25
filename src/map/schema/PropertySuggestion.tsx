@@ -2,7 +2,7 @@ import { ActionIcon, Card, Group } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch } from "../../app/hooks";
-import { AbstractProperty, Class, Element } from "../../app/schema";
+import { Class, Element } from "../../app/schema";
 import { enactAll } from "../../etc/firestoreHistory";
 import { useSchema } from "../../state/mapSelectors";
 import { useMapId } from "../Map";
@@ -10,7 +10,7 @@ import styles from "./SchemaPane.module.css";
 
 interface PropertySuggestionProps {
     theClass: Class
-    property: AbstractProperty
+    property: undefined
     collapsed: boolean
     index: number
     elementsOfClass: Element[]

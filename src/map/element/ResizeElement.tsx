@@ -35,7 +35,6 @@ export function ResizeElement({
                 e.stopPropagation()
             }}
             draggable
-            // onDragEnd={}
             onDragEnd={(e) => {
                 if (!dragStart) {
                     console.error("Error: dragStart not set")

@@ -50,18 +50,3 @@ export interface Class {
     content: string
     element: elementType
 }
-
-export interface AbstractProperty {
-    id: string
-    name: string
-    type: PropertyType
-}
-
-export type PropertyType = "text" | "checkbox" | "title" | "text_untitled"
-
-export const defaultPropertyValueByType = {
-    text: "",
-    title: "",
-    text_untitled: "",
-    checkbox: true,
-}

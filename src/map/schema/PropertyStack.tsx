@@ -1,51 +1,53 @@
-import { Card, Text } from "@mantine/core"
-import { useRef, useState } from "react"
-import { AbstractProperty, Class } from "../../app/schema"
-import { useElementsWithClass } from "../../state/mapSelectors"
-import { PropertySuggestion } from "./PropertySuggestion"
+// import { Card, Text } from "@mantine/core"
+// import { useRef, useState } from "react"
+import { Class } from "../../app/schema"
+// import { useElementsWithClass } from "../../state/mapSelectors"
+// import { PropertySuggestion } from "./PropertySuggestion"
 
 interface PropertyStackProps {
     theClass: Class
 }
 export function PropertyStack({ theClass }: PropertyStackProps) {
-    const [collapsed, setCollapsed] = useState(true)
-
-    const elementsOfClass = useElementsWithClass(theClass.element, theClass.id, (nodesOfClass) => nodesOfClass)
-    const abstractPropertyIds = new Set([])//elementsOfClass ? elementsOfClass.flatMap(
-        // (node: Node) => {
-        //     return node.properties.map(prop => prop.abstractPropertyId)
-        //         .filter(propId => !theClass.propertyIds.includes(propId))
-        // }
-    // ) as string[] : [])
-
-    const abstractProperties: any = []// useAbstractProperties(props => props.filter(
-    //     (p: AbstractProperty) => abstractPropertyIds.has(p.id)
-    // ))
-
-    const topOfStackRef = useRef<HTMLDivElement>(null)
-
-    if (!(abstractProperties?.length > 0)) return <></>
-
-    return (
-        <Card.Section
-            onMouseEnter={() => setCollapsed(false)}
-            onMouseLeave={() => setCollapsed(true)}
-            p={"xs"}
-            m={5}
-            style={{background: "#eee", borderRadius: "10px"}}
-        >
-            <Text color="dimmed" align="center" size={"xs"}>Add to all {theClass.name}s</Text>
-            {abstractProperties.map((property: AbstractProperty, index: number) =>
-                <PropertySuggestion
-                    topOfStackRef={topOfStackRef}
-                    key={property.id}
-                    property={property}
-                    collapsed={collapsed}
-                    index={index}
-                    theClass={theClass}
-                    elementsOfClass={elementsOfClass}
-                />
-            )}
-        </Card.Section>
-    )
+    return <></>
 }
+//     const [collapsed, setCollapsed] = useState(true)
+
+//     const elementsOfClass = useElementsWithClass(theClass.element, theClass.id, (nodesOfClass) => nodesOfClass)
+//     const abstractPropertyIds = new Set([])//elementsOfClass ? elementsOfClass.flatMap(
+//         // (node: Node) => {
+//         //     return node.properties.map(prop => prop.abstractPropertyId)
+//         //         .filter(propId => !theClass.propertyIds.includes(propId))
+//         // }
+//     // ) as string[] : [])
+
+//     const abstractProperties: any = []// useAbstractProperties(props => props.filter(
+//     //     (p: AbstractProperty) => abstractPropertyIds.has(p.id)
+//     // ))
+
+//     const topOfStackRef = useRef<HTMLDivElement>(null)
+
+//     if (!(abstractProperties?.length > 0)) return <></>
+
+//     return (
+//         <Card.Section
+//             onMouseEnter={() => setCollapsed(false)}
+//             onMouseLeave={() => setCollapsed(true)}
+//             p={"xs"}
+//             m={5}
+//             style={{background: "#eee", borderRadius: "10px"}}
+//         >
+//             <Text color="dimmed" align="center" size={"xs"}>Add to all {theClass.name}s</Text>
+//             {/* {abstractProperties.map((property: AbstractProperty, index: number) =>
+//                 <PropertySuggestion
+//                     topOfStackRef={topOfStackRef}
+//                     key={property.id}
+//                     property={property}
+//                     collapsed={collapsed}
+//                     index={index}
+//                     theClass={theClass}
+//                     elementsOfClass={elementsOfClass}
+//                 />
+//             )} */}
+//         </Card.Section>
+//     )
+// }
