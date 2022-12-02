@@ -2,6 +2,7 @@ import { clsx } from "@mantine/core"
 import { IconPencil } from "@tabler/icons"
 import { Arrow } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
+import { ArrowDot } from "../element/ArrowDot"
 import { ResizeElement } from "../element/ResizeElement"
 import { TextElement } from "../element/TextElement"
 import { AddClassSelect } from "../properties/AddClassSelect"
@@ -25,12 +26,13 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
+                arrowId={arrow.id}
                 source={source}
                 dest={dest}
                 colour={colour}
             >
                 <div
-                    className={clsx(`bg-white border-4 rounded-xl hover:border-opacity-100 group/element`,
+                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100`,
                         emptyMode && "w-8 opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                         colour === "indigo" && "border-indigo-500",
@@ -46,7 +48,7 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
                         zoomedOutMode={false}
                     />}
                     <div>
-
+                        <ArrowDot element={arrow} property={undefined} />
                         {emptyMode ?
                             <IconPencil className={`stroke-${colour}-500 opacity-70 hover:opacity-100`} />
                             :

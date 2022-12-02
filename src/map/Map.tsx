@@ -5,9 +5,10 @@ import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { Class, Node } from "../app/schema";
+import { Arrow, ArrowEnd, Class, Node } from "../app/schema";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
+import { LocalElement, LocalMapState } from "../state/localReducer";
 import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../state/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
@@ -40,8 +41,10 @@ export default function Map({ mapId, paneIndex }: MapProps) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
-    const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`])
-    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`])
+    const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`]) as { [key: string]: Node }
+    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`]) as { [key: string]: Arrow }
+    const localElements = (useAppSelector(state => 
+        state.local.find((l: LocalMapState) => l.mapId === mapId)?.elements) || []) as LocalElement[]
 
     const [selection, setSelection] = useState<Selection>(emptySelection)
 
@@ -198,17 +201,11 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                                             key={node.id}
                                         />
                                     )}
-                                    {arrows && Object.values(arrows).map((arrow: any) => {
+                                    {arrows && (Object.values(arrows)).map((arrow) => {
                                         if (!arrow || !nodes) return
-                                        const sourceNode = nodes[arrow.source]
-                                        const destNode = nodes[arrow.dest]
-                                        if (!sourceNode || !destNode) {
-                                            console.warn(`Missing parts of arrow: `, arrow)
-                                            return
-                                        }
                                         return <ArrowComponent
-                                            source={{ x: sourceNode.x, y: sourceNode.y }}
-                                            dest={{ x: destNode.x, y: destNode.y }}
+                                            source={getArrowEndElementCoords(arrow.source, localElements)}
+                                            dest={getArrowEndElementCoords(arrow.dest, localElements)}
                                             arrow={arrow}
                                             key={arrow.id}
                                             strokeWidthScaler={zoomLevel}
@@ -231,4 +228,15 @@ export default function Map({ mapId, paneIndex }: MapProps) {
             </ZoomedOutMode.Provider>
         </MapContext.Provider>
     )
+}
+
+function getArrowEndElementCoords(arrowEnd: ArrowEnd, localElements: LocalElement[]): { x: number, y: number } {
+    const element = localElements.find((e) => e.id === arrowEnd.elementId && e.elementType === arrowEnd.elementType)
+    if (element && element.arrowDot) {
+        return element.arrowDot
+    } else {
+        // console.error(`Invalid element type or missing arrow dot for : `, arrowEnd, element, localElements)
+        return { x: 0, y: 0 }
+    }
+    
 }

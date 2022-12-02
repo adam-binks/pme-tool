@@ -15,3 +15,8 @@ export function forceCast<T>(input: any): T {
 export function deepcopy<T>(input: T) : T {
     return JSON.parse(JSON.stringify(input))
 }
+
+export function truthyLog(...args: any[]) {
+    console.log(...args)
+    return true
+}

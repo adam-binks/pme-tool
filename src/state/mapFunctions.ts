@@ -53,7 +53,7 @@ export function getBlankNodeOfClass(theClass: Class): Element {
 }
 
 export function addNode(firestore: fs, dispatch: any, mapId: string, node: Node) {
-    enact(dispatch, mapId, add(firestore, `maps/${mapId}/nodes/${node.id}`, node))
+    enact(dispatch, mapId, add(firestore, `maps/${mapId}/node s/${node.id}`, node))
 }
 
 export function updateNode(firestore: fs, dispatch: any, mapId: string, nodeId: string, current: Partial<Node>, changes: Partial<Node>) {
@@ -68,9 +68,15 @@ export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: No
     const arrowsList = Object.values(arrows ? arrows : {})
     enactAll(dispatch, mapId, [
         deleteDoc(firestore, `maps/${mapId}/nodes/${node.id}`, node),
-        ...arrowsList.filter(arrow => arrow && (arrow.source === node.id || arrow.dest === node.id))
+        ...arrowsList.filter(arrow => arrow && arrowTouchesElement(arrow, node))
             .map(arrow => deleteArrowCommand(firestore, mapId, arrow))
     ])
+}
+
+export function arrowTouchesElement(arrow: Arrow, element: Element) {
+    const elementType = getElementType(element)
+    return (arrow.source.elementType === elementType && arrow.source.elementId === element.id) 
+        || (arrow.dest.elementType === elementType && arrow.dest.elementId === element.id)
 }
 
 export function updateSchemaCommand(firestore: fs, mapId: string, pathFromSchemaRoot: string, current: unknown, value: unknown) {

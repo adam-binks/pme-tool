@@ -20,15 +20,13 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
 
     return (
         <ActionIcon
-            // style={{
-            //     position: "absolute",
-            //     right: -18,
-            //     bottom: 10,
-            // }}
             onClick={(e: MouseEvent) => {
                 dispatch(setAddingArrowFrom({
                     mapId,
-                    addingArrowFrom: addingFromThis ? undefined : node.id
+                    addingArrowFrom: addingFromThis ?
+                        undefined
+                        :
+                        { elementId: node.id, elementType: "node", property: null }
                 }))
                 addingFromThis && e.stopPropagation()
             }}

@@ -17,15 +17,19 @@ const getBlankClassPartial = (): Partial<LocalClass> => ({ properties: [] })
 export type LocalElement = LocalNode | LocalArrow
 export type LocalNode = {
     id: string,
+    elementType: "node",
     classId: string,
     properties: Property[],
     height: number,
     width: number,
+    arrowDot: { x: number, y: number },
 }
 export type LocalArrow = {
     id: string,
+    elementType: "arrow",
     classId: string,
     properties: Property[],
+    arrowDot: { x: number, y: number },
 }
 
 export type LocalState = LocalMapState[]
@@ -52,10 +56,16 @@ export const localSlice = createSlice({
             const existingClass = map.classes.find(c => c.id === action.payload.classId)
             map.classes = map.classes.filter(c => c !== existingClass)
             map.classes.push({ ...(existingClass || getBlankClassPartial()), ...action.payload.class } as LocalClass)
+        },
+        setLocalElement(state, action: PayloadAction<{ mapId: string, elementId: string, element: Partial<LocalElement> }>) {
+            const map = getOrCreateLocalMap(state, action.payload.mapId)
+            const existingElement = map.elements.find(e => e.id === action.payload.elementId)
+            map.elements = map.elements.filter(e => e !== existingElement)
+            map.elements.push({ ...(existingElement || { id: action.payload.elementId }), ...action.payload.element } as LocalElement)
         }
     }
 })
-export const { setLocalClass } = localSlice.actions
+export const { setLocalClass, setLocalElement } = localSlice.actions
 
 
 export const useLocalClass = (mapId: string, classId: string): LocalClass | undefined =>
@@ -68,6 +78,11 @@ export const useClassProperties = (mapId: string, classId: string | null): Prope
         classId ? (
             state.local.find((map: LocalMapState) => map.mapId === mapId)?.classes.find((c: LocalClass) => c.id === classId)?.properties || []
         ) : []
+    )
+
+export const useLocalElement = (mapId: string, elementId: string): LocalElement | undefined =>
+    useAppSelector(state =>
+        state.local.find((map: LocalMapState) => map.mapId === mapId)?.elements.find((e: LocalElement) => e.id === elementId)
     )
 
 export default localSlice.reducer

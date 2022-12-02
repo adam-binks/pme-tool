@@ -1,5 +1,5 @@
 import { Card, clsx, Group } from "@mantine/core";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -7,9 +7,11 @@ import { Node as NodeType } from "../../app/schema";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
+import { setLocalElement } from "../../state/localReducer";
 import { addArrow } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
 import { DEFAULT_ARROW_WIDTH } from "../arrow/Arrow";
+import { ArrowDot } from "../element/ArrowDot";
 import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
@@ -47,6 +49,18 @@ export default function Node({ node }: NodeProps) {
         }),
         [node],
     )
+
+    useEffect(() => {
+        const arrowDotOffset = 12
+        dispatch(setLocalElement({
+            mapId,
+            elementId: node.id,
+            element: {
+                elementType: "node",
+                arrowDot: { x: node.x + arrowDotOffset, y: node.y + arrowDotOffset }
+            }
+        }))
+    }, [node.x, node.y])
 
     const { isSelected, onMousedownSelectable } = useSelectable(node.id, "node")
     const [isHovered, setIsHovered] = useState(false)
@@ -86,7 +100,7 @@ export default function Node({ node }: NodeProps) {
                             addArrow(firestore, dispatch, mapId, {
                                 id: generateId(),
                                 source: addingArrowFrom,
-                                dest: node.id,
+                                dest: { elementId: node.id, elementType: "node", property: null },
                                 content: "",
                                 classId: null,
                                 colour: "purple",
@@ -105,6 +119,8 @@ export default function Node({ node }: NodeProps) {
                     {node && (isSelected || node.classId) &&
                         <AddClassSelect element={node} elementType={"node"} zoomedOutMode={zoomedOutMode} />}
 
+                    <ArrowDot element={node} property={undefined} />
+
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {node && <AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} theClass={undefined} />
@@ -112,7 +128,7 @@ export default function Node({ node }: NodeProps) {
 
                     <TextElement element={node} elementType={"node"} />
 
-                    <ResizeElement element={{id: node.id, width: node.width}} elementType={"node"} />
+                    <ResizeElement element={{ id: node.id, width: node.width }} elementType={"node"} />
                 </Card>
             </div>
         </ElementContext.Provider >

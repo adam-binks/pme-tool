@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { ArrowEnd } from "../app/schema"
 
-export type Pane = { id: string, addingArrowFrom: string | undefined }
+export type Pane = { id: string, addingArrowFrom: ArrowEnd | undefined }
 export type PanesState = Pane[]
 
 const initialState: PanesState = [
@@ -20,7 +21,7 @@ export const paneSlice = createSlice({
         closePane: (state, action: PayloadAction<number>) => {
             state.splice(action.payload, 1) // remove element at index
         },
-        setAddingArrowFrom: (state, action: PayloadAction<{ mapId: string, addingArrowFrom: string | undefined }>) => {
+        setAddingArrowFrom: (state, action: PayloadAction<{ mapId: string, addingArrowFrom: ArrowEnd | undefined }>) => {
             return state.map(pane => pane.id === action.payload.mapId ?
                 { ...pane, addingArrowFrom: action.payload.addingArrowFrom }
                 : pane)

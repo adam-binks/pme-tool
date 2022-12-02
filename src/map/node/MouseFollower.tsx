@@ -1,4 +1,3 @@
-import Xarrow from "react-xarrows"
 import { useAppSelector } from "../../app/hooks"
 import { Pane } from "../../state/paneReducer"
 import { useMapId } from "../Map"
@@ -23,14 +22,14 @@ export function MouseFollower({ strokeWidthScaler, mouseX, mouseY }: MouseFollow
                     top: mouseY, 
                     pointerEvents: "none"
                 }} />
-                <Xarrow
+                {/* <Xarrow
                     start={`addingArrowFromButton`}
                     end={"mouseFollower"}
                     strokeWidth={3 * strokeWidthScaler}
                     curveness={0}
                     divContainerStyle={{ pointerEvents: "none" }}
                     SVGcanvasStyle={{ pointerEvents: "none" }}
-                />
+                /> */}
             </>}
         </>
     )

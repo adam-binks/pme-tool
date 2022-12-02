@@ -1,5 +1,5 @@
 import { useAppSelector } from "../app/hooks"
-import { Element, elementType, getElementType, Node } from "../app/schema"
+import { Arrow, ArrowEndProperty, Element, elementType } from "../app/schema"
 import { useMapId } from "../map/Map"
 import { useElementId } from "../map/properties/useElementId"
 
@@ -20,8 +20,16 @@ export function useNodes(selector: (nodes: any) => any) {
     return useElements("node", selector)
 }
 
-export function useArrows(selector: (arrows: any) => any) {
+export function useArrows(selector: (arrows: {[key: string]: Arrow}) => any) {
     return useElements("arrow", selector)
+}
+
+export function useConnectedArrows(elementId: string, elementType: elementType, property: ArrowEndProperty | undefined) {
+    return useArrows((arrows) => Object.values(arrows).filter(
+        (arrow) =>  [arrow.dest, arrow.source].some(
+            (end) => end.elementId === elementId && end.elementType === elementType && end.property == property
+        )
+    ))
 }
 
 export function useElementsWithClass(elementType: elementType, classId: string, selector: (elementsOfClass: any) => any) {

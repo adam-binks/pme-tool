@@ -21,11 +21,22 @@ export interface Node {
 export interface Arrow {
     id: string
     classId: string | null
-    colour: string
+    colour: string // todo move to class
     content: string
     width: number
-    source: string
-    dest: string
+    source: ArrowEnd
+    dest: ArrowEnd
+}
+
+export interface ArrowEnd {
+    elementType: elementType
+    elementId: string
+    property: ArrowEndProperty | null
+}
+
+export interface ArrowEndProperty {
+    name: string
+    index: string
 }
 
 export type Element = Node | Arrow
