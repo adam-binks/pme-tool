@@ -17,7 +17,6 @@ import { TextElement } from "../element/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
-import { AddArrowButton } from "./AddArrowButton";
 import styles from "./Node.module.css";
 import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
@@ -76,7 +75,7 @@ export default function Node({ node }: NodeProps) {
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
             <div
-                className={clsx("group/element absolute",
+                className={clsx("group/element absolute element-container",
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
                 )}
@@ -119,10 +118,11 @@ export default function Node({ node }: NodeProps) {
                     {node && (isSelected || node.classId) &&
                         <AddClassSelect element={node} elementType={"node"} zoomedOutMode={zoomedOutMode} />}
 
-                    <ArrowDot element={node} property={undefined} />
+                    <div className="absolute -translate-x-1/2 -translate-y-1/2">
+                        <ArrowDot element={node} property={undefined} />
+                    </div>
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        {node && <AddArrowButton node={node} />}
                         <NodeOverFlowMenu node={node} theClass={undefined} />
                     </Group>
 

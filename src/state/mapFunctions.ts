@@ -53,7 +53,7 @@ export function getBlankNodeOfClass(theClass: Class): Element {
 }
 
 export function addNode(firestore: fs, dispatch: any, mapId: string, node: Node) {
-    enact(dispatch, mapId, add(firestore, `maps/${mapId}/node s/${node.id}`, node))
+    enact(dispatch, mapId, add(firestore, `maps/${mapId}/nodes/${node.id}`, node))
 }
 
 export function updateNode(firestore: fs, dispatch: any, mapId: string, nodeId: string, current: Partial<Node>, changes: Partial<Node>) {

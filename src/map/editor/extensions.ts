@@ -6,6 +6,7 @@ import { checkboxPlugin } from './checkbox';
 import { exposeProperties, Property } from "./exposeProperties";
 import { pmelang, pmeLanguage } from './language';
 import { panel } from "./panel";
+import { arrowDotPlugin } from "./arrowDotWidgets";
 import { dynamicHighlighting, highlighting, PropertiesToHighlight } from "./syntaxHighlighting";
 import { theme } from "./theme";
 
@@ -16,11 +17,12 @@ const staticExtensions: Extension[] = [
     pmelang(),
     pmeLanguage.data.of({ closeBrackets: { brackets: ["="] } }),
     highlighting,
+    arrowDotPlugin,
     autocompletion({
         closeOnBlur: false,
     }),
-    autocomplete(),
-    autocompleteTheme,
+    // autocomplete(),
+    // autocompleteTheme,
     panel(),
 ]
 

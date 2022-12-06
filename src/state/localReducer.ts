@@ -23,6 +23,7 @@ export type LocalNode = {
     height: number,
     width: number,
     arrowDot: { x: number, y: number },
+    propertyArrowDotHeights: { [property: string]: number },
 }
 export type LocalArrow = {
     id: string,
@@ -30,6 +31,7 @@ export type LocalArrow = {
     classId: string,
     properties: Property[],
     arrowDot: { x: number, y: number },
+    propertyArrowDotHeights: { [property: string]: number },
 }
 
 export type LocalState = LocalMapState[]
@@ -62,10 +64,22 @@ export const localSlice = createSlice({
             const existingElement = map.elements.find(e => e.id === action.payload.elementId)
             map.elements = map.elements.filter(e => e !== existingElement)
             map.elements.push({ ...(existingElement || { id: action.payload.elementId }), ...action.payload.element } as LocalElement)
+        },
+        setPropertyArrowDotHeight(state, action: PayloadAction<{ mapId: string, elementId: string, property: string, height: number }>) {
+            const map = getOrCreateLocalMap(state, action.payload.mapId)
+            const existingElement = map.elements.find(e => e.id === action.payload.elementId)
+            map.elements = map.elements.filter(e => e !== existingElement)
+            map.elements.push({
+                ...(existingElement || { id: action.payload.elementId }),
+                propertyArrowDotHeights: {
+                    ...(existingElement?.propertyArrowDotHeights || {}),
+                    [action.payload.property]: action.payload.height,
+                },
+            } as LocalElement)
         }
     }
 })
-export const { setLocalClass, setLocalElement } = localSlice.actions
+export const { setLocalClass, setLocalElement, setPropertyArrowDotHeight } = localSlice.actions
 
 
 export const useLocalClass = (mapId: string, classId: string): LocalClass | undefined =>
@@ -80,9 +94,9 @@ export const useClassProperties = (mapId: string, classId: string | null): Prope
         ) : []
     )
 
-export const useLocalElement = (mapId: string, elementId: string): LocalElement | undefined =>
+export const useLocalElement = (mapId: string, elementId: string, selector: (element: LocalElement | undefined) => any): any =>
     useAppSelector(state =>
-        state.local.find((map: LocalMapState) => map.mapId === mapId)?.elements.find((e: LocalElement) => e.id === elementId)
+        selector(state.local.find((map: LocalMapState) => map.mapId === mapId)?.elements.find((e: LocalElement) => e.id === elementId))
     )
 
 export default localSlice.reducer

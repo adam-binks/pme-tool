@@ -36,7 +36,7 @@ export interface ArrowEnd {
 
 export interface ArrowEndProperty {
     name: string
-    index: string
+    index: number
 }
 
 export type Element = Node | Arrow

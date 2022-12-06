@@ -12,7 +12,15 @@ export function useElements(elementType: elementType, selector: (elements: any) 
     const mapId = useMapId()
     const index = `${elementType}s.${mapId}`
     return useFirestoreData(
-        (firestoreData) => firestoreData[index] && selector(firestoreData[index])
+        (firestoreData) => {
+            const elements: { [key: string]: Element } = firestoreData[index]
+            if (elements) {
+                const elementsFiltered = Object.fromEntries(
+                    Object.entries(elements).filter(([key, element]) => element !== undefined && element !== null)
+                )
+                return selector(elementsFiltered)
+            }
+        }
     )
 }
 
@@ -20,16 +28,22 @@ export function useNodes(selector: (nodes: any) => any) {
     return useElements("node", selector)
 }
 
-export function useArrows(selector: (arrows: {[key: string]: Arrow}) => any) {
+export function useArrows(selector: (arrows: { [key: string]: Arrow }) => any) {
     return useElements("arrow", selector)
 }
 
-export function useConnectedArrows(elementId: string, elementType: elementType, property: ArrowEndProperty | undefined) {
+export function useConnectedArrows(elementId: string, elementType: elementType, property: ArrowEndProperty | undefined | "all") {
     return useArrows((arrows) => Object.values(arrows).filter(
-        (arrow) =>  [arrow.dest, arrow.source].some(
-            (end) => end.elementId === elementId && end.elementType === elementType && end.property == property
+        (arrow) => [arrow.dest, arrow.source].some(
+            (end) => end.elementId === elementId
+                && end.elementType === elementType
+                && (property === "all" || eqArrowEndProperty(end?.property ?? undefined, property))
         )
     ))
+}
+
+export function eqArrowEndProperty(a: ArrowEndProperty | undefined, b: ArrowEndProperty | undefined) {
+    return a === b || (a && b && a.index === b.index && a.name === b.name)
 }
 
 export function useElementsWithClass(elementType: elementType, classId: string, selector: (elementsOfClass: any) => any) {

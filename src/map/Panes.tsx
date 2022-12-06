@@ -73,7 +73,7 @@ export default function Panes() {
                 direction="horizontal"
                 aria-roledescription={`Split screen into ${panes.length}`}
                 key={panes.length}
-                style={{overflow: "auto"}}
+                style={{ overflow: "auto" }}
             >
                 {panes.map((pane: any, paneIndex: number) =>
                     <Map

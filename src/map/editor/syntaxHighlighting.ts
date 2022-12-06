@@ -23,17 +23,17 @@ export const getPropertyMatcher = (propertiesToHighlight: PropertiesToHighlight)
 
 export const dynamicHighlighting = (propertiesToHighlight: PropertiesToHighlight) => [
     ViewPlugin.fromClass(class {
-        placeholders: DecorationSet
+        decorations: DecorationSet
         propertyMatcher: MatchDecorator
         constructor(view: EditorView) {
             this.propertyMatcher = getPropertyMatcher(propertiesToHighlight)
-            this.placeholders = this.propertyMatcher.createDeco(view)
+            this.decorations = this.propertyMatcher.createDeco(view)
         }
         update(update: ViewUpdate) {
-            this.placeholders = this.propertyMatcher.updateDeco(update, this.placeholders)
+            this.decorations = this.propertyMatcher.updateDeco(update, this.decorations)
         }
     }, {
-        decorations: instance => instance.placeholders,
+        decorations: instance => instance.decorations,
     }),
     EditorView.baseTheme({
         ".cm-property": {

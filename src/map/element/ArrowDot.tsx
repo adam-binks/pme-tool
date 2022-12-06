@@ -1,9 +1,12 @@
 import { clsx } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
+import { useEffect } from "react"
 import { useFirestore } from "react-redux-firebase"
+import { useThrottle } from "use-lodash-debounce-throttle"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { ArrowEnd, ArrowEndProperty, Element, getElementType } from "../../app/schema"
 import { generateId } from "../../etc/helpers"
+import { setPropertyArrowDotHeight, useLocalElement } from "../../state/localReducer"
 import { addArrow } from "../../state/mapFunctions"
 import { useConnectedArrows } from "../../state/mapSelectors"
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer"
@@ -21,27 +24,53 @@ export function ArrowDot({
     const firestore = useFirestore()
     const mapId = useMapId()
     const elementType = getElementType(element)
+    const localDotHeights : { [property: string]: number } | undefined = useLocalElement(
+        mapId, element.id, (localElement) => localElement?.propertyArrowDotHeights
+    )
 
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     ) as ArrowEnd | undefined
-    const addingFromThis = addingArrowFrom?.elementId === element.id &&
-        addingArrowFrom.elementType === elementType
+    const addingFromThis = addingArrowFrom?.elementId === element.id
+        && addingArrowFrom.elementType === elementType
+        && addingArrowFrom.property?.name === property?.name
 
     const connectedArrows = useConnectedArrows(element.id, elementType, property)
+    const { hovered, ref } = useHover()
 
-    // is it hovered, use mantine
-    const {hovered, ref} = useHover()
+    const throttledUpdateLocalElement = useThrottle((currentRef: HTMLDivElement, localDotHeights: { [property: string]: number }) => {
+        const container = currentRef?.closest(".element-container")
+        if (!property?.name || !container) return
+
+        const globalY = currentRef?.getBoundingClientRect()?.y
+        const localY = globalY - container.getBoundingClientRect().y
+
+        const prevY = localDotHeights?.[property.name]
+        if (prevY && Math.abs(localY - prevY) < 1) return // don't update for same value or floating point imprecision
+
+        dispatch(setPropertyArrowDotHeight({
+            mapId,
+            elementId: element.id,
+            property: property.name,
+            height: localY,
+        }))
+    })
+    useEffect(() => {
+        throttledUpdateLocalElement(ref.current, localDotHeights)
+    }, [ref.current, localDotHeights, element.content])
 
     return (
-        <div
+        <span
             ref={ref}
             className={clsx(
-                "absolute z-20 w-3 h-3 opacity-70 rounded-full -translate-x-1/2 -translate-y-1/2 group/dot",
-                connectedArrows?.length > 0 ? "bg-pink-600" : "bg-pink-500",
-                "flex items-center justify-center text-white",
+                "w-3 h-3 opacity-70 rounded-full group/dot",
+                addingFromThis ?
+                    "bg-yellow-600" :
+                    connectedArrows?.length > 0 ? 
+                        "bg-purple-600" :
+                        property ? "bg-purple-400" : "bg-purple-500",
+                "inline-flex items-center justify-center text-white",
                 "hover:opacity-100 hover:scale-125",
-                addingFromThis && "bg-yellow-600",
                 addingArrowFrom && !addingFromThis && "scale-150 opacity-80",
             )}
             style={{ fontSize: "0.6rem" }}
@@ -69,7 +98,7 @@ export function ArrowDot({
                 e.stopPropagation()
             }}
         >
-            {!hovered && connectedArrows?.length > 0 ? connectedArrows.length : "+" }
-        </div>
+            {!hovered && connectedArrows?.length > 0 ? connectedArrows.length : "+"}
+        </span>
     )
 }

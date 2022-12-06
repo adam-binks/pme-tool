@@ -1,10 +1,12 @@
 import { clsx } from "@mantine/core"
 import { IconPencil } from "@tabler/icons"
-import { Arrow } from "../../app/schema"
+import { Arrow, ArrowEnd } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
+import { LocalElement, useLocalElement } from "../../state/localReducer"
 import { ArrowDot } from "../element/ArrowDot"
 import { ResizeElement } from "../element/ResizeElement"
 import { TextElement } from "../element/TextElement"
+import { useMapId } from "../Map"
 import { AddClassSelect } from "../properties/AddClassSelect"
 import { ElementContext } from "../properties/useElementId"
 import { ArrowOverFlowMenu } from "./ArrowOverflowMenu"
@@ -14,12 +16,34 @@ export const DEFAULT_ARROW_WIDTH = 112 // px
 
 interface ArrowProps {
     arrow: Arrow
-    source: { x: number, y: number }
-    dest: { x: number, y: number }
     strokeWidthScaler: number
 }
-export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler }: ArrowProps) {
+export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps) {
     const { isSelected, onMousedownSelectable } = useSelectable(arrow.id, "arrow")
+    const mapId = useMapId()
+    
+    function getCoords(arrowEnd: ArrowEnd, localElement: LocalElement): { x: number, y: number } | undefined {
+        if (localElement) {
+            if (arrowEnd.property) {
+                const yOffset = localElement?.propertyArrowDotHeights?.[arrowEnd.property.name] || 0
+                return {
+                    x: localElement.arrowDot.x,
+                    y: localElement.arrowDot.y + yOffset
+                }
+            } else {
+                return localElement.arrowDot
+            }
+        }
+    }
+    const sourceLocalElement = useLocalElement(mapId, arrow.source.elementId, (localElement) => localElement)
+    const source = sourceLocalElement && getCoords(arrow.source, sourceLocalElement)
+    
+    const destLocalElement = useLocalElement(mapId, arrow.dest.elementId, (localElement) => localElement)
+    const dest = destLocalElement && getCoords(arrow.dest, destLocalElement)
+
+    if (!source || !dest) {
+        return <></>
+    }
 
     const emptyMode = !arrow.content && !isSelected
     const colour = isSelected ? "indigo" : arrow.colour
@@ -32,7 +56,7 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
                 colour={colour}
             >
                 <div
-                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100`,
+                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container`,
                         emptyMode && "w-8 opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                         colour === "indigo" && "border-indigo-500",
@@ -48,7 +72,9 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
                         zoomedOutMode={false}
                     />}
                     <div>
-                        <ArrowDot element={arrow} property={undefined} />
+                        <div className="absolute -translate-x-1/2 -translate-y-1/2 ">
+                            <ArrowDot element={arrow} property={undefined} />
+                        </div>
                         {emptyMode ?
                             <IconPencil className={`stroke-${colour}-500 opacity-70 hover:opacity-100`} />
                             :
@@ -61,7 +87,7 @@ export default function ArrowComponent({ arrow, source, dest, strokeWidthScaler 
                                     elementType="arrow"
                                     codemirrorProps={(isSelected && !arrow.content) ? { placeholder: "Content..." } : {}}
                                 />
-                                <ResizeElement element={{id: arrow.id, width: arrow.width}} elementType={"arrow"} />
+                                <ResizeElement element={{ id: arrow.id, width: arrow.width }} elementType={"arrow"} />
                             </>
                         }
                     </div>
