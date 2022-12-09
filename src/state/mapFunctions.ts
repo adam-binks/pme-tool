@@ -87,14 +87,13 @@ export function updateSchema(firestore: fs, dispatch: any, mapId: string, pathFr
     enact(dispatch, mapId, updateSchemaCommand(firestore, mapId, pathFromSchemaRoot, current, value))
 }
 
-export function createClassCommand(firestore: fs, mapId: string, newClass: Class, classes: Class[]) {
-    return updateSchemaCommand(firestore, mapId, "classes", classes, [...classes, newClass])
+export function createClassesCommand(firestore: fs, mapId: string, newClasses: Class[], classes: Class[]) {
+    return updateSchemaCommand(firestore, mapId, "classes", classes, [...classes, ...newClasses])
 }
 
 export function deleteClassCommands(firestore: fs, mapId: string, theClass: Class, classes: Class[], elementsOfClass: Element[]) {
-    console.log(elementsOfClass)
     return [
-        ...elementsOfClass.map(element => addClassToElementCommand(firestore, mapId, element, theClass, undefined)),
+        ...(elementsOfClass.map(element => addClassToElementCommand(firestore, mapId, element, theClass, undefined)) ?? []),
         updateSchemaCommand(firestore, mapId, "classes", classes, classes.filter(c => c.id !== theClass.id)),
     ]
 }
@@ -123,7 +122,7 @@ export function createNewClassAndAddToElementCommands(firestore: fs, mapId: stri
         content: "",
     }
     return [
-        createClassCommand(firestore, mapId, newClass, classes),
+        createClassesCommand(firestore, mapId, [newClass], classes),
         updateElementCommand(firestore, mapId, element.id, elementType,
             { classId: element.classId },
             { classId: newClass.id }

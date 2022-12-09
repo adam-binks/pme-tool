@@ -63,7 +63,7 @@ export function ArrowDot({
         <span
             ref={ref}
             className={clsx(
-                "w-3 h-3 opacity-70 rounded-full group/dot",
+                "basis-3 h-3 opacity-70 rounded-full group/dot",
                 addingFromThis ?
                     "bg-yellow-600" :
                     connectedArrows?.length > 0 ? 

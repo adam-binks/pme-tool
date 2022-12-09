@@ -4,6 +4,7 @@ import { Arrow, ArrowEnd } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
 import { LocalElement, useLocalElement } from "../../state/localReducer"
 import { ArrowDot } from "../element/ArrowDot"
+import { ElementHeader } from "../element/ElementHeader"
 import { ResizeElement } from "../element/ResizeElement"
 import { TextElement } from "../element/TextElement"
 import { useMapId } from "../Map"
@@ -66,22 +67,23 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                     onMouseDown={onMousedownSelectable}
                     onDoubleClick={e => e.stopPropagation()}
                 >
-                    {(!emptyMode || arrow.classId) && <AddClassSelect
+                    {/* {(!emptyMode || arrow.classId) && <AddClassSelect
                         element={arrow}
                         elementType={"arrow"}
                         zoomedOutMode={false}
-                    />}
+                    />} */}
                     <div>
-                        <div className="absolute -translate-x-1/2 -translate-y-1/2 ">
+                        {/* <div className="absolute -translate-x-1/2 -translate-y-1/2 ">
                             <ArrowDot element={arrow} property={undefined} />
-                        </div>
+                        </div> */}
                         {emptyMode ?
                             <IconPencil className={`stroke-${colour}-500 opacity-70 hover:opacity-100`} />
                             :
                             <>
-                                <div className="absolute z-10 right-2">
-                                    <ArrowOverFlowMenu arrow={arrow} theClass={undefined} />
-                                </div>
+                                {/* <div className="absolute z-10 right-2">
+                                    <ArrowOverFlowMenu arrow={arrow} />
+                                </div> */}
+                                <ElementHeader element={arrow} showClassSelectIfEmpty={isSelected} />
                                 <TextElement
                                     element={arrow}
                                     elementType="arrow"

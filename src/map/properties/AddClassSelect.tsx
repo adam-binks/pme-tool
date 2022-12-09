@@ -10,10 +10,9 @@ import { useMapId } from "../Map"
 interface AddClassSelectProps {
     elementType: elementType
     element: Element | Class
-    zoomedOutMode?: boolean
     inSchema?: boolean
 }
-export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }: AddClassSelectProps) {
+export function AddClassSelect({ elementType, element, inSchema }: AddClassSelectProps) {
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
@@ -35,8 +34,6 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
         updateSchema(firestore, dispatch, mapId, "classes", schema, [])
     }
 
-    const fontScaler = zoomedOutMode ? 2 : 1
-
     return (
         <Select
             key="Select type"
@@ -49,6 +46,7 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
             nothingFound={`Name a new ${elementType} type`}
             value={classId}
             shadow="md"
+            size="xs"
             data={
                 (schema?.classes !== undefined) ? schema?.classes
                     .filter((cls: Class) => cls.element === elementType)
@@ -61,7 +59,6 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
                     ) : []
             }
             dropdownPosition="top"
-            mt={-40}
             styles={(theme) => ({
                 input: {
                     textAlign: "center",
@@ -69,7 +66,7 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
                     outline: `1px solid ${theme.colors["gray"][3]}`,
-                    fontSize: `${(elementType === "arrow" ? 10 : 14) * fontScaler}px`
+                    fontSize: `${(elementType === "arrow" ? 10 : 14)}px`
                 },
                 rightSection: {
                     display: "none",

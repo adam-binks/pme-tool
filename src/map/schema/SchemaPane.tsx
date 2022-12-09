@@ -3,11 +3,11 @@ import { MouseEvent } from "react"
 import { useDrop } from "react-dnd"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
-import { Schema } from "../../app/schema"
+import { Class, Schema } from "../../app/schema"
 import { enact } from "../../etc/firestoreHistory"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { ItemTypes } from "../../ItemTypes"
-import { createClassCommand } from "../../state/mapFunctions"
+import { createClassesCommand } from "../../state/mapFunctions"
 import { useFirestoreData } from "../../state/mapSelectors"
 import { ToggleLibraryButton } from "../library/ToggleLibraryButton"
 import { DragItem, useMapId } from "../Map"
@@ -24,7 +24,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
 
-    const libraryClasses = useFirestoreData(data => data.libraryClasses)
+    const libraryClasses : {[key: string]: Class} = useFirestoreData(data => data.libraryClasses)
 
     const [, drop] = useDrop(
         () => ({
@@ -37,10 +37,8 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                     }
                     const libraryClass = libraryClasses[item.id]
                     // add a copy of the libraryClass to the schema
-                    enact(dispatch, mapId, createClassCommand(firestore, mapId, libraryClass, schema.classes))
+                    enact(dispatch, mapId, createClassesCommand(firestore, mapId, [libraryClass], schema.classes))
                 }
-
-                console.log("dropped", item)
 
                 return undefined
             },

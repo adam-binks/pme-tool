@@ -1,4 +1,4 @@
-import { Card, clsx, Group } from "@mantine/core";
+import { Card, clsx } from "@mantine/core";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -12,6 +12,7 @@ import { addArrow } from "../../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
 import { DEFAULT_ARROW_WIDTH } from "../arrow/Arrow";
 import { ArrowDot } from "../element/ArrowDot";
+import { ElementHeader } from "../element/ElementHeader";
 import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
@@ -115,17 +116,8 @@ export default function Node({ node }: NodeProps) {
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    {node && (isSelected || node.classId) &&
-                        <AddClassSelect element={node} elementType={"node"} zoomedOutMode={zoomedOutMode} />}
-
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2">
-                        <ArrowDot element={node} property={undefined} />
-                    </div>
-
-                    <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        <NodeOverFlowMenu node={node} />
-                    </Group>
-
+                    <ElementHeader element={node} showClassSelectIfEmpty={isSelected} />
+ 
                     <TextElement element={node} elementType={"node"} />
 
                     <ResizeElement element={{ id: node.id, width: node.width }} elementType={"node"} />

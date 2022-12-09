@@ -6,6 +6,7 @@ import { useDebounce } from "use-lodash-debounce-throttle";
 import { useAppDispatch } from "../../app/hooks";
 import { Class } from "../../app/schema";
 import { enact, enactAll } from "../../etc/firestoreHistory";
+import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { addLibraryClassCommand } from "../../state/libraryFunctions";
@@ -16,7 +17,6 @@ import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
 import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
-import { NodeOverFlowMenu } from "../node/NodeOverflowMenu";
 import { AddClassSelect } from "../properties/AddClassSelect";
 import { PropertyStack } from "./PropertyStack";
 import { SchemaEntryOverFlowMenu } from "./SchemaEntryOverflowMenu";
@@ -63,7 +63,7 @@ export default function SchemaEntry({
     ))
 
     useEffect(() => {
-        if (localClass === undefined) {
+        if (!inLibrary && localClass === undefined) {
             dispatch(setLocalClass({
                 mapId,
                 classId: theClass.id,
@@ -87,7 +87,7 @@ export default function SchemaEntry({
     }, 200)
 
     return (
-        <div className={clsx("flex flex-row m-auto")}>
+        <div className={clsx("flex flex-row m-auto", inLibrary && "cursor-grab")}>
             {/* {theClass.element === "arrow" && <div>Arr</div>} */}
             <div
                 className={clsx(
@@ -96,8 +96,6 @@ export default function SchemaEntry({
                 )}
                 id={`class.${theClass.id}`}
             >
-                <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} />
-
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
                     radius="md"
@@ -119,6 +117,7 @@ export default function SchemaEntry({
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
+                    <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} />
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {inLibrary ?
                             <ActionIcon /> // this is a silly spacing hack
@@ -142,7 +141,7 @@ export default function SchemaEntry({
                     <PropertyStack theClass={theClass} />
 
                     {!inLibrary && <Button variant={"outline"} size={"xs"} onClick={() => {
-                        addLibraryClassCommand(firestore, theClass)
+                        addLibraryClassCommand(firestore, {...theClass, id: generateId()})
                     }}>
                         Add to library
                     </Button>}
