@@ -95,6 +95,7 @@ export function TextElement({
             <div className={`text-element-${element.id}`}>
                 <Editor
                     element={element}
+                    editable={true}
                     updateContent={updateContent}
                     extensionParams={{
                         onUpdateProperties: onUpdateProperties,

@@ -6,7 +6,7 @@ import { getProperties, Property } from "../map/editor/exposeProperties"
 import { parser } from "../map/editor/parser"
 import { DEFAULT_NODE_WIDTH } from "../map/node/Node"
 
-type fs = ExtendedFirestoreInstance
+export type fs = ExtendedFirestoreInstance
 
 export function createMap(firestore: fs) {
     const id = generateId()
@@ -75,7 +75,7 @@ export function deleteNode(firestore: fs, dispatch: any, mapId: string, node: No
 
 export function arrowTouchesElement(arrow: Arrow, element: Element) {
     const elementType = getElementType(element)
-    return (arrow.source.elementType === elementType && arrow.source.elementId === element.id) 
+    return (arrow.source.elementType === elementType && arrow.source.elementId === element.id)
         || (arrow.dest.elementType === elementType && arrow.dest.elementId === element.id)
 }
 
@@ -91,19 +91,27 @@ export function createClassCommand(firestore: fs, mapId: string, newClass: Class
     return updateSchemaCommand(firestore, mapId, "classes", classes, [...classes, newClass])
 }
 
-export function addClassToElementCommands(firestore: fs, mapId: string, element: Element, oldClass: Class | undefined, newClass: Class) {
+export function deleteClassCommands(firestore: fs, mapId: string, theClass: Class, classes: Class[], elementsOfClass: Element[]) {
+    console.log(elementsOfClass)
+    return [
+        ...elementsOfClass.map(element => addClassToElementCommand(firestore, mapId, element, theClass, undefined)),
+        updateSchemaCommand(firestore, mapId, "classes", classes, classes.filter(c => c.id !== theClass.id)),
+    ]
+}
+
+export function addClassToElementCommand(firestore: fs, mapId: string, element: Element, oldClass: Class | undefined, newClass: Class | undefined) {
     const currentProperties = getPropertiesFromContent(element.content)
-    const newClassProperties = getPropertiesFromContent(newClass.content)
+    const newClassProperties = newClass ? getPropertiesFromContent(newClass.content) : []
     const oldClassProperties = oldClass ? getPropertiesFromContent(oldClass.content) : []
-    
+
     let content = element.content
     content = removeValuelessOldPropertiesNotInSchemaProperties(oldClassProperties, newClassProperties, currentProperties, content)
     content = addSchemaPropertiesNotAlreadyInContent(content, newClassProperties, currentProperties)
 
-    return [updateElementCommand(firestore, mapId, element.id, getElementType(element),
+    return updateElementCommand(firestore, mapId, element.id, getElementType(element),
         { classId: element.classId, content: element.content },
-        { classId: newClass.id, content }
-    )]
+        { classId: newClass ? newClass.id : null, content }
+    )
 }
 
 export function createNewClassAndAddToElementCommands(firestore: fs, mapId: string, element: Element, elementType: elementType,
@@ -116,8 +124,8 @@ export function createNewClassAndAddToElementCommands(firestore: fs, mapId: stri
     }
     return [
         createClassCommand(firestore, mapId, newClass, classes),
-        updateElementCommand(firestore, mapId, element.id, elementType, 
-            { classId: element.classId }, 
+        updateElementCommand(firestore, mapId, element.id, elementType,
+            { classId: element.classId },
             { classId: newClass.id }
         )
     ]
@@ -177,8 +185,8 @@ function addSchemaPropertiesNotAlreadyInContent(content: string, schemaPropertie
         const newProp = schemaProperties[i]
         if (!currentProperties.some(prop => prop.name === newProp.name)) {
             const insertAtEnd = lastStart === content.length
-            const propString = ((insertAtEnd && content.trim() !== "") ? "\n" : "") 
-                + blankPropertyString(newProp) 
+            const propString = ((insertAtEnd && content.trim() !== "") ? "\n" : "")
+                + blankPropertyString(newProp)
                 + (!insertAtEnd ? "\n" : "")
             content = content.slice(0, lastStart) + propString + content.slice(lastStart)
         }

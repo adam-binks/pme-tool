@@ -123,7 +123,7 @@ export default function Node({ node }: NodeProps) {
                     </div>
 
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        <NodeOverFlowMenu node={node} theClass={undefined} />
+                        <NodeOverFlowMenu node={node} />
                     </Group>
 
                     <TextElement element={node} elementType={"node"} />

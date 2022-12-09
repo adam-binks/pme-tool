@@ -27,7 +27,7 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
             if (arrowEnd.property) {
                 const yOffset = localElement?.propertyArrowDotHeights?.[arrowEnd.property.name] || 0
                 return {
-                    x: localElement.arrowDot.x,
+                    x: localElement.arrowDot.x + 20,
                     y: localElement.arrowDot.y + yOffset
                 }
             } else {

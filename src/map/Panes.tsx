@@ -80,6 +80,7 @@ export default function Panes() {
                         mapId={pane.id}
                         key={pane.id}
                         paneIndex={paneIndex}
+                        showLibrary={pane.libraryOpen}
                     />
                 )}
             </SplitWrapper>

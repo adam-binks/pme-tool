@@ -5,13 +5,13 @@ import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { Arrow, ArrowEnd, Class, Node } from "../app/schema";
+import { Arrow, Class, Node } from "../app/schema";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
-import { LocalElement, LocalMapState } from "../state/localReducer";
 import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../state/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
+import { LibraryPane } from "./library/LibraryPane";
 import styles from './Map.module.css';
 import MapHeader from "./MapHeader";
 import { useMapHotkeys } from "./mapHotkeys";
@@ -33,11 +33,15 @@ export interface DragItem {
     y: number
 }
 
-interface MapProps {
+export default function Map({
+    mapId,
+    paneIndex,
+    showLibrary,
+}: {
     mapId: string,
     paneIndex: number,
-}
-export default function Map({ mapId, paneIndex }: MapProps) {
+    showLibrary: boolean,
+}) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
@@ -90,7 +94,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
 
     const [, drop] = useDrop(
         () => ({
-            accept: [ItemTypes.NODE, ItemTypes.SCHEMA_NODE],
+            accept: [ItemTypes.NODE, ItemTypes.SCHEMA_CLASS],
             drop(item: DragItem, monitor) {
                 if (monitor.getItemType() === ItemTypes.NODE) {
                     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
@@ -99,7 +103,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                     const y = Math.round(item.y + (delta.y / zoomLevel))
                     updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
                 }
-                if (monitor.getItemType() === ItemTypes.SCHEMA_NODE) {
+                if (monitor.getItemType() === ItemTypes.SCHEMA_CLASS) {
                     const theClass = map?.schema?.classes.find((c: Class) => c.id === item.id)
                     const node = theClass && getBlankNodeOfClass(theClass)
 
@@ -218,6 +222,7 @@ export default function Map({ mapId, paneIndex }: MapProps) {
                             />
 
                             <SchemaPane schema={map.schema} />
+                            {showLibrary && <LibraryPane />}
                         </div>
                     </div>
                 </SelectionContext.Provider>

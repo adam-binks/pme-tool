@@ -7,11 +7,13 @@ import { ExtensionParams, extensions } from "./extensions";
 
 export function Editor({
     element,
+    editable,
     updateContent,
     extensionParams,
     codemirrorProps,
 }: {
     element: Element | Class
+    editable: boolean
     updateContent: (newContent: string) => void
     extensionParams: ExtensionParams
     codemirrorProps?: ReactCodeMirrorProps
@@ -29,6 +31,7 @@ export function Editor({
             onChange={batched.onChangeValue}
             onFocus={batched.onFocus}
             onBlur={batched.onBlur}
+            editable={editable}
             basicSetup={{
                 lineNumbers: false,
                 foldGutter: false,

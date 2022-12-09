@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ArrowEnd } from "../app/schema"
 
-export type Pane = { id: string, addingArrowFrom: ArrowEnd | undefined }
+export type Pane = {
+    id: string,
+    addingArrowFrom: ArrowEnd | undefined,
+    libraryOpen?: boolean
+}
+
 export type PanesState = Pane[]
 
 const initialState: PanesState = [
     // { id: "e318638c98b3b958eae4590d", addingArrowFrom: undefined },
-    { id: "d7a4be7d9d9d2733513a24f9", addingArrowFrom: undefined },
-    // { id: "1747e2874c3914a0f269734d" },
-    // { id: '6a3b3ea554b9c433a4f98c0b' }
+    { id: "d7a4be7d9d9d2733513a24f9", addingArrowFrom: undefined, libraryOpen: true },
 ]
 
 export const paneSlice = createSlice({
@@ -26,9 +29,14 @@ export const paneSlice = createSlice({
                 { ...pane, addingArrowFrom: action.payload.addingArrowFrom }
                 : pane)
         },
+        toggleLibrary: (state, action: PayloadAction<string>) => {
+            return state.map(pane => pane.id === action.payload ?
+                { ...pane, libraryOpen: !pane.libraryOpen }
+                : pane)
+        }
     }
 })
 
-export const { openPane, closePane, setAddingArrowFrom } = paneSlice.actions
+export const { openPane, closePane, setAddingArrowFrom, toggleLibrary } = paneSlice.actions
 
 export default paneSlice.reducer

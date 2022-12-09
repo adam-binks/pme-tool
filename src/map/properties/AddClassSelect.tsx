@@ -2,9 +2,9 @@ import { clsx, Select } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Arrow, Class, Element, elementType, Node, Schema } from "../../app/schema"
-import { enactAll } from "../../etc/firestoreHistory"
+import { enact, enactAll } from "../../etc/firestoreHistory"
 import { useSelectable } from "../../etc/useSelectable"
-import { addClassToElementCommands, createNewClassAndAddToElementCommands, updateSchema } from "../../state/mapFunctions"
+import { addClassToElementCommand, createNewClassAndAddToElementCommands, updateSchema } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
 interface AddClassSelectProps {
@@ -96,8 +96,8 @@ export function AddClassSelect({ elementType, element, inSchema, zoomedOutMode }
                         console.error(`Missing class ${selectedClass}`)
                         return
                     }
-                    schema && !inSchema && enactAll(dispatch, mapId,
-                        addClassToElementCommands(firestore, mapId, element as Element, theClass, selectedClass)
+                    schema && !inSchema && enact(dispatch, mapId,
+                        addClassToElementCommand(firestore, mapId, element as Element, theClass, selectedClass)
                     )
                 }
             }}

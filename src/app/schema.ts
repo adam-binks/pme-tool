@@ -1,5 +1,7 @@
 export interface FirebaseSchema {
     maps: Map[],
+    libraryClasses: Class[],
+    librarySchemas: LibrarySchema[],
 }
 
 export interface Map {
@@ -60,4 +62,13 @@ export interface Class {
     name: string
     content: string
     element: elementType
+}
+
+export interface LibrarySchema {
+    id: string,
+    classIds: string[],
+    name: string,
+    description: string,
+    createdAt: Date,
+    // creator
 }
