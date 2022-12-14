@@ -12,7 +12,6 @@ import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../state
 import { Pane, setAddingArrowFrom } from "../state/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
 import { LibraryPane } from "./library/LibraryPane";
-import styles from './Map.module.css';
 import MapHeader from "./MapHeader";
 import { useMapHotkeys } from "./mapHotkeys";
 import { MouseFollower } from "./node/MouseFollower";
@@ -60,8 +59,6 @@ export default function Map({
 
     const [zoomLevel, setZoomLevel] = useState(1)
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
-
-    const { x: mouseX, y: mouseY, ref: mouseRef } = useMouse()
 
     const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
         const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
@@ -129,104 +126,117 @@ export default function Map({
         <MapContext.Provider value={mapId}>
             <ZoomedOutMode.Provider value={zoomLevel < 0.3}>
                 <SelectionContext.Provider value={[selection, setSelection]}>
-                    <div
-                        className={styles.Map}
-                        onDoubleClick={(e) => createNodeAtLocation(e)}
-                        ref={(el) => drop(el) && mouseRef && hotkeysRef}
-                        tabIndex={-1} // make this focusable, so scoped hotkeys work
-                    >
-                        <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
-
+                    <MouseMoveDetector>
                         <div
-                            className={styles.MapMain}
-                            onClick={(e) => {
-                                // NB: includes schemePane etc
-                                setSelection(emptySelection);
-                                (document.activeElement as HTMLElement).blur()
-                                addingArrowFrom && dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
-                            }}
+                            className={"relative h-full w-full flex flex-col"}
+                            onDoubleClick={(e) => createNodeAtLocation(e)}
+                            ref={(el) => drop(el) && hotkeysRef}
+                            tabIndex={-1} // make this focusable, so scoped hotkeys work
                         >
-                            <TransformWrapper
-                                minPositionX={0}
-                                minScale={0.1}
-                                doubleClick={{ disabled: true }}
-                                panning={{
-                                    excluded: [
-                                        "doNotPan",
-                                        "textarea",
-                                        "input",
-                                        "mantine-Select-dropdown",
-                                        "mantine-ScrollArea-root",
-                                        "mantine-ScrollArea-viewport",
-                                        "mantine-ScrollArea-scrollbar",
-                                        "mantine-ScrollArea-thumb",
-                                        "mantine-Select-item",
-                                        "mantine-Group-root",
-                                        "mantine-Stack-root",
-                                        "cm-editor",
-                                        "cm-content",
-                                        "cm-line",
-                                    ],
-                                    velocityDisabled: true
-                                }}
-                                wheel={{
-                                    wheelDisabled: true,
-                                    excluded: [
-                                        "doNotZoom",
-                                        "mantine-Select-dropdown",
-                                        "mantine-ScrollArea-root",
-                                        "mantine-ScrollArea-viewport",
-                                        "mantine-ScrollArea-scrollbar",
-                                        "mantine-ScrollArea-thumb",
-                                        "mantine-Select-item",
-                                        "mantine-Menu-itemLabel",
-                                        "mantine-Menu-itemLabel",
-                                        "mantine-Menu-item",
-                                    ]
-                                }}
-                                limitToBounds={false}
-                                onZoom={(ref, event) => {
-                                    setZoomLevel(ref.state.scale)
-                                    // panoffset can also be changed when zooming
-                                    setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
-                                }}
-                                onPanning={(ref, event) => {
-                                    setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                            <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
+
+                            <div
+                                className={"flex flex-row flex-grow w-full h-full overflow-auto"}
+                                onClick={(e) => {
+                                    // NB: includes schemePane etc
+                                    setSelection(emptySelection);
+                                    (document.activeElement as HTMLElement).blur()
+                                    addingArrowFrom && dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                                 }}
                             >
-                                <TransformComponent
-                                    wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                                <TransformWrapper
+                                    minPositionX={0}
+                                    minScale={0.1}
+                                    doubleClick={{ disabled: true }}
+                                    panning={{
+                                        excluded: [
+                                            "doNotPan",
+                                            "textarea",
+                                            "input",
+                                            "mantine-Select-dropdown",
+                                            "mantine-ScrollArea-root",
+                                            "mantine-ScrollArea-viewport",
+                                            "mantine-ScrollArea-scrollbar",
+                                            "mantine-ScrollArea-thumb",
+                                            "mantine-Select-item",
+                                            "mantine-Group-root",
+                                            "mantine-Stack-root",
+                                            "cm-editor",
+                                            "cm-content",
+                                            "cm-line",
+                                        ],
+                                        velocityDisabled: true
+                                    }}
+                                    wheel={{
+                                        wheelDisabled: true,
+                                        excluded: [
+                                            "doNotZoom",
+                                            "mantine-Select-dropdown",
+                                            "mantine-ScrollArea-root",
+                                            "mantine-ScrollArea-viewport",
+                                            "mantine-ScrollArea-scrollbar",
+                                            "mantine-ScrollArea-thumb",
+                                            "mantine-Select-item",
+                                            "mantine-Menu-itemLabel",
+                                            "mantine-Menu-itemLabel",
+                                            "mantine-Menu-item",
+                                        ]
+                                    }}
+                                    limitToBounds={false}
+                                    onZoom={(ref, event) => {
+                                        setZoomLevel(ref.state.scale)
+                                        // panoffset can also be changed when zooming
+                                        setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                                    }}
+                                    onPanning={(ref, event) => {
+                                        setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
+                                    }}
                                 >
-                                    {nodes && Object.values(nodes).map((node: any) =>
-                                        node && <NodeComponent
-                                            node={node}
-                                            key={node.id}
-                                        />
-                                    )}
-                                    {arrows && (Object.values(arrows)).map((arrow) => {
-                                        if (!arrow || !nodes) return
-                                        return <ArrowComponent
-                                            arrow={arrow}
-                                            key={arrow.id}
-                                            strokeWidthScaler={zoomLevel}
-                                        />
-                                    }
-                                    )}
-                                </TransformComponent>
-                            </TransformWrapper>
+                                    <TransformComponent
+                                        wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                                    >
+                                        {nodes && Object.values(nodes).map((node: any) =>
+                                            node && <NodeComponent
+                                                node={node}
+                                                key={node.id}
+                                            />
+                                        )}
+                                        {arrows && (Object.values(arrows)).map((arrow) => {
+                                            if (!arrow || !nodes) return
+                                            return <ArrowComponent
+                                                arrow={arrow}
+                                                key={arrow.id}
+                                                strokeWidthScaler={zoomLevel}
+                                            />
+                                        }
+                                        )}
+                                    </TransformComponent>
+                                </TransformWrapper>
 
-                            <MouseFollower
-                                mouseX={mouseX}
-                                mouseY={mouseY}
-                                strokeWidthScaler={zoomLevel}
-                            />
-
-                            <SchemaPane schema={map.schema} />
-                            {showLibrary && <LibraryPane />}
+                                <SchemaPane schema={map.schema} />
+                                {showLibrary && <LibraryPane />}
+                            </div>
                         </div>
-                    </div>
+                    </MouseMoveDetector>
                 </SelectionContext.Provider>
             </ZoomedOutMode.Provider>
         </MapContext.Provider>
     )
+}
+
+function MouseMoveDetector({
+    children,
+}: {
+    children: React.ReactNode,
+}) {
+    const { x: mouseX, y: mouseY, ref: mouseRef } = useMouse()
+
+    return <div className={"h-full w-full"} ref={mouseRef}>
+        {children}
+        <MouseFollower
+            mouseX={mouseX}
+            mouseY={mouseY}
+            strokeWidthScaler={1}
+        />
+    </div>
 }
