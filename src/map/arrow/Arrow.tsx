@@ -46,7 +46,7 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
         return <></>
     }
 
-    const emptyMode = !arrow.content && !isSelected
+    const emptyMode = !arrow.content && !arrow.classId && !isSelected
     const colour = isSelected ? "indigo" : arrow.colour
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
@@ -84,11 +84,11 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                                     <ArrowOverFlowMenu arrow={arrow} />
                                 </div> */}
                                 <ElementHeader element={arrow} showClassSelectIfEmpty={isSelected} />
-                                <TextElement
+                                {(arrow.content || isSelected) && <TextElement
                                     element={arrow}
                                     elementType="arrow"
                                     codemirrorProps={(isSelected && !arrow.content) ? { placeholder: "Content..." } : {}}
-                                />
+                                />}
                                 <ResizeElement element={{ id: arrow.id, width: arrow.width }} elementType={"arrow"} />
                             </>
                         }

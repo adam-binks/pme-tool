@@ -32,9 +32,10 @@ export interface ExtensionParams {
 }
 
 export function extensions({onUpdateProperties, propertiesToHighlight} : ExtensionParams): Extension[] {
+    console.log("extensions")
     return [
         ...staticExtensions,
         exposeProperties(onUpdateProperties),
-        dynamicHighlighting(propertiesToHighlight),//(propertiesToHighlight),
+        dynamicHighlighting(propertiesToHighlight),
     ]
 }

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { shallowEqual } from "react-redux"
 import { useAppSelector } from "../app/hooks"
 import { Property } from "../map/editor/exposeProperties"
 
@@ -91,7 +92,8 @@ export const useClassProperties = (mapId: string, classId: string | null): Prope
     useAppSelector(state =>
         classId ? (
             state.local.find((map: LocalMapState) => map.mapId === mapId)?.classes.find((c: LocalClass) => c.id === classId)?.properties || []
-        ) : []
+        ) : [],
+        shallowEqual
     )
 
 export const useLocalElement = (mapId: string, elementId: string, selector: (element: LocalElement | undefined) => any): any =>

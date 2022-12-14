@@ -42,10 +42,10 @@ export function LibraryPane({
                                         onViewDetail={(librarySchema: LibrarySchema) => setViewingSchemaId(librarySchema.id)}
                                     />
                             )}
-                            <Title order={4}>All classes</Title>
+                            {/* <Title order={4}>All classes</Title>
                             {libraryClasses && Object.values(libraryClasses).map(
                                 (libraryClass) => <p key={libraryClass.id}>{libraryClass.name}</p>
-                            )}
+                            )} */}
 
                             {viewingSchemaId && <Overlay className="z-20" color={"#444"} blur={2} onClick={() => setViewingSchemaId(undefined)} />}
                         </>
