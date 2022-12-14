@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useAppSelector } from "../app/hooks";
 import SplitWrapper from "../lib/react-split";
-import Map from "./Map";
+import Map, { MapContents } from "./Map";
 import "./Panes.css";
 
 export default function Panes() {
@@ -81,7 +81,9 @@ export default function Panes() {
                         key={pane.id}
                         paneIndex={paneIndex}
                         showLibrary={pane.libraryOpen}
-                    />
+                    >
+                        <MapContents mapId={pane.id} />
+                    </Map>
                 )}
             </SplitWrapper>
         </>

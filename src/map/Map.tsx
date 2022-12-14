@@ -33,10 +33,12 @@ export interface DragItem {
 }
 
 export default function Map({
+    children,
     mapId,
     paneIndex,
     showLibrary,
 }: {
+    children: React.ReactNode,
     mapId: string,
     paneIndex: number,
     showLibrary: boolean,
@@ -44,8 +46,6 @@ export default function Map({
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
-    const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`]) as { [key: string]: Node }
-    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`]) as { [key: string]: Arrow }
 
     const [selection, setSelection] = useState<Selection>(emptySelection)
 
@@ -183,33 +183,14 @@ export default function Map({
                                         ]
                                     }}
                                     limitToBounds={false}
-                                    onZoom={(ref, event) => {
-                                        setZoomLevel(ref.state.scale)
-                                        // panoffset can also be changed when zooming
-                                        setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
-                                    }}
-                                    onPanning={(ref, event) => {
+                                    onPanningStop={(ref, event) => {
                                         setPanOffset({ x: ref.state.positionX, y: ref.state.positionY })
                                     }}
                                 >
                                     <TransformComponent
                                         wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
                                     >
-                                        {nodes && Object.values(nodes).map((node: any) =>
-                                            node && <NodeComponent
-                                                node={node}
-                                                key={node.id}
-                                            />
-                                        )}
-                                        {arrows && (Object.values(arrows)).map((arrow) => {
-                                            if (!arrow || !nodes) return
-                                            return <ArrowComponent
-                                                arrow={arrow}
-                                                key={arrow.id}
-                                                strokeWidthScaler={zoomLevel}
-                                            />
-                                        }
-                                        )}
+                                        {children}
                                     </TransformComponent>
                                 </TransformWrapper>
 
@@ -239,4 +220,32 @@ function MouseMoveDetector({
             strokeWidthScaler={1}
         />
     </div>
+}
+
+export function MapContents({
+    mapId,
+}: {
+    mapId: string
+}) {
+    const nodes = useAppSelector(state => state.firestore.data[`nodes.${mapId}`]) as { [key: string]: Node }
+    const arrows = useAppSelector(state => state.firestore.data[`arrows.${mapId}`]) as { [key: string]: Arrow }
+
+    return (
+        <>
+            {nodes && Object.values(nodes).map((node: any) =>
+                node && <NodeComponent
+                    node={node}
+                    key={node.id}
+                />
+            )}
+            {arrows && (Object.values(arrows)).map((arrow) => {
+                if (!arrow || !nodes) return
+                return <ArrowComponent
+                    arrow={arrow}
+                    key={arrow.id}
+                    strokeWidthScaler={1}
+                />
+            })}
+        </>
+    )
 }
