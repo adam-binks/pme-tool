@@ -55,6 +55,9 @@ export default function Panes() {
             }
         }
 
+        // also listen to library stuff
+        firestore.setListeners([{ collection: "libraryClasses" }, { collection: "librarySchemas" }])
+
         const mapIds = panes.map((pane: any) => pane.id)
         if (subscribedMaps !== mapIds) {
             setSubscribedMaps(mapIds)

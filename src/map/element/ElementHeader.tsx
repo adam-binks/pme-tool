@@ -14,8 +14,7 @@ export function ElementHeader({
     const elementType = getElementType(element)
 
     return (
-        <div className="flex">
-
+        <div className="flex justify-between">
             {/* <div className="absolute -translate-x-1/2 -translate-y-1/2 z-10"> */}
                 <ArrowDot element={element} property={undefined} />
             {/* </div> */}

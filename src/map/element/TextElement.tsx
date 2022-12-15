@@ -85,7 +85,7 @@ export function TextElement({
 
             setProperties(newProps)
         }
-    }, [])
+    }, [connectedArrows, properties])
 
     const updateContent = (newValue: string) => enact(dispatch, mapId, updateElementCommand(
         firestore, mapId, element.id, elementType,
@@ -95,7 +95,7 @@ export function TextElement({
 
     const classProperties = useClassProperties(mapId, element.classId)
 
-    const extensionParams = useMemo(() => (truthyLog("params") && {
+    const extensionParams = useMemo(() => ({
         onUpdateProperties: onUpdateProperties,
         propertiesToHighlight: classProperties.map(
             (p: Property) => (({ name: p.name, highlight: "in schema" } as { name: string, highlight: "in schema" }))

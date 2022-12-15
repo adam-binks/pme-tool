@@ -1,4 +1,4 @@
-import { Overlay, ScrollArea, Stack, Title } from "@mantine/core"
+import { Overlay, ScrollArea, Skeleton, Stack, Title } from "@mantine/core"
 import { useState } from "react"
 import { isLoaded } from "react-redux-firebase"
 import { Class, LibrarySchema } from "../../app/schema"
@@ -31,7 +31,7 @@ export function LibraryPane({
                 <Stack className="w-80" p={"md"}>
                     <Title order={3}>Library</Title>
                     {(!isLoaded(libraryClasses) || !isLoaded(librarySchemas)) ?
-                        <p>Loading...</p>
+                        <Skeleton/>
                         :
                         <>
                             {librarySchemas && Object.values(librarySchemas).map(

@@ -7,13 +7,6 @@ import './App.css';
 import Header from './Header';
 
 export default function App() {
-    const firestore = useFirestore()
-    
-    useEffect(() => {
-        firestore.get("libraryClasses")
-        firestore.get("librarySchemas")
-    }, [])
-    
     return (
         <MantineProvider>
             <NotificationsProvider>

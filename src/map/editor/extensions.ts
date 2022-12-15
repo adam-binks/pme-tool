@@ -9,6 +9,7 @@ import { panel } from "./panel";
 import { arrowDotPlugin } from "./arrowDotWidgets";
 import { dynamicHighlighting, highlighting, PropertiesToHighlight } from "./syntaxHighlighting";
 import { theme } from "./theme";
+import { domEventHandlers } from "./domEventHandlers";
 
 const staticExtensions: Extension[] = [
     theme,
@@ -18,6 +19,7 @@ const staticExtensions: Extension[] = [
     pmeLanguage.data.of({ closeBrackets: { brackets: ["="] } }),
     highlighting,
     arrowDotPlugin,
+    domEventHandlers,
     autocompletion({
         closeOnBlur: false,
     }),
@@ -32,7 +34,6 @@ export interface ExtensionParams {
 }
 
 export function extensions({onUpdateProperties, propertiesToHighlight} : ExtensionParams): Extension[] {
-    console.log("extensions")
     return [
         ...staticExtensions,
         exposeProperties(onUpdateProperties),

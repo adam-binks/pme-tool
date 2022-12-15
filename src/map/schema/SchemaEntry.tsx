@@ -9,17 +9,17 @@ import { enact, enactAll } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { addLibraryClassCommand } from "../../state/libraryFunctions";
+import { addLibraryClassCommand, updateLibraryClass } from "../../state/libraryFunctions";
 import { setLocalClass, useLocalClass } from "../../state/localReducer";
 import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
-import { useElementsWithClass, useSchema } from "../../state/mapSelectors";
+import { useElementsWithClass, useFirestoreData, useSchema } from "../../state/mapSelectors";
 import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
 import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
-import { AddClassSelect } from "../properties/AddClassSelect";
 import { PropertyStack } from "./PropertyStack";
 import { SchemaEntryOverFlowMenu } from "./SchemaEntryOverflowMenu";
+import { SchemaEntryTitle } from "./SchemaEntryTitle";
 
 
 export default function SchemaEntry({
@@ -32,7 +32,11 @@ export default function SchemaEntry({
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
-    const classes: Class[] = useSchema((schema) => schema.classes)
+
+    const mapClasses: Class[] = useSchema((schema) => !inLibrary && schema.classes)
+    const libraryClasses: Class[] = useFirestoreData((state) => inLibrary && state.libraryClasses)
+    const classes = mapClasses || libraryClasses
+
     const elementsWithClass = useElementsWithClass(theClass.element, theClass.id, (elementsWithClass) => elementsWithClass)
     const localClass = useLocalClass(mapId, theClass.id)
 
@@ -57,10 +61,13 @@ export default function SchemaEntry({
 
     const [isHovered, setIsHovered] = useState(false)
 
-    const updateContent = (newValue: string) => enact(dispatch, mapId, updateClassCommand(
-        firestore, mapId, classes, theClass.id,
-        { content: newValue }
-    ))
+    const updateContent = inLibrary ?
+        (newValue: string) => updateLibraryClass(firestore, { id: theClass.id, content: newValue })
+        :
+        (newValue: string) => enact(dispatch, mapId, updateClassCommand(
+            firestore, mapId, classes, theClass.id,
+            { content: newValue }
+        ))
 
     useEffect(() => {
         if (!inLibrary && localClass === undefined) {
@@ -117,7 +124,8 @@ export default function SchemaEntry({
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} />
+                    <SchemaEntryTitle theClass={theClass} inLibrary={inLibrary} />
+                    {/* <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} /> */}
                     <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
                         {inLibrary ?
                             <ActionIcon /> // this is a silly spacing hack
@@ -128,8 +136,8 @@ export default function SchemaEntry({
 
                     <Editor
                         element={theClass}
-                        editable={!inLibrary}
-                        updateContent={(newValue: string) => { !inLibrary && updateContent(newValue) }}
+                        editable={true}
+                        updateContent={updateContent}
                         extensionParams={{
                             onUpdateProperties: (newProperties) => !inLibrary && updateProperties(newProperties),
                             propertiesToHighlight: localClass ? localClass.properties.map(
@@ -141,7 +149,7 @@ export default function SchemaEntry({
                     <PropertyStack theClass={theClass} />
 
                     {!inLibrary && <Button variant={"outline"} size={"xs"} onClick={() => {
-                        addLibraryClassCommand(firestore, {...theClass, id: generateId()})
+                        addLibraryClassCommand(firestore, { ...theClass, id: generateId() })
                     }}>
                         Add to library
                     </Button>}
