@@ -1,5 +1,4 @@
 import { Button, Card, clsx } from "@mantine/core";
-import { sample } from "lodash";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -16,7 +15,7 @@ import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCom
 import { useElementsWithClass, useFirestoreData, useSchema } from "../../state/mapSelectors";
 import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
-import { ColourPicker, ELEMENT_COLOURS } from "../element/ColourPicker";
+import { ColourPicker } from "../element/ColourPicker";
 import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
 import { PropertyStack } from "./PropertyStack";
@@ -72,7 +71,7 @@ export default function SchemaEntry({
             firestore, mapId, classes, theClass.id,
             { [field]: newValue }
         ))
-    
+
     const updateColour = updateClass("colour")
 
     useEffect(() => {
@@ -101,13 +100,19 @@ export default function SchemaEntry({
 
     return (
         <div className={clsx("flex flex-row m-auto", inLibrary && "cursor-grab")}>
-            {/* {theClass.element === "arrow" && <div>Arr</div>} */}
+            {theClass.element === "arrow" &&
+                <svg width={15} height={10} className="opacity-50 my-auto">
+                    <path d="M 0 5 L 15 5" style={{ stroke: theClass.colour, strokeWidth: 5 }} />
+                </svg>
+            }
             <div
                 className={clsx(
                     "m-auto",
+                    theClass.element === "arrow" && "border-4 border-opacity-50 rounded-xl",
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
                 )}
+                style={{ borderColor: theClass.colour }}
                 id={`class.${theClass.id}`}
             >
                 <Card
@@ -116,8 +121,8 @@ export default function SchemaEntry({
                     p="xs"
                     withBorder={true}
                     className={clsx(
+                        `doNotPan border-inherit`, // fun border effect, todo match colour: border-b-orange-200 border-b-2
                         isDragging && styles.isDragging,
-                        "doNotPan",
                         theClass.element === "node" && "w-48",
                         theClass.element === "arrow" && "w-40 overflow-visible",
                     )}
@@ -130,7 +135,7 @@ export default function SchemaEntry({
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <div className="flex flex-row space-x-1">
+                    <div className="flex flex-row space-x-1 mb-1">
                         <ColourPicker color={theClass.colour} onChange={updateColour} elementType={theClass.element} />
                         <SchemaEntryTitle theClass={theClass} inLibrary={inLibrary} />
                         {!inLibrary && <SchemaEntryOverFlowMenu theClass={theClass} />}
@@ -158,7 +163,11 @@ export default function SchemaEntry({
 
                 </Card>
             </div>
-            {/* {theClass.element === "arrow" && <div>Arr</div>} */}
+            {theClass.element === "arrow" &&
+                <svg width={15} height={10} className="opacity-50 my-auto">
+                    <path d="M 0 5 L 15 5" style={{ stroke: theClass.colour, strokeWidth: 5 }} />
+                </svg>
+            }
         </div>
     )
 }

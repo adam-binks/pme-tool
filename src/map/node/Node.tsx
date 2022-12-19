@@ -65,9 +65,9 @@ export default function Node({ node }: NodeProps) {
     const { isSelected, onMousedownSelectable } = useSelectable(node.id, "node")
     const [isHovered, setIsHovered] = useState(false)
 
-    const addingArrowFrom = useAppSelector(state => state.panes.find(
-        (pane: Pane) => pane.id === mapId)?.addingArrowFrom
-    )
+    // const addingArrowFrom = useAppSelector(state => state.panes.find(
+    //     (pane: Pane) => pane.id === mapId)?.addingArrowFrom
+    // )
 
     // naked nodes are styled differently
     const isNaked = node && !node.classId
@@ -90,25 +90,14 @@ export default function Node({ node }: NodeProps) {
                     withBorder={!isNaked}
                     className={
                         `${styles.nodeCard}
-                        ${addingArrowFrom ? styles.nodeCanReceiveArrow : ""}
                         ${isDragging ? styles.isDragging : ""}
                         doNotPan group-hover/element:bg-gray-100 overflow-visible`
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {
-                        if (addingArrowFrom) {
-                            addArrow(firestore, dispatch, mapId, {
-                                id: generateId(),
-                                source: addingArrowFrom,
-                                dest: { elementId: node.id, elementType: "node", property: null },
-                                content: "",
-                                classId: null,
-                                width: DEFAULT_ARROW_WIDTH,
-                            })
-                            dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
-                        } else {
+                        // if (!addingArrowFrom) {
                             onMousedownSelectable(e)
-                        }
+                        // }
                         e.stopPropagation()
                     }}
                     onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map

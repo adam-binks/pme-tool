@@ -11,9 +11,10 @@ import styles from "./MapHeader.module.css"
 interface MapHeaderProps {
     map: Map
     paneIndex: number
+    isOnlyPane: boolean
     divRef: React.RefObject<HTMLDivElement>
 }
-export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
+export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHeaderProps) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
 
@@ -36,9 +37,9 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
                     size="md"
                     onChange={(e) => renameMap(firestore, dispatch, map.id, map.name, e.target.value)}
                 />
-                <Text size="xs" color="dimmed">
+                {/* <Text size="xs" color="dimmed">
                     Map ID: {map.id}
-                </Text>
+                </Text> */}
                 <Group>
                     <ActionIcon
                         title="Undo"
@@ -56,12 +57,12 @@ export default function MapHeader({ map, paneIndex, divRef }: MapHeaderProps) {
                     >
                         <IconCornerUpRight />
                     </ActionIcon>
+                    {!isOnlyPane ? <CloseButton
+                        title="Close map"
+                        onClick={() => dispatch(closePane(paneIndex))}
+                        size="lg"
+                    /> : <ActionIcon className="pointer-events-none"></ActionIcon>}
                 </Group>
-                <CloseButton
-                    title="Close map"
-                    onClick={() => dispatch(closePane(paneIndex))}
-                    size="lg"
-                />
             </Group>
         </Paper>
     )

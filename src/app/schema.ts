@@ -33,12 +33,15 @@ export interface ArrowEnd {
     elementType: elementType
     elementId: string
     property: ArrowEndProperty | null
+    arrowHead: ArrowHead
 }
 
 export interface ArrowEndProperty {
     name: string
     index: number
 }
+
+export type ArrowHead = null | "arrow"
 
 export type Element = Node | Arrow
 export type elementType = "node" | "arrow"

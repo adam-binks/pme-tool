@@ -38,11 +38,13 @@ export default function Map({
     mapId,
     paneIndex,
     showLibrary,
+    isOnlyPane,
 }: {
-    children: React.ReactNode,
-    mapId: string,
-    paneIndex: number,
-    showLibrary: boolean,
+    children: React.ReactNode
+    mapId: string
+    paneIndex: number
+    showLibrary: boolean
+    isOnlyPane: boolean
 }) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
@@ -134,7 +136,7 @@ export default function Map({
                             ref={(el) => drop(el) && hotkeysRef}
                             tabIndex={-1} // make this focusable, so scoped hotkeys work
                         >
-                            <MapHeader map={map} paneIndex={paneIndex} divRef={mapHeaderDivRef} />
+                            <MapHeader map={map} paneIndex={paneIndex} isOnlyPane={isOnlyPane} divRef={mapHeaderDivRef} />
 
                             <div
                                 className={"flex flex-row flex-grow w-full h-full overflow-auto"}
@@ -164,6 +166,7 @@ export default function Map({
                                             "mantine-Select-item",
                                             "mantine-Group-root",
                                             "mantine-Stack-root",
+                                            "icon",
                                             "cm-editor",
                                             "cm-content",
                                             "cm-line",

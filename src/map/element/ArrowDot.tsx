@@ -63,7 +63,7 @@ export function ArrowDot({
         <span
             ref={ref}
             className={clsx(
-                "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full group/dot",
+                "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full doNotPan group/dot",
                 addingFromThis ?
                     "bg-yellow-600" :
                     connectedArrows?.length > 0 ? 
@@ -75,11 +75,11 @@ export function ArrowDot({
             )}
             style={{ fontSize: "0.6rem" }}
             onClick={(e) => {
-                if (addingArrowFrom && !addingFromThis) {
+                if (addingArrowFrom && !(addingArrowFrom.elementId === element.id)) {
                     addArrow(firestore, dispatch, mapId, {
                         id: generateId(),
                         source: addingArrowFrom,
-                        dest: { elementId: element.id, elementType, property: property ?? null },
+                        dest: { elementId: element.id, elementType, property: property ?? null, arrowHead: null },
                         content: "",
                         classId: null,
                         width: DEFAULT_ARROW_WIDTH,
@@ -91,7 +91,7 @@ export function ArrowDot({
                         addingArrowFrom: addingFromThis ?
                             undefined
                             :
-                            { elementId: element.id, elementType, property: property ?? null }
+                            { elementId: element.id, elementType, property: property ?? null, arrowHead: null }
                     }))
                 }
                 e.stopPropagation()

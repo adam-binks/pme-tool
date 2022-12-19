@@ -26,7 +26,7 @@ export function AddArrowButton({ node }: AddArrowButtonProps) {
                     addingArrowFrom: addingFromThis ?
                         undefined
                         :
-                        { elementId: node.id, elementType: "node", property: null }
+                        { elementId: node.id, elementType: "node", property: null, arrowHead: null }
                 }))
                 addingFromThis && e.stopPropagation()
             }}

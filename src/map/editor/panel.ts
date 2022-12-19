@@ -48,6 +48,8 @@ const helpTheme = EditorView.baseTheme({
     },
     ".cm-button": {
         borderRadius: "5px",
+        bottom: "0px",
+        position: "relative",
     }
 })
 

@@ -28,7 +28,6 @@ export function Editor({
 
     return (
         <Codemirror
-            // className={clsx("doNotPan text-left")}
             extensions={ext}
             value={batched.value}
             onUpdate={(update) => {

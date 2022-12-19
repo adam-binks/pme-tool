@@ -84,6 +84,7 @@ export default function Panes() {
                         key={pane.id}
                         paneIndex={paneIndex}
                         showLibrary={pane.libraryOpen}
+                        isOnlyPane={panes.length === 1}
                     >
                         <MapContents mapId={pane.id} />
                     </Map>

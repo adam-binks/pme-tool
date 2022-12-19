@@ -11,7 +11,7 @@ export function LibrarySchemaThumbnail({
 }) {
     return (
         <div
-            className="bg-slate-400 rounded-lg p-2 w-40 text-left text-sm hover:scale-105 transition-transform"
+            className="bg-slate-400 rounded-lg p-2 w-40 text-left text-sm hover:scale-105 transition-transform select-none"
             onClick={() => onViewDetail(librarySchema)}
         >
             <div className="flex">

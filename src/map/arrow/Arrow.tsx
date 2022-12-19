@@ -3,15 +3,13 @@ import { IconPencil } from "@tabler/icons"
 import { Arrow, ArrowEnd } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
 import { LocalElement, useLocalElement } from "../../state/localReducer"
-import { useClass, useSchema } from "../../state/mapSelectors"
-import { ArrowDot } from "../element/ArrowDot"
+import { useClass } from "../../state/mapSelectors"
 import { ElementHeader } from "../element/ElementHeader"
 import { ResizeElement } from "../element/ResizeElement"
 import { TextElement } from "../element/TextElement"
 import { useMapId } from "../Map"
-import { AddClassSelect } from "../properties/AddClassSelect"
 import { ElementContext } from "../properties/useElementId"
-import { ArrowOverFlowMenu } from "./ArrowOverflowMenu"
+import { AddArrowheadButton } from "./AddArrowheadButton"
 import { SvgArrow } from "./SvgArrow"
 
 export const DEFAULT_ARROW_WIDTH = 112 // px
@@ -23,7 +21,7 @@ interface ArrowProps {
 export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps) {
     const { isSelected, onMousedownSelectable } = useSelectable(arrow.id, "arrow")
     const mapId = useMapId()
-    
+
     function getCoords(arrowEnd: ArrowEnd, localElement: LocalElement): { x: number, y: number } | undefined {
         if (localElement) {
             if (arrowEnd.property) {
@@ -39,12 +37,12 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
     }
     const sourceLocalElement = useLocalElement(mapId, arrow.source.elementId, (localElement) => localElement)
     const source = sourceLocalElement && getCoords(arrow.source, sourceLocalElement)
-    
+
     const destLocalElement = useLocalElement(mapId, arrow.dest.elementId, (localElement) => localElement)
     const dest = destLocalElement && getCoords(arrow.dest, destLocalElement)
 
     const theClass = useClass(arrow?.classId)
-    
+
     if (!source || !dest) {
         return <></>
     }
@@ -55,13 +53,13 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
                 arrowId={arrow.id}
-                source={source}
-                dest={dest}
+                source={{ ...source, arrowHead: arrow.source.arrowHead }}
+                dest={{ ...dest, arrowHead: arrow.dest.arrowHead }}
                 colour={colour}
             >
                 <div
-                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container`,
-                        emptyMode && "w-8 opacity-80 hover:opacity-100",
+                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container p-0.5`,
+                        emptyMode && "w-8 h-8 rounded-full opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                     )}
                     style={{
@@ -71,22 +69,23 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                     onMouseDown={onMousedownSelectable}
                     onDoubleClick={e => e.stopPropagation()}
                 >
-                    {/* {(!emptyMode || arrow.classId) && <AddClassSelect
-                        element={arrow}
-                        elementType={"arrow"}
-                        zoomedOutMode={false}
-                    />} */}
+                    {isSelected && <>
+                        <AddArrowheadButton
+                            arrow={arrow}
+                            colour={colour}
+                            isLeft={true}
+                            isSource={source.x < dest.x} />
+                        <AddArrowheadButton
+                            arrow={arrow}
+                            colour={colour}
+                            isLeft={false}
+                            isSource={source.x >= dest.x} />
+                    </>}
                     <div>
-                        {/* <div className="absolute -translate-x-1/2 -translate-y-1/2 ">
-                            <ArrowDot element={arrow} property={undefined} />
-                        </div> */}
                         {emptyMode ?
-                            <IconPencil className={`stroke-${colour}-500 opacity-70 hover:opacity-100`} />
+                            <IconPencil size={20} className={`m-auto stroke-${colour}-500 opacity-70 hover:opacity-100`} />
                             :
                             <>
-                                {/* <div className="absolute z-10 right-2">
-                                    <ArrowOverFlowMenu arrow={arrow} />
-                                </div> */}
                                 <ElementHeader element={arrow} showClassSelectIfEmpty={isSelected} />
                                 {(arrow.content || isSelected) && <TextElement
                                     element={arrow}

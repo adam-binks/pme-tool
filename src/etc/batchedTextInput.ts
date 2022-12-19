@@ -1,7 +1,6 @@
 import { ViewUpdate } from "@codemirror/view";
 import React, { useState } from "react";
 import { useThrottle } from "use-lodash-debounce-throttle";
-import { truthyLog } from "./helpers";
 
 export function useBatchedTextInput(
     firebaseValue: string,

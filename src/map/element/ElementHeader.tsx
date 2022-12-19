@@ -14,7 +14,7 @@ export function ElementHeader({
     const elementType = getElementType(element)
 
     return (
-        <div className="flex justify-between space-x-1">
+        <div className="flex justify-between space-x-1 doNotPan">
             {/* <div className="absolute -translate-x-1/2 -translate-y-1/2 z-10"> */}
                 <ArrowDot element={element} property={undefined} />
             {/* </div> */}
