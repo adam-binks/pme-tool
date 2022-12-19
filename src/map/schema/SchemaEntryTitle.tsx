@@ -33,7 +33,9 @@ export function SchemaEntryTitle({
     return (
         <input
             type="text"
-            className="text-center hover:bg-slate-100 focus:bg-slate-100"
+            className="flex-1 min-w-0 text-center text-sm font-semibold rounded-full
+            hover:bg-slate-100 focus:bg-slate-100"
+            style={{outline: `2px solid ${theClass.colour}`}}
             {...{ value, onChange, onBlur, onFocus }}
         />
     )

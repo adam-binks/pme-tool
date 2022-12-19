@@ -15,7 +15,7 @@ export default function Header() {
             p={5}
         >
             <Group mx="lg" position="apart">
-                <Title order={4}>
+                <Title className="select-none" order={4}>
                     PME Tool
                 </Title>
                 <Button

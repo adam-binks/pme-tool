@@ -23,7 +23,6 @@ export interface Node {
 export interface Arrow {
     id: string
     classId: string | null
-    colour: string // todo move to class
     content: string
     width: number
     source: ArrowEnd
@@ -62,6 +61,7 @@ export interface Class {
     name: string
     content: string
     element: elementType
+    colour: string
 }
 
 export interface LibrarySchema {

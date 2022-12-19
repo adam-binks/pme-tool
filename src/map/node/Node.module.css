@@ -20,18 +20,6 @@
     background-color: rgba(255,255,255,0.7);
 }
 
-.isNaked .nodeControls {
-    opacity: 0;
-    transition: opacity 0.1s ease-out;
-}
-
-.isNaked.isSelected .nodeControls {
-    opacity: 1;
-}
-.isNaked:hover .nodeControls {
-    opacity: 1;
-}
-
 
 .nodeCanReceiveArrow {
     background-color: rgb(223, 243, 255) !important;

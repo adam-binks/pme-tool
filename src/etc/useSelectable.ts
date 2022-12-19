@@ -12,7 +12,7 @@ export const emptySelection: Selection = {
 }
 export const SelectionContext = React.createContext<[
     selection: Selection,
-    setSelection: React.Dispatch<React.SetStateAction<Selection>>
+    setSelection: (val: Selection) => void
 ]>([emptySelection, () => { }])
 export const useSelection = () => useContext(SelectionContext)
 

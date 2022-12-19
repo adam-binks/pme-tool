@@ -103,7 +103,6 @@ export default function Node({ node }: NodeProps) {
                                 dest: { elementId: node.id, elementType: "node", property: null },
                                 content: "",
                                 classId: null,
-                                colour: "purple",
                                 width: DEFAULT_ARROW_WIDTH,
                             })
                             dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))

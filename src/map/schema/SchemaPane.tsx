@@ -1,4 +1,5 @@
 import { Paper, ScrollArea, Stack, Title } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { MouseEvent } from "react"
 import { useDrop } from "react-dnd"
 import { useFirestore } from "react-redux-firebase"
@@ -24,7 +25,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
     const firestore = useFirestore()
     const mapId = useMapId()
 
-    const libraryClasses : {[key: string]: Class} = useFirestoreData(data => data.libraryClasses)
+    const libraryClasses: { [key: string]: Class } = useFirestoreData(data => data.libraryClasses)
 
     const [, drop] = useDrop(
         () => ({
@@ -35,7 +36,15 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                         console.warn("Could not drop library class")
                         return
                     }
+
                     const libraryClass = libraryClasses[item.id]
+                    if (schema.classes.some(c => c.name === libraryClass?.name)) {
+                        showNotification({
+                            title: `You already have a class named ${libraryClass.name}`,
+                            message: "Try renaming it first",
+                        })
+                        return
+                    }
                     // add a copy of the libraryClass to the schema
                     enact(dispatch, mapId, createClassesCommand(firestore, mapId, [libraryClass], schema.classes))
                 }
@@ -71,23 +80,33 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
         >
             <ScrollArea offsetScrollbars>
                 <Stack className="w-52" p={"md"}>
-                    <Title order={3}>Schema</Title>
+                    <Title className="select-none" order={3}>Schema</Title>
 
-                    <Title order={5}>Node types</Title>
-                    <Stack mt={30} spacing={50}>
+                    <Title className="select-none" order={5}>Node types</Title>
+                    <Stack mt={-10} spacing={10}>
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "node")
-                            .map(
-                                (theClass) => <SchemaEntry key={theClass.id} theClass={theClass} inLibrary={false} />
+                            .map((theClass) =>
+                                    <SchemaEntry
+                                        key={theClass.id}
+                                        theClass={theClass}
+                                        inLibrary={false}
+                                        editable={true}
+                                    />
                             )}
                     </Stack>
 
-                    <Title order={5}>Arrow types</Title>
-                    <Stack mt={30} spacing={50}>
+                    <Title className="select-none" order={5}>Arrow types</Title>
+                    <Stack mt={-10} spacing={10}>
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "arrow")
-                            .map(
-                                (theClass) => <SchemaEntry key={theClass.id} theClass={theClass} inLibrary={false} />
+                            .map((theClass) =>
+                                    <SchemaEntry
+                                        key={theClass.id}
+                                        theClass={theClass}
+                                        inLibrary={false}
+                                        editable={true}
+                                    />
                             )}
                     </Stack>
                 </Stack>

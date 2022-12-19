@@ -53,7 +53,7 @@ export function TextElement({
                                 const endProperty = end.property
                                 const newPropName = newProps?.[endProperty.index]?.name
                                 if (newPropName === undefined) {
-                                    console.error("STRANGE ERROR! ", endProperty, newProps)
+                                    console.warn("STRANGE ERROR! ", endProperty, newProps)
                                 }
                                 if (newPropName !== endProperty.name && newPropName !== undefined) {
                                     const propertyWithName = newProps.find((prop) => prop.name === endProperty.name)

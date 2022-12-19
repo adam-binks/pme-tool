@@ -1,4 +1,5 @@
-import { ActionIcon, Button, Card, clsx, Group } from "@mantine/core";
+import { Button, Card, clsx } from "@mantine/core";
+import { sample } from "lodash";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -9,12 +10,13 @@ import { enact, enactAll } from "../../etc/firestoreHistory";
 import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { addLibraryClassCommand, updateLibraryClass } from "../../state/libraryFunctions";
+import { addLibraryClass, updateLibraryClass } from "../../state/libraryFunctions";
 import { setLocalClass, useLocalClass } from "../../state/localReducer";
 import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
 import { useElementsWithClass, useFirestoreData, useSchema } from "../../state/mapSelectors";
 import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
+import { ColourPicker, ELEMENT_COLOURS } from "../element/ColourPicker";
 import { useMapId } from "../Map";
 import styles from "../node/Node.module.css";
 import { PropertyStack } from "./PropertyStack";
@@ -25,9 +27,11 @@ import { SchemaEntryTitle } from "./SchemaEntryTitle";
 export default function SchemaEntry({
     theClass,
     inLibrary,
+    editable,
 }: {
     theClass: Class
     inLibrary: boolean
+    editable: boolean
 }) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()
@@ -61,13 +65,15 @@ export default function SchemaEntry({
 
     const [isHovered, setIsHovered] = useState(false)
 
-    const updateContent = inLibrary ?
-        (newValue: string) => updateLibraryClass(firestore, { id: theClass.id, content: newValue })
+    const updateClass = (field: string) => inLibrary ?
+        (newValue: string) => updateLibraryClass(firestore, { id: theClass.id, [field]: newValue })
         :
         (newValue: string) => enact(dispatch, mapId, updateClassCommand(
             firestore, mapId, classes, theClass.id,
-            { content: newValue }
+            { [field]: newValue }
         ))
+    
+    const updateColour = updateClass("colour")
 
     useEffect(() => {
         if (!inLibrary && localClass === undefined) {
@@ -98,6 +104,7 @@ export default function SchemaEntry({
             {/* {theClass.element === "arrow" && <div>Arr</div>} */}
             <div
                 className={clsx(
+                    "m-auto",
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
                 )}
@@ -111,10 +118,9 @@ export default function SchemaEntry({
                     className={clsx(
                         isDragging && styles.isDragging,
                         "doNotPan",
-                        theClass.element === "node" && "overflow-visible w-48",
-                        theClass.element === "arrow" && "",
-                    )
-                    }
+                        theClass.element === "node" && "w-48",
+                        theClass.element === "arrow" && "w-40 overflow-visible",
+                    )}
                     ref={drag}
                     onClick={(e: MouseEvent) => {
                         onMousedownSelectable(e)
@@ -124,20 +130,16 @@ export default function SchemaEntry({
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <SchemaEntryTitle theClass={theClass} inLibrary={inLibrary} />
-                    {/* <AddClassSelect element={theClass} elementType={theClass.element} inSchema={true} /> */}
-                    <Group className={styles.nodeControls} my={-8} position="right" spacing="xs">
-                        {inLibrary ?
-                            <ActionIcon /> // this is a silly spacing hack
-                            :
-                            <SchemaEntryOverFlowMenu theClass={theClass} />
-                        }
-                    </Group>
+                    <div className="flex flex-row space-x-1">
+                        <ColourPicker color={theClass.colour} onChange={updateColour} elementType={theClass.element} />
+                        <SchemaEntryTitle theClass={theClass} inLibrary={inLibrary} />
+                        {!inLibrary && <SchemaEntryOverFlowMenu theClass={theClass} />}
+                    </div>
 
                     <Editor
                         element={theClass}
                         editable={true}
-                        updateContent={updateContent}
+                        updateContent={updateClass("content")}
                         extensionParams={{
                             onUpdateProperties: (newProperties) => !inLibrary && updateProperties(newProperties),
                             propertiesToHighlight: localClass ? localClass.properties.map(
@@ -149,7 +151,7 @@ export default function SchemaEntry({
                     <PropertyStack theClass={theClass} />
 
                     {!inLibrary && <Button variant={"outline"} size={"xs"} onClick={() => {
-                        addLibraryClassCommand(firestore, { ...theClass, id: generateId() })
+                        addLibraryClass(firestore, { ...theClass, id: generateId() })
                     }}>
                         Add to library
                     </Button>}

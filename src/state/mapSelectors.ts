@@ -1,5 +1,5 @@
 import { useAppSelector } from "../app/hooks"
-import { Arrow, ArrowEndProperty, Element, elementType } from "../app/schema"
+import { Arrow, ArrowEndProperty, Class, Element, elementType } from "../app/schema"
 import { useMapId } from "../map/Map"
 import { useElementId } from "../map/properties/useElementId"
 
@@ -58,6 +58,10 @@ export function useMap(selector: (map: any) => any) {
 
 export function useSchema(selector: (schema: any) => any) {
     return useMap(map => map.schema && selector(map.schema))
+}
+
+export function useClass(classId: string | null) {
+    return useSchema(schema => classId && schema.classes && schema.classes.find((c: Class) => c.id === classId))
 }
 
 export function useAbstractProperties(selector: (abstractProperties: any) => any) {

@@ -82,7 +82,6 @@ export function ArrowDot({
                         dest: { elementId: element.id, elementType, property: property ?? null },
                         content: "",
                         classId: null,
-                        colour: "purple",
                         width: DEFAULT_ARROW_WIDTH,
                     })
                     dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))

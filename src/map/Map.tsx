@@ -1,11 +1,12 @@
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 import { Skeleton } from "@mantine/core";
-import { useMouse } from "@mantine/hooks";
+import { shallowEqual, useMouse } from "@mantine/hooks";
 import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Arrow, Class, Node } from "../app/schema";
+import { useMemoisedState } from "../etc/helpers";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
 import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../state/mapFunctions";
@@ -47,7 +48,7 @@ export default function Map({
     const firestore = useFirestore()
     const map = useAppSelector(state => state.firestore.data?.maps && state.firestore.data.maps[mapId])
 
-    const [selection, setSelection] = useState<Selection>(emptySelection)
+    const [selection, setSelection] = useMemoisedState<Selection>(emptySelection)
 
     const addingArrowFrom = useAppSelector(state => state.panes.find(
         (pane: Pane) => pane.id === mapId)?.addingArrowFrom
@@ -58,7 +59,7 @@ export default function Map({
     const mapHeaderDivRef = useRef<HTMLDivElement>(null)
 
     const [zoomLevel, setZoomLevel] = useState(1)
-    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
+    const [panOffset, setPanOffset] = useMemoisedState({ x: 0, y: 0 })
 
     const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
         const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
@@ -139,7 +140,9 @@ export default function Map({
                                 className={"flex flex-row flex-grow w-full h-full overflow-auto"}
                                 onClick={(e) => {
                                     // NB: includes schemePane etc
-                                    setSelection(emptySelection);
+                                    if (selection.arrowIds.length > 0 || selection.nodeIds.length > 0 || selection.classIds.length > 0) {
+                                        setSelection(emptySelection);
+                                    }
                                     (document.activeElement as HTMLElement).blur()
                                     addingArrowFrom && dispatch(setAddingArrowFrom({ mapId, addingArrowFrom: undefined }))
                                 }}

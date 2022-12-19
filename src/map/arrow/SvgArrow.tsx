@@ -57,9 +57,8 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
                 <path
                     className={clsx(
                         "opacity-50 hover:opacity-100",
-                        colour === "indigo" && "stroke-indigo-500",
-                        colour === "purple" && "stroke-purple-500",
                     )}
+                    style={{stroke: colour}}
                     d={`M ${sX} ${sY} L ${dX} ${dY}`}
                     strokeWidth={5}
                 />

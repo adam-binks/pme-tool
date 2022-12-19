@@ -1,5 +1,6 @@
 import { autocompletion } from "@codemirror/autocomplete";
 import { Extension } from "@codemirror/state";
+import { placeholder } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { autocomplete, autocompleteTheme } from "./autocomplete";
 import { checkboxPlugin } from './checkbox';
@@ -19,6 +20,7 @@ const staticExtensions: Extension[] = [
     pmeLanguage.data.of({ closeBrackets: { brackets: ["="] } }),
     highlighting,
     arrowDotPlugin,
+    placeholder("..."),
     domEventHandlers,
     autocompletion({
         closeOnBlur: false,

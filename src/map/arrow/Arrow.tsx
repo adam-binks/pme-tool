@@ -3,6 +3,7 @@ import { IconPencil } from "@tabler/icons"
 import { Arrow, ArrowEnd } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
 import { LocalElement, useLocalElement } from "../../state/localReducer"
+import { useClass, useSchema } from "../../state/mapSelectors"
 import { ArrowDot } from "../element/ArrowDot"
 import { ElementHeader } from "../element/ElementHeader"
 import { ResizeElement } from "../element/ResizeElement"
@@ -42,12 +43,14 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
     const destLocalElement = useLocalElement(mapId, arrow.dest.elementId, (localElement) => localElement)
     const dest = destLocalElement && getCoords(arrow.dest, destLocalElement)
 
+    const theClass = useClass(arrow?.classId)
+    
     if (!source || !dest) {
         return <></>
     }
 
     const emptyMode = !arrow.content && !arrow.classId && !isSelected
-    const colour = isSelected ? "indigo" : arrow.colour
+    const colour = isSelected ? "indigo" : (theClass ? theClass.colour : "#BE90D4")
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
@@ -60,10 +63,11 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                     className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container`,
                         emptyMode && "w-8 opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
-                        colour === "indigo" && "border-indigo-500",
-                        colour === "purple" && "border-purple-500",
                     )}
-                    style={!emptyMode ? { width: arrow.width } : {}}
+                    style={{
+                        borderColor: colour,
+                        ...(!emptyMode ? { width: arrow.width } : {})
+                    }}
                     onMouseDown={onMousedownSelectable}
                     onDoubleClick={e => e.stopPropagation()}
                 >

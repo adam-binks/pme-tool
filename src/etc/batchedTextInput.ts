@@ -27,7 +27,7 @@ export function useBatchedTextInput(
     // }
     // const debouncedPullFromFirebase = useDebounce(pullFromFirebase, 1000)
 
-    const throttledUpdateFirebaseValue = useThrottle(updateFirebaseValue, 500)
+    const throttledUpdateFirebaseValue = useThrottle(updateFirebaseValue, 2000)
 
     return {
         onFocus: () => {

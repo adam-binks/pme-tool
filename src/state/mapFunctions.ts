@@ -1,9 +1,11 @@
+import { sample } from "lodash"
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
 import { Arrow, Class, Element, elementType, getElementType, Map, Node } from "../app/schema"
 import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
 import { getProperties, Property } from "../map/editor/exposeProperties"
 import { parser } from "../map/editor/parser"
+import { ELEMENT_COLOURS } from "../map/element/ColourPicker"
 import { DEFAULT_NODE_WIDTH } from "../map/node/Node"
 
 export type fs = ExtendedFirestoreInstance
@@ -120,6 +122,7 @@ export function createNewClassAndAddToElementCommands(firestore: fs, mapId: stri
         name: className,
         element: elementType,
         content: "",
+        colour: sample(ELEMENT_COLOURS[elementType]) as string,
     }
     return [
         createClassesCommand(firestore, mapId, [newClass], classes),

@@ -62,11 +62,11 @@ export function AddClassSelect({ elementType, element, inSchema }: AddClassSelec
             styles={(theme) => ({
                 input: {
                     textAlign: "center",
-                    padding: "0 12px",
+                    padding: "0",
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
-                    outline: `1px solid ${theme.colors["gray"][3]}`,
-                    fontSize: `${(elementType === "arrow" ? 10 : 14)}px`
+                    outline: theClass ? `2px solid ${theClass.colour}` : "",
+                    fontSize: `${(elementType === "arrow" ? 10 : 14)}px`,
                 },
                 rightSection: {
                     display: "none",

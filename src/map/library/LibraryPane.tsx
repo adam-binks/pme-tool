@@ -1,17 +1,17 @@
-import { Overlay, ScrollArea, Skeleton, Stack, Title } from "@mantine/core"
+import { Button, Overlay, ScrollArea, Skeleton, Stack, Title } from "@mantine/core"
+import { IconPlus } from "@tabler/icons"
 import { useState } from "react"
-import { isLoaded } from "react-redux-firebase"
+import { isLoaded, useFirestore } from "react-redux-firebase"
 import { Class, LibrarySchema } from "../../app/schema"
+import { generateId } from "../../etc/helpers"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
+import { addLibrarySchema } from "../../state/libraryFunctions"
 import { useFirestoreData } from "../../state/mapSelectors"
 import { LibrarySchemaDetail } from "./LibrarySchemaDetail"
 import { LibrarySchemaThumbnail } from "./LibrarySchemaThumbnail"
 
-export function LibraryPane({
-
-}: {
-
-    }) {
+export function LibraryPane({}: {}) {
+    const firestore = useFirestore()
     const [, setSelection] = useSelection()
 
     const librarySchemas: { [key: string]: LibrarySchema } = useFirestoreData(state => state.librarySchemas)
@@ -21,7 +21,7 @@ export function LibraryPane({
 
     return (
         <div
-            className={"z-10 bg-slate-500 text-white shadow-inner-lg"}
+            className={"z-10 bg-slate-500 text-white shadow-inner-lg max-h-full"}
             onClick={(e: any) => {
                 setSelection(emptySelection)
                 e.stopPropagation()
@@ -29,14 +29,14 @@ export function LibraryPane({
         >
             <ScrollArea style={{ height: "100%" }} offsetScrollbars>
                 <Stack className="w-80" p={"md"}>
-                    <Title order={3}>Library</Title>
+                    <Title className="select-none" order={3}>Library</Title>
                     {(!isLoaded(libraryClasses) || !isLoaded(librarySchemas)) ?
-                        <Skeleton/>
+                        <Skeleton />
                         :
                         <>
                             {librarySchemas && Object.values(librarySchemas).map(
                                 (librarySchema) =>
-                                    <LibrarySchemaThumbnail
+                                    librarySchema && <LibrarySchemaThumbnail
                                         key={librarySchema.id}
                                         librarySchema={librarySchema}
                                         onViewDetail={(librarySchema: LibrarySchema) => setViewingSchemaId(librarySchema.id)}
@@ -51,11 +51,25 @@ export function LibraryPane({
                         </>
                     }
                 </Stack>
+                <Button
+                    onClick={() => addLibrarySchema(firestore, {
+                        id: generateId(),
+                        name: "New schema",
+                        classIds: [],
+                        createdAt: new Date(),
+                        description: "",
+                    })}
+                    variant="filled"
+                    className="bg-slate-400"
+                >
+                    Add schema
+                </Button>
             </ScrollArea>
             {(viewingSchemaId && librarySchemas[viewingSchemaId]) &&
                 <LibrarySchemaDetail
-                    librarySchema={librarySchemas[viewingSchemaId]} 
+                    librarySchema={librarySchemas[viewingSchemaId]}
                     classes={libraryClasses}
+                    closeDetail={() => setViewingSchemaId(undefined)}
                 />}
         </div>
     )
