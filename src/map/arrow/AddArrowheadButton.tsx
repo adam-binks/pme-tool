@@ -32,7 +32,8 @@ export function AddArrowheadButton({
 
     return (
         <ActionIcon
-            className={clsx("absolute -z-10 bg-white doNotPan",
+            title="Show arrowheads?"
+            className={clsx("absolute mt-2 -z-10 bg-white doNotPan",
                 isLeft && "left-0 -mx-5 rounded-l-full",
                 !isLeft && "right-0 -mx-5 rounded-r-full",
             )}

@@ -58,7 +58,7 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                 colour={colour}
             >
                 <div
-                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container p-0.5`,
+                    className={clsx(`z-100 bg-white border-4 rounded-2xl hover:border-opacity-100 element-container p-0.5`,
                         emptyMode && "w-8 h-8 rounded-full opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                     )}

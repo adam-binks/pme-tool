@@ -2,24 +2,18 @@ import { Card, clsx } from "@mantine/core";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import { Node as NodeType } from "../../app/schema";
-import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
 import { setLocalElement } from "../../state/localReducer";
-import { addArrow } from "../../state/mapFunctions";
-import { Pane, setAddingArrowFrom } from "../../state/paneReducer";
-import { DEFAULT_ARROW_WIDTH } from "../arrow/Arrow";
-import { ArrowDot } from "../element/ArrowDot";
+import { useClass } from "../../state/mapSelectors";
 import { ElementHeader } from "../element/ElementHeader";
 import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
 import { useMapId, useZoomedOutMode } from "../Map";
-import { AddClassSelect } from "../properties/AddClassSelect";
 import { ElementContext } from "../properties/useElementId";
 import styles from "./Node.module.css";
-import { NodeOverFlowMenu } from "./NodeOverflowMenu";
 
 export const DEFAULT_NODE_WIDTH = 200 // px
 
@@ -62,6 +56,8 @@ export default function Node({ node }: NodeProps) {
         }))
     }, [node.x, node.y])
 
+    const theClass = useClass(node.classId)
+
     const { isSelected, onMousedownSelectable } = useSelectable(node.id, "node")
     const [isHovered, setIsHovered] = useState(false)
 
@@ -81,7 +77,7 @@ export default function Node({ node }: NodeProps) {
                     isHovered && styles.isHovered,
                 )}
                 id={`node.${node.id}`}
-                style={{ left: node.x, top: node.y, width: node.width }}
+                style={{ left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour }}
             >
                 <Card
                     shadow={isSelected ? "xl" : "xs"}
@@ -91,7 +87,7 @@ export default function Node({ node }: NodeProps) {
                     className={
                         `${styles.nodeCard}
                         ${isDragging ? styles.isDragging : ""}
-                        doNotPan group-hover/element:bg-gray-100 overflow-visible`
+                        doNotPan group-hover/element:bg-gray-100 overflow-visible border-inherit`
                     }
                     ref={drag}
                     onClick={(e: MouseEvent) => {

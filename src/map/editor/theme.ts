@@ -13,4 +13,7 @@ export const theme = EditorView.baseTheme({
         fontSize: "12px",
         borderRadius: "5px",
     },
+    ".schema-entry .cm-content": {
+        fontStyle: "italic",
+    },
 })

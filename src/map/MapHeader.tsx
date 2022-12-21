@@ -1,4 +1,4 @@
-import { ActionIcon, CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
+import { ActionIcon, CloseButton, Group, Paper, TextInput } from "@mantine/core"
 import { IconCornerUpLeft, IconCornerUpRight } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../app/hooks"

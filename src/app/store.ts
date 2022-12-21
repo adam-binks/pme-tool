@@ -1,15 +1,16 @@
-import { Action, combineReducers, compose, createStore, ThunkAction } from '@reduxjs/toolkit';
-import 'firebase/auth';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import 'firebase/database';
-import { firebaseReducer } from 'react-redux-firebase';
-import { createFirestoreInstance, firestoreReducer, FirestoreReducer, reduxFirestore } from 'redux-firestore';
-import historyReducer from '../state/historyReducer';
-import localReducer from '../state/localReducer';
-import paneReducer from '../state/paneReducer';
-import { firebaseConfig } from './firebase';
-import { FirebaseSchema } from './schema';
+import { Action, combineReducers, compose, createStore, ThunkAction } from '@reduxjs/toolkit'
+import 'firebase/auth'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
+import 'firebase/database'
+import 'firebase/compat/auth'
+import { firebaseReducer } from 'react-redux-firebase'
+import { createFirestoreInstance, firestoreReducer, FirestoreReducer, reduxFirestore } from 'redux-firestore'
+import historyReducer from '../state/historyReducer'
+import localReducer from '../state/localReducer'
+import paneReducer from '../state/paneReducer'
+import { firebaseConfig } from './firebase'
+import { FirebaseSchema } from './schema'
 
 
 firebase.initializeApp(firebaseConfig)
@@ -45,8 +46,8 @@ export const reactReduxFirebaseProps = {
     dispatch: store.dispatch,
     createFirestoreInstance,
     config: {
-        // userProfile: 'users'
-        // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+        userProfile: 'users',
+        useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
     }
 }
 

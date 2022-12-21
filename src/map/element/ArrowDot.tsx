@@ -1,7 +1,7 @@
 import { clsx } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { useEffect } from "react"
-import { useFirestore } from "react-redux-firebase"
+import { useFirebase, useFirestore } from "react-redux-firebase"
 import { useThrottle } from "use-lodash-debounce-throttle"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { ArrowEnd, ArrowEndProperty, Element, getElementType } from "../../app/schema"
@@ -62,6 +62,7 @@ export function ArrowDot({
     return (
         <span
             ref={ref}
+            title={addingFromThis ? "Cancel adding arrow" : "Add arrow"}
             className={clsx(
                 "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full doNotPan group/dot",
                 addingFromThis ?

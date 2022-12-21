@@ -107,7 +107,7 @@ export default function SchemaEntry({
             }
             <div
                 className={clsx(
-                    "m-auto",
+                    "m-auto schema-entry",
                     theClass.element === "arrow" && "border-4 border-opacity-50 rounded-xl",
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
@@ -121,7 +121,7 @@ export default function SchemaEntry({
                     p="xs"
                     withBorder={true}
                     className={clsx(
-                        `doNotPan border-inherit`, // fun border effect, todo match colour: border-b-orange-200 border-b-2
+                        `doNotPan border-inherit`,
                         isDragging && styles.isDragging,
                         theClass.element === "node" && "w-48",
                         theClass.element === "arrow" && "w-40 overflow-visible",
@@ -155,11 +155,11 @@ export default function SchemaEntry({
 
                     <PropertyStack theClass={theClass} />
 
-                    {!inLibrary && <Button variant={"outline"} size={"xs"} onClick={() => {
+                    {/* {!inLibrary && <Button variant={"outline"} size={"xs"} onClick={() => {
                         addLibraryClass(firestore, { ...theClass, id: generateId() })
                     }}>
                         Add to library
-                    </Button>}
+                    </Button>} */}
 
                 </Card>
             </div>
