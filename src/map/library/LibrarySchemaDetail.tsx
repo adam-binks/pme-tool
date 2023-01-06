@@ -123,7 +123,8 @@ export function LibrarySchemaDetail({
                     <p className="mx-4 mt-2 italic text-xs text-slate-200 text-center">Or drag individual classes into your schema</p>
                 </>
                 :
-                <p className="opacity-80 m-auto mt-4">All classes added</p>
+                librarySchema.classIds && librarySchema.classIds.length > 0 &&
+                     <p className="opacity-80 m-auto mt-4">All classes added</p>
             }
 
             {editable &&

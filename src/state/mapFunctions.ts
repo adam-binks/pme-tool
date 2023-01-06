@@ -10,11 +10,11 @@ import { DEFAULT_NODE_WIDTH } from "../map/node/Node"
 
 export type fs = ExtendedFirestoreInstance
 
-export function createMap(firestore: fs) {
+export function createMap(firestore: fs, title = "New map") {
     const id = generateId()
     const newMap: Map = {
         id: id,
-        name: "New map",
+        name: title,
         createdAt: new Date(),
         schema: {
             id: generateId(),

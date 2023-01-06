@@ -74,7 +74,8 @@ export interface LibrarySchema {
     name: string,
     description: string,
     createdAt: Date,
-    // creator
+    creator: string,
+    tags: string[],
 }
 
 export interface Project {

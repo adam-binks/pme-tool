@@ -1,6 +1,7 @@
 import { isEqual } from "lodash";
 import { customAlphabet } from "nanoid";
 import { useState } from "react";
+import { useAppSelector } from "../app/hooks";
 
 // to comply with Mongoose ObjectId requirements (hex, 24 chars long)
 export const generateId = customAlphabet('1234567890abcdef', 24)
@@ -37,4 +38,13 @@ export const useMemoisedState = <T>(initialValue: T): [T, (val: T) => void] => {
     }
 
     return [state, setState]
+}
+
+export function useUserId() {
+    return useAppSelector(state => state.firebase?.auth?.uid)
+}
+
+export function prettyPrintDate(d: Date) {
+    return d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " at " +
+        d.getHours() + ":" + d.getMinutes()
 }

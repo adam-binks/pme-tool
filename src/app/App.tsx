@@ -12,13 +12,24 @@ import { useAppSelector } from './hooks';
 
 export default function App() {
     const auth = useAppSelector(state => state.firebase.auth)
-
-    if (!isLoaded(auth)) { return <Skeleton /> }
+    const firestore = useFirestore()
 
     const router = createHashRouter([
         { path: "/", element: auth ? <ProjectsPage /> : <LoginPage /> },
         { path: "/project/:projectId", element: <ProjectView /> },
     ])
+
+    useEffect(() => {
+        if (!auth?.uid) { return }
+
+        firestore.setListener({
+            collection: "projects",
+            where: ["editors", "array-contains", auth.uid]
+        })
+    }, [auth.uid])
+
+
+    if (!isLoaded(auth)) { return <Skeleton /> }
 
     return (
         <MantineProvider>
@@ -28,6 +39,8 @@ export default function App() {
         </MantineProvider>
     )
 }
+
+
 
 function ProjectView() {
     const firestore = useFirestore()
@@ -45,7 +58,7 @@ function ProjectView() {
 
     return (
         <div className="App">
-            <Header />
+            <Header project={project} />
             <Panes project={project} />
         </div>
     )

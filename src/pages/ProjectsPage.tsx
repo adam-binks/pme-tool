@@ -1,11 +1,10 @@
 import { Button, Card } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useEffect } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { Project } from "../app/schema";
-import { generateId } from "../etc/helpers";
+import { generateId, useUserId } from "../etc/helpers";
 import { createMap } from "../state/mapFunctions";
 import { addProject } from "../state/projectFunctions";
 
@@ -15,17 +14,8 @@ export function ProjectsPage({
 
     }) {
     const firestore = useFirestore()
-    const uid = useAppSelector(state => state.firebase.auth?.uid)
+    const uid = useUserId()
     const projects: { [key: string]: Project } = useAppSelector(state => state.firestore.data.projects)
-
-    useEffect(() => {
-        if (!uid) { return }
-
-        firestore.setListener({
-            collection: "projects",
-            where: ["editors", "array-contains", uid]
-        })
-    }, [uid])
 
     return (
         <div className="text-center items-center m-auto my-8 flex flex-col space-y-6">
@@ -41,7 +31,7 @@ export function ProjectsPage({
                     const projectName = window.prompt("Enter project name", "New project")
                     if (!projectName) { return }
 
-                    const mapId = createMap(firestore)
+                    const mapId = createMap(firestore, `${projectName} map`)
                     const projectId = generateId()
                     addProject(firestore, {
                         name: projectName,
@@ -67,7 +57,7 @@ export function ProjectsPage({
                     {projects && Object.values(projects).map((project) => (
                         project &&
                         <Card className="w-60 px-6 py-4 flex flex-col space-y-2" withBorder shadow={"md"} key={project.id}>
-                            <h3 className="text-lg">{project.name}</h3>
+                            <h3 className="text-lg font-semibold">{project.name}</h3>
                             <Link to={`/project/${project.id}`}>
                                 <Button className="bg-indigo-400 w-full">Open</Button>
                             </Link>

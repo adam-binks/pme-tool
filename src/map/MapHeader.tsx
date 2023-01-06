@@ -37,9 +37,9 @@ export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHea
                     size="md"
                     onChange={(e) => renameMap(firestore, dispatch, map.id, map.name, e.target.value)}
                 />
-                <Text size="xs" color="dimmed">
+                {/* <Text size="xs" color="dimmed">
                     Map ID: {map.id}
-                </Text>
+                </Text> */}
                 <Group>
                     <ActionIcon
                         title="Undo"
