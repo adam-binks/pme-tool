@@ -1,3 +1,4 @@
+import { clsx } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Class } from "../../app/schema"
@@ -33,9 +34,11 @@ export function SchemaEntryTitle({
     return (
         <input
             type="text"
-            className="flex-1 min-w-0 text-center text-sm font-semibold rounded-full
-            hover:bg-slate-100 focus:bg-slate-100"
-            style={{outline: `2px solid ${theClass.colour}`}}
+            className={clsx("flex-1 min-w-0 text-center text-sm font-semibold rounded-full",
+                "hover:bg-slate-100 focus:bg-slate-100",
+                theClass.element === "arrow" && "text-xs",
+            )}
+            style={{ outline: `2px solid ${theClass.colour}` }}
             {...{ value, onChange, onBlur, onFocus }}
         />
     )

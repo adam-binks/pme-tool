@@ -65,7 +65,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     return (
         <Paper
-            className={"z-10 flex flex-col h-full"}
+            className={"z-10 flex flex-col justify-between h-full"}
             ref={(el: any) => drop(el)}
             p={5}
             radius={0}

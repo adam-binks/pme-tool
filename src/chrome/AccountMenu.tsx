@@ -28,12 +28,9 @@ export function AccountMenu({
                     icon={<IconLogout size={14}/>}
                     onClick={() => firebase.logout()}
                 >
-                    Logout
+                    Sign out
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>
-        // <div>
-        //     {auth.email}
-        // </div>
     )
 }

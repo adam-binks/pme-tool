@@ -9,9 +9,13 @@ export type Pane = {
 
 export type PanesState = Pane[]
 
+export const defaultPane = {
+    addingArrowFrom: undefined,
+    libraryOpen: false,
+}
+
 const initialState: PanesState = [
-    // { id: "e318638c98b3b958eae4590d", addingArrowFrom: undefined },
-    { id: "d7a4be7d9d9d2733513a24f9", addingArrowFrom: undefined, libraryOpen: true },
+    // { id: "d7a4be7d9d9d2733513a24f9", addingArrowFrom: undefined, libraryOpen: true },
 ]
 
 export const paneSlice = createSlice({
@@ -19,10 +23,14 @@ export const paneSlice = createSlice({
     initialState: initialState,
     reducers: {
         openPane: (state, action: PayloadAction<Pane>) => {
+            console.log("openPane", action.payload)
             state.push(action.payload)
         },
         closePane: (state, action: PayloadAction<number>) => {
             state.splice(action.payload, 1) // remove element at index
+        },
+        setPanes: (state, action: PayloadAction<PanesState>) => {
+            return action.payload
         },
         setAddingArrowFrom: (state, action: PayloadAction<{ mapId: string, addingArrowFrom: ArrowEnd | undefined }>) => {
             return state.map(pane => pane.id === action.payload.mapId ?
@@ -37,6 +45,6 @@ export const paneSlice = createSlice({
     }
 })
 
-export const { openPane, closePane, setAddingArrowFrom, toggleLibrary } = paneSlice.actions
+export const { openPane, closePane, setAddingArrowFrom, toggleLibrary, setPanes } = paneSlice.actions
 
 export default paneSlice.reducer

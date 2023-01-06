@@ -1,6 +1,7 @@
 import { Button, Group, Paper, Title } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
+import { Link } from "react-router-dom"
 import { useAppDispatch } from "../app/hooks"
 import { createMap } from "../state/mapFunctions"
 import { openPane } from "../state/paneReducer"
@@ -16,9 +17,11 @@ export default function Header() {
             className="bg-zinc-200 z-40"
         >
             <Group mx="lg" position="apart">
-                <Title className="select-none" order={4}>
-                    PME Tool
-                </Title>
+                <Link to="/">
+                    <Title className="select-none hover:bg-violet-200 px-2 rounded-lg" order={4}>
+                        PME Tool
+                    </Title>
+                </Link>
                 <Group>
                     <Button
                         onClick={async () => {

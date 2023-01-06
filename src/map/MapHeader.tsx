@@ -1,4 +1,4 @@
-import { ActionIcon, CloseButton, Group, Paper, TextInput } from "@mantine/core"
+import { ActionIcon, CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
 import { IconCornerUpLeft, IconCornerUpRight } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
@@ -37,9 +37,9 @@ export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHea
                     size="md"
                     onChange={(e) => renameMap(firestore, dispatch, map.id, map.name, e.target.value)}
                 />
-                {/* <Text size="xs" color="dimmed">
+                <Text size="xs" color="dimmed">
                     Map ID: {map.id}
-                </Text> */}
+                </Text>
                 <Group>
                     <ActionIcon
                         title="Undo"

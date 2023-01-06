@@ -1,4 +1,5 @@
 export interface FirebaseSchema {
+    projects: Project[],
     maps: Map[],
     libraryClasses: Class[],
     librarySchemas: LibrarySchema[],
@@ -74,4 +75,21 @@ export interface LibrarySchema {
     description: string,
     createdAt: Date,
     // creator
+}
+
+export interface Project {
+    id: string,
+    name: string,
+    createdAt: Date,
+    mapIds: string[],
+    recipe: Recipe,
+    anyoneCanEdit: boolean,
+    editors: string[],
+    anyoneCanView: boolean,
+    viewers: string[],
+}
+
+export interface Recipe {
+    id: string,
+    content: string,
 }

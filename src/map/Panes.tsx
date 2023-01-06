@@ -1,18 +1,33 @@
 import { useForceUpdate } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { Project } from "../app/schema";
 import SplitWrapper from "../lib/react-split";
+import { defaultPane, setPanes } from "../state/paneReducer";
 import Map, { MapContents } from "./Map";
 import "./Panes.css";
 
-export default function Panes() {
+export default function Panes({
+    project,
+}
+    : {
+        project: Project
+    }) {
     const panes = useAppSelector(state => state.panes)
-
+    const dispatch = useAppDispatch()
     const firestore = useFirestore()
     const [subscribedMaps, setSubscribedMaps] = useState<string[]>([])
 
     const forceUpdate = useForceUpdate()
+
+    useEffect(() => {
+        dispatch(setPanes([{
+            ...defaultPane,
+            id: project.mapIds[0],
+        }]))
+        console.log("open ", project.mapIds[0])
+    }, [project.id])
 
     useEffect(() => {
         const getListeners = (mapId: string) => [
