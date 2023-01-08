@@ -57,7 +57,8 @@
     "build": "react-scripts build",
     "predeploy": "react-scripts build",
     "deploy": "gh-pages -d build",
-    "generate-parser": "npx lezer-generator src/map/editor/language.grammar > src/map/editor/parser.ts",
+    "generate-pme-parser": "npx lezer-generator src/map/editor/language.grammar > src/map/editor/parser.ts",
+    "generate-recipe-parser": "npx lezer-generator src/map/recipe/editor/recipeLanguage.grammar > src/map/recipe/editor/parser.ts",
     "test": "react-scripts test"
   },
   "eslintConfig": {

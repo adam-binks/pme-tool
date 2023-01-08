@@ -1,0 +1,33 @@
+@top Content { line* }
+
+line {
+    CommandLine |
+    CommentLine |
+    newline
+}
+
+CommandLine {
+    Checkbox anything* endline
+}
+
+Checkbox {
+    "![ ]!" |
+    "![o]!" |
+    "![x]!"
+}
+
+CommentLine {
+    anything+ endline
+}
+
+endline {
+    newline | eof
+}
+
+@tokens {
+    newline { $[\r\n]+ }
+    eof { @eof }
+    anything { ![\n\r] }
+    // anythingNotSpace { ![\n\r\=\t ] }
+    // space { $[\t ]+ }
+}

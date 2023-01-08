@@ -13,5 +13,6 @@ export const recipeTheme = EditorView.theme({
         fontFamily: "sans-serif",
         fontSize: "14px",
         borderRadius: "5px",
+        lineHeight: "1.5",
     },
 })
