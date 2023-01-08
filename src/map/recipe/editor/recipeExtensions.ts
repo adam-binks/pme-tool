@@ -1,6 +1,7 @@
 import { autocompletion } from "@codemirror/autocomplete";
 import { Extension } from "@codemirror/state";
-import { placeholder } from "@codemirror/view";
+import { placeholder, keymap } from "@codemirror/view";
+import {indentWithTab} from "@codemirror/commands"
 import { EditorView } from "codemirror";
 import { domEventHandlers } from "../../editor/domEventHandlers";
 import { exposeProperties, Property } from "../../editor/exposeProperties";
@@ -22,6 +23,7 @@ const staticRecipeExtensions: Extension[] = [
     highlighting,
     stepCheckboxPlugin,
     addCheckboxOnNewline,
+    keymap.of([indentWithTab]),
     // autocomplete(),
     // autocompleteTheme,
 ]

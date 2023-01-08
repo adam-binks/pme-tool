@@ -32,7 +32,7 @@ export const stepCheckboxPlugin = ViewPlugin.fromClass(class {
             if (target.nodeName == "INPUT")
                 return toggleBoolean(view, view.posAtDOM(target))
         }
-    }
+    },
 })
 
 class CheckboxWidget extends WidgetType {
@@ -48,6 +48,7 @@ class CheckboxWidget extends WidgetType {
         box.type = "checkbox"
         box.checked = this.checked === true
         box.indeterminate = this.checked === "in progress"
+        box.className = "accent-slate-500"
         return wrap
     }
 
