@@ -142,7 +142,7 @@ export default function SchemaEntry({
                     </div>
 
                     <Editor
-                        element={theClass}
+                        content={theClass.content}
                         editable={true}
                         updateContent={updateClass("content")}
                         extensionParams={{

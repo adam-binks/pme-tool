@@ -1,19 +1,17 @@
 import { EditorView } from "codemirror";
 
-export const theme = EditorView.theme({
+export const recipeTheme = EditorView.theme({
     "&": {
+        height: "275px",
         borderRadius: "10px",
+        padding: "4px",
     },
     "&.cm-editor.cm-focused": {
         outline: "none",
     },
     ".cm-content": {
-        backgroundColor: "white",
         fontFamily: "sans-serif",
-        fontSize: "12px",
+        fontSize: "14px",
         borderRadius: "5px",
-    },
-    ".schema-entry .cm-content": {
-        fontStyle: "italic",
     },
 })

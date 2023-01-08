@@ -53,8 +53,8 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
                 arrowId={arrow.id}
-                source={{ ...source, arrowHead: arrow.source.arrowHead }}
-                dest={{ ...dest, arrowHead: arrow.dest.arrowHead }}
+                source={{ ...source, arrowHead: arrow.source.arrowHead, type: arrow.source.property ? "property" : "element" }}
+                dest={{ ...dest, arrowHead: arrow.dest.arrowHead, type: arrow.source.property ? "property" : "element" }}
                 colour={colour}
             >
                 <div

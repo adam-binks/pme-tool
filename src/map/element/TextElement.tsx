@@ -106,7 +106,7 @@ export function TextElement({
         <>
             <div className={`text-element-${element.id}`}>
                 <Editor
-                    element={element}
+                    content={element.content}
                     editable={true}
                     updateContent={updateContent}
                     extensionParams={extensionParams}

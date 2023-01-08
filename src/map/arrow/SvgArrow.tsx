@@ -11,8 +11,8 @@ const SVG_MARGIN = 10 // leave some gap around the edge of the svg canvas to acc
 interface SvgArrowProps {
     children: React.ReactNode,
     arrowId: string,
-    source: { x: number, y: number, arrowHead: ArrowHead }
-    dest: { x: number, y: number, arrowHead: ArrowHead }
+    source: { x: number, y: number, arrowHead: ArrowHead, type: "element" | "property" }
+    dest: { x: number, y: number, arrowHead: ArrowHead, type: "element" | "property" }
     colour: string,
 }
 export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowProps) {
@@ -34,8 +34,10 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
     const dX = destX - x
     const dY = dest.y - y
 
-    const localMidpointX = w / 2
-    const localMidpointY = h / 2
+    const leftmost = sourceX < destX ? source : dest
+    const offset = 0 // TODO - fix for left-up nodes:  leftmost.type === "property" ? 0.15 : 0
+    const localMidpointX = w * (0.5 + offset)
+    const localMidpointY = h * (0.5 - offset)
 
     useEffect(() => {
         const arrowDotOffset = 0

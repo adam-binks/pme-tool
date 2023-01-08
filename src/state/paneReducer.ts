@@ -11,7 +11,7 @@ export type PanesState = Pane[]
 
 export const defaultPane = {
     addingArrowFrom: undefined,
-    libraryOpen: true,
+    libraryOpen: false,
 }
 
 const initialState: PanesState = [

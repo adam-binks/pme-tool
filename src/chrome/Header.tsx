@@ -12,7 +12,7 @@ export default function Header({
     project
 }:
     {
-        project: Project
+        project: Project | undefined
     }) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
@@ -24,17 +24,17 @@ export default function Header({
         >
             <Group mx="lg" position="apart">
                 <div className="flex align-bottom">
-                <Link to="/">
-                    <Title className="select-none hover:bg-violet-200 px-2 rounded-lg" order={4}>
-                        PME Tool
-                    </Title>
-                </Link>
-                <Title className="ml-2 select-none text-gray-500 font-medium" order={4}>
-                    {project.name}
-                </Title>
+                    <Link to="/">
+                        <Title className="select-none hover:bg-violet-200 px-2 rounded-lg" order={4}>
+                            PME Tool
+                        </Title>
+                    </Link>
+                    {project && <Title className="ml-2 select-none text-gray-500 font-medium" order={4}>
+                        {project.name}
+                    </Title>}
                 </div>
                 <Group>
-                    <Button
+                    {/* <Button
                         onClick={async () => {
                             const id = createMap(firestore)
                             dispatch(openPane({ id, addingArrowFrom: undefined }))
@@ -43,7 +43,7 @@ export default function Header({
                         leftIcon={<IconPlus />}
                     >
                         Create map
-                    </Button>
+                    </Button> */}
                     <AccountMenu />
                 </Group>
             </Group>

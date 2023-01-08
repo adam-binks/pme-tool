@@ -26,7 +26,6 @@ export default function Panes({
             ...defaultPane,
             id: project.mapIds[0],
         }]))
-        console.log("open ", project.mapIds[0])
     }, [project.id])
 
     useEffect(() => {

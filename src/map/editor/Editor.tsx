@@ -7,20 +7,20 @@ import { ExtensionParams, extensions } from "./extensions";
 
 
 export function Editor({
-    element,
+    content,
     editable, // TODO
     updateContent,
     extensionParams,
     codemirrorProps,
 }: {
-    element: Element | Class
+    content: string
     editable: boolean
     updateContent: (newContent: string) => void
     extensionParams: ExtensionParams
     codemirrorProps?: CodeMirrorProps
 }) {
     const batched = useBatchedTextInput(
-        element.content,
+        content,
         updateContent
     )
 
@@ -28,6 +28,7 @@ export function Editor({
 
     return (
         <Codemirror
+            key="element editor"
             extensions={ext}
             value={batched.value}
             onUpdate={(update) => {

@@ -2,6 +2,7 @@ import { ActionIcon, Menu } from "@mantine/core"
 import { IconLogout, IconUserCircle } from "@tabler/icons"
 import { isEmpty } from "lodash"
 import { useFirebase } from "react-redux-firebase"
+import { redirect } from "react-router-dom"
 import { useAppSelector } from "../app/hooks"
 
 export function AccountMenu({
@@ -26,7 +27,7 @@ export function AccountMenu({
                 </Menu.Label>
                 <Menu.Item
                     icon={<IconLogout size={14}/>}
-                    onClick={() => firebase.logout()}
+                    onClick={() => {firebase.logout(); redirect("/")}}
                 >
                     Sign out
                 </Menu.Item>
