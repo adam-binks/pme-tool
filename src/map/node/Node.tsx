@@ -84,15 +84,15 @@ export default function Node({ node }: NodeProps) {
                     radius="md"
                     p="xs"
                     withBorder={!isNaked}
-                    className={
-                        `${styles.nodeCard}
-                        ${isDragging ? styles.isDragging : ""}
-                        doNotPan group-hover/element:bg-gray-100 overflow-visible border-inherit`
-                    }
+                    className={clsx(
+                        styles.nodeCard,
+                        isDragging && styles.isDragging,
+                        "doNotPan group-hover/element:bg-gray-100 overflow-visible border-inherit"
+                    )}
                     ref={drag}
                     onClick={(e: MouseEvent) => {
                         // if (!addingArrowFrom) {
-                            onMousedownSelectable(e)
+                        onMousedownSelectable(e)
                         // }
                         e.stopPropagation()
                     }}
@@ -101,7 +101,7 @@ export default function Node({ node }: NodeProps) {
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
                     <ElementHeader element={node} showClassSelectIfEmpty={isSelected} />
- 
+
                     <TextElement element={node} elementType={"node"} />
 
                     <ResizeElement element={{ id: node.id, width: node.width }} elementType={"node"} />

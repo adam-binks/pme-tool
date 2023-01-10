@@ -95,7 +95,7 @@ export function createClassesCommand(firestore: fs, mapId: string, newClasses: C
 
 export function deleteClassCommands(firestore: fs, mapId: string, theClass: Class, classes: Class[], elementsOfClass: Element[]) {
     return [
-        ...(elementsOfClass.map(element => addClassToElementCommand(firestore, mapId, element, theClass, undefined)) ?? []),
+        ...(elementsOfClass?.map(element => addClassToElementCommand(firestore, mapId, element, theClass, undefined)) || []),
         updateSchemaCommand(firestore, mapId, "classes", classes, classes.filter(c => c.id !== theClass.id)),
     ]
 }

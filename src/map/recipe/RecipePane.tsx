@@ -30,7 +30,7 @@ export function RecipePane({
                 </ActionIcon>
             </div>
             {!collapsed &&
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                     <RecipeEditor />
                     <WhatsNextPanel />
                 </div>

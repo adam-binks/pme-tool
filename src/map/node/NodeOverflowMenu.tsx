@@ -17,7 +17,7 @@ export function NodeOverFlowMenu({ node }: NodeOverFlowMenuProps) {
     return (
         <Menu shadow="md" width={200} position="left-start">
             <Menu.Target>
-                <ActionIcon radius="xl" style={{}} size="sm">
+                <ActionIcon mt={-5} radius="xl" style={{}} size="xs">
                     <IconDots />
                 </ActionIcon>
             </Menu.Target>
