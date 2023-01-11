@@ -4,10 +4,11 @@ import { useThrottle } from "use-lodash-debounce-throttle";
 
 export function useBatchedTextInput(
     firebaseValue: string,
-    updateFirebaseValue: (newValue: string) => void
+    updateFirebaseValue: (newValue: string) => void,
+    periodicSync: boolean = true,
 ) {
     const [local, setLocal] = useState(firebaseValue)
-    const [isFocused, setIsFocused] = useState(false)
+    const [lastFocused, setLastFocused] = useState<"current" | Date | undefined>(undefined)
 
     // TODO - update local from firebase if not edited for x seconds
     // I think this method should work, not certain why it's not
@@ -30,23 +31,31 @@ export function useBatchedTextInput(
 
     return {
         onFocus: () => {
-            setIsFocused(true)
+            setLastFocused("current")
             setLocal(firebaseValue)
         },
         onBlur: () => {
-            setIsFocused(false)
+            setLastFocused(new Date())
             if (firebaseValue !== local) {
                 updateFirebaseValue(local)
             }
         },
         onChange: (e: React.ChangeEvent<(HTMLInputElement | HTMLTextAreaElement)>) => {
             setLocal(e.target.value)
-            throttledUpdateFirebaseValue(e.target.value)
+            periodicSync && throttledUpdateFirebaseValue(e.target.value)
         },
         onChangeValue: (value: string, viewUpdate: ViewUpdate) => {
             setLocal(value)
-            throttledUpdateFirebaseValue(value)
-        },
-        value: isFocused ? local : firebaseValue,
+            periodicSync && throttledUpdateFirebaseValue(value)
+    },
+        value: (
+            lastFocused !== undefined &&
+            (
+                lastFocused === "current"
+                // show local if it's been less than a second since element was focused
+                // because otherwise the firebase value overwrites the local value if connection is slow
+                || new Date().getTime() - (lastFocused as Date).getTime() < 1500
+            )
+        ) ? local : firebaseValue,
     }
 }

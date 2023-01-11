@@ -76,6 +76,7 @@ export interface LibrarySchema {
     createdAt: Date,
     creator: string,
     tags: string[],
+    recipe: Recipe,
 }
 
 export interface Project {

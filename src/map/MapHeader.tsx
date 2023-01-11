@@ -1,8 +1,9 @@
-import { ActionIcon, CloseButton, Group, Paper, Text, TextInput } from "@mantine/core"
+import { ActionIcon, CloseButton, Group, Paper, TextInput } from "@mantine/core"
 import { IconCornerUpLeft, IconCornerUpRight } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { Map } from "../app/schema"
+import { useBatchedTextInput } from "../etc/batchedTextInput"
 import { redo, undo } from "../state/historyReducer"
 import { renameMap } from "../state/mapFunctions"
 import { closePane } from "../state/paneReducer"
@@ -20,6 +21,11 @@ export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHea
 
     const history = useAppSelector(state => state.history[map.id])
 
+    const batchedNameInput = useBatchedTextInput(
+        map.name, 
+        (value) => renameMap(firestore, dispatch, map.id, map.name, value)
+    )
+
     return (
         <Paper
             ref={divRef}
@@ -32,10 +38,12 @@ export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHea
         >
             <Group position="apart" mx="md">
                 <TextInput
-                    value={map.name}
                     variant="filled"
                     size="md"
-                    onChange={(e) => renameMap(firestore, dispatch, map.id, map.name, e.target.value)}
+                    value={batchedNameInput.value}
+                    onChange={batchedNameInput.onChange}
+                    onBlur={batchedNameInput.onBlur}
+                    onFocus={batchedNameInput.onFocus}
                 />
                 {/* <Text size="xs" color="dimmed">
                     Map ID: {map.id}

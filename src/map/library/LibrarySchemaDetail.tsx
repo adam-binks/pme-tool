@@ -1,9 +1,10 @@
-import { ActionIcon, Button, Textarea } from "@mantine/core"
+import { ActionIcon, Button, clsx, CopyButton, Textarea } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { sample } from "lodash"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Class, LibrarySchema } from "../../app/schema"
+import { BatchedTextArea } from "../../etc/BatchedTextArea"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { enact } from "../../etc/firestoreHistory"
 import { generateId } from "../../etc/helpers"
@@ -12,6 +13,7 @@ import { createClassesCommand } from "../../state/mapFunctions"
 import { useSchema } from "../../state/mapSelectors"
 import { ELEMENT_COLOURS } from "../element/ColourPicker"
 import { useMapId } from "../Map"
+import { RecipeEditor } from "../recipe/editor/RecipeEditor"
 import SchemaEntry from "../schema/SchemaEntry"
 
 export function LibrarySchemaDetail({
@@ -27,7 +29,7 @@ export function LibrarySchemaDetail({
     const mapId = useMapId()
     const firestore = useFirestore()
 
-    const editable = true // TODO restrict to owner
+    const editable = false // TODO restrict to owner
 
     const thisLibrarySchemaClasses = librarySchema.classIds.map((classId) => classes[classId])
 
@@ -40,15 +42,28 @@ export function LibrarySchemaDetail({
         (newName) => updateLibrarySchema(firestore, { id: librarySchema.id, name: newName })
     )
 
-    const batchedDescriptionInput = useBatchedTextInput(
-        librarySchema.description,
-        (newDescription) => updateLibrarySchema(firestore, { id: librarySchema.id, description: newDescription })
+    // const batchedDescriptionInput = useBatchedTextInput(
+    //     librarySchema.description,
+    //     (newDescription) => updateLibrarySchema(firestore, { id: librarySchema.id, description: newDescription }),
+    //     false,
+    // )
+
+    const batchedRecipeInput = useBatchedTextInput(
+        librarySchema?.recipe?.content || "",
+        (newRecipe) => updateLibrarySchema(firestore, {
+            id: librarySchema.id, recipe: {
+                ...librarySchema.recipe, content: newRecipe
+            }
+        })
     )
 
+    const nodeTypes = thisLibrarySchemaClasses.filter((theClass) => theClass.element === "node")
+    const arrowTypes = thisLibrarySchemaClasses.filter((theClass) => theClass.element === "arrow")
+
     return (
-        <div className="absolute right-10 top-20 z-40 bg-slate-400 w-60 m-auto 
+        <div className="absolute right-9 top-20 z-40 bg-slate-400 w-64 m-auto 
             text-white rounded-lg py-6 px-4 text-left text-sm flex flex-col overflow-auto"
-            style={{maxHeight: "calc(100% - 90px)"}}>
+            style={{ maxHeight: "calc(100% - 90px)" }}>
             {editable ?
                 <Textarea
                     autosize
@@ -74,35 +89,70 @@ export function LibrarySchemaDetail({
                 >{librarySchema.name}</h3>
             }
 
+            <h4 className="font-bold text-center m-1" key="descriptionlabel">Description</h4>
             {editable ?
-                <Textarea
-                    autosize
-                    className="opacity-80 bg-transparent"
-                    value={batchedDescriptionInput.value}
-                    onChange={batchedDescriptionInput.onChange}
-                    onBlur={batchedDescriptionInput.onBlur}
-                    onFocus={batchedDescriptionInput.onFocus}
+                <BatchedTextArea
+                    content={librarySchema.description}
+                    onUpdate={(newDescription) =>
+                        updateLibrarySchema(firestore, { id: librarySchema.id, description: newDescription })
+                    }
                 />
                 :
                 <p className="opacity-80">{librarySchema.description}</p>
             }
 
+            {(editable || librarySchema.recipe?.content) &&
+                <div className="mt-4 flex flex-col">
+                    <h4 className="font-bold text-center m-1" key="recipelabel">Recipe</h4>
+                    <div className="bg-blue-50 rounded-t-md text-black">
+                        <RecipeEditor
+                            content={librarySchema.recipe?.content || ""}
+                            onUpdate={(newRecipe) => updateLibrarySchema(firestore, {
+                                id: librarySchema.id, recipe: {
+                                    ...(librarySchema.recipe || {}), content: newRecipe
+                                }
+                            })}
+                            inLibrary
+                            editable={editable}
+                        />
+                    </div>
+                    <CopyButton value={"\n" + (librarySchema.recipe?.content || "")}>
+                        {({ copied, copy }) => (
+                            <Button
+                                className={clsx("rounded-t-none",
+                                    copied ? "bg-green-400" : "bg-slate-500")}
+                                onClick={copy}
+                                color={copied ? "green" : "grey"}
+                            >
+                                {copied ? 'Copied' : 'Copy recipe to clipboard'}
+                            </Button>
+                        )}
+                    </CopyButton>
+                </div>
+            }
+
             <div className="flex flex-col space-y-2 mt-4">
-                <h4 className="font-bold text-center">Schema</h4>
-                {thisLibrarySchemaClasses.map((theClass) =>
-                    theClass ?
-                        <div key={theClass.id} className="m-auto flex">
-                            <SchemaEntry key={theClass.id} inLibrary={true} theClass={theClass} editable={editable} />
-                            {editable && <ActionIcon color="white" onClick={() =>
-                                updateLibrarySchema(firestore, {
-                                    id: librarySchema.id,
-                                    classIds: librarySchema.classIds.filter(id => id !== theClass.id)
-                                })
-                            }>
-                                <IconTrash size={16} />
-                            </ActionIcon>}
-                        </div>
-                        : <p>Error: missing class</p>
+                <h4 className="font-bold text-center" key="schema">Schema</h4>
+                {[["node", nodeTypes], ["arrow", arrowTypes]].map(([elementType, elementTypes]) =>
+                    elementTypes && <div className="flex flex-col gap-2" key={elementType as string}>
+                        <h5 className="font-bold text-center capitalize" key={elementType as string}>
+                            {elementType as string} types
+                        </h5>
+                        {thisLibrarySchemaClasses.map((theClass) =>
+                            (theClass && theClass.element === elementType) &&
+                            <div key={theClass.id} className="m-auto flex">
+                                <SchemaEntry key={theClass.id} inLibrary={true} theClass={theClass} editable={editable} />
+                                {editable && <ActionIcon color="white" onClick={() =>
+                                    updateLibrarySchema(firestore, {
+                                        id: librarySchema.id,
+                                        classIds: librarySchema.classIds.filter(id => id !== theClass.id)
+                                    })
+                                }>
+                                    <IconTrash size={16} color="white" />
+                                </ActionIcon>}
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
 
@@ -124,7 +174,7 @@ export function LibrarySchemaDetail({
                 </>
                 :
                 librarySchema.classIds && librarySchema.classIds.length > 0 &&
-                     <p className="opacity-80 m-auto mt-4">All classes added</p>
+                <p className="opacity-80 m-auto mt-4">All classes added</p>
             }
 
             {editable &&

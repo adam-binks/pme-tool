@@ -15,7 +15,7 @@ interface WhatsNextCard {
 export type AutoAdvanceCheck = (data: AutoAdvanceData) => boolean
 
 interface AutoAdvanceData {
-    maps: (Map & {nodes: Node[], arrows: Arrow[]})[]
+    maps: (Map & {nodes: (Node|undefined)[], arrows: (Node|undefined)[]})[]
     project: Project
 }
 
@@ -48,14 +48,14 @@ export const whatsNextDecks: WhatsNextDeck[] = [
                 title: "Add the type of a node",
                 description: "Select a node and add a type to it. What kind of thing is it?",
                 autoAdvance: (data) => data.maps.some(
-                    map => map?.nodes && Object.values(map.nodes).some(node => node.classId != null)
+                    map => map?.nodes && Object.values(map.nodes).some(node => node?.classId != null)
                 )
             },
             {
                 title: "Add a property to a node",
                 description: "Record structured information on your nodes. For example: =Confidence= 80%.",
                 autoAdvance: (data) => data.maps.some(
-                    map => map?.nodes && Object.values(map.nodes).some(node => node.content.match(/\=.*\=/))
+                    map => map?.nodes && Object.values(map.nodes).some(node => node?.content.match(/\=.*\=/))
                 )
             },
             {
@@ -69,7 +69,7 @@ export const whatsNextDecks: WhatsNextDeck[] = [
                 title: "Add the type of an arrow",
                 description: "Select an arrow and add a type to it. What kind of relation is it?",
                 autoAdvance: (data) => data.maps.some(
-                    map => map?.arrows && Object.values(map.arrows).some(arrow => arrow.classId != null)
+                    map => map?.arrows && Object.values(map.arrows).some(arrow => arrow?.classId != null)
                 )
             },
         ]

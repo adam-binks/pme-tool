@@ -1,5 +1,5 @@
 import { map } from "lodash";
-import { Class, LibrarySchema, Schema } from "../app/schema";
+import { Class, LibrarySchema, Recipe, Schema } from "../app/schema";
 import { generateId, prettyPrintDate } from "../etc/helpers";
 import { fs } from "./mapFunctions";
 
@@ -28,7 +28,7 @@ export function createLibraryClassAndAddToSchema(firestore: fs, librarySchemaId:
     firestore.update({ collection: 'librarySchemas', doc: librarySchemaId }, { classIds: firestore.FieldValue.arrayUnion(libraryClass.id) })
 }
 
-export function copyMapSchemaToLibrary(firestore: fs, mapSchema: Schema, mapName: string, uid: string) {
+export function copyMapSchemaToLibrary(firestore: fs, mapSchema: Schema, mapName: string, uid: string, recipe: Recipe) {
     const classIds = mapSchema.classes.map(
         (theClass) => {
             const id = generateId()
@@ -45,5 +45,9 @@ export function copyMapSchemaToLibrary(firestore: fs, mapSchema: Schema, mapName
         creator: uid,
         description: `Snapshot of ${map.name} schema on ${prettyPrintDate(new Date())}`,
         tags: [],
+        recipe: {
+            ...recipe,
+            id: generateId(),
+        }
     })
 }

@@ -24,6 +24,8 @@ export function WhatsNextPanel({
 
     const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<NodeJS.Timeout | undefined>(undefined)
 
+    const [timeOpened, _] = useState(new Date())
+
     const moveToCard = (newIndex: number, setCardIndex = true) => {
         if (setCardIndex) {
             // use length (not length - 1) to show the "deck complete" at the end
@@ -90,7 +92,10 @@ export function WhatsNextPanel({
                                 ...completedCards, [deck.name]:
                                     [...(completedCards?.[deck.name] || []), cardIndex]
                             })
-                            setAutoAdvanceTimer(setTimeout(() => { moveToCard(cardIndex + 1) }, 2000))
+                            setAutoAdvanceTimer(setTimeout(
+                                () => { moveToCard(cardIndex + 1) }, 
+                                ((new Date().getTime() - timeOpened.getTime()) > 1000) ? 2000 : 0
+                            ))
                         }}
                     />
                 }

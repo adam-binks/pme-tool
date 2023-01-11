@@ -1,14 +1,27 @@
 import { ActionIcon, clsx, Title } from "@mantine/core"
 import { IconChevronDown, IconChevronUp } from "@tabler/icons"
 import { useState } from "react"
+import { useFirestore } from "react-redux-firebase"
+import { useProjectId } from "../../pages/ProjectView"
+import { updateProject, useProject } from "../../state/projectFunctions"
 import { RecipeEditor } from "./editor/RecipeEditor"
 import { WhatsNextPanel } from "./WhatsNextPanel"
 
 export function RecipePane({
 
 }: {
-    }) {    
+    }) {
+    const firestore = useFirestore()
+    const projectId = useProjectId()
+    const recipe = useProject(project => project.recipe)
+
+
     const [collapsed, setCollapsed] = useState(false)
+
+
+    const updateRecipe = (newContent: string) => {
+        updateProject(firestore, projectId, { recipe: { ...recipe, content: newContent } })
+    }
 
     return (
         <div className={clsx(
@@ -31,7 +44,7 @@ export function RecipePane({
             </div>
             {!collapsed &&
                 <div className="flex flex-col gap-2">
-                    <RecipeEditor />
+                    <RecipeEditor content={recipe.content} onUpdate={updateRecipe} />
                     <WhatsNextPanel />
                 </div>
             }

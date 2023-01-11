@@ -9,6 +9,7 @@ import { generateId, useUserId } from "../../etc/helpers"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { addLibrarySchema, copyMapSchemaToLibrary } from "../../state/libraryFunctions"
 import { useFirestoreData, useMap, useSchema } from "../../state/mapSelectors"
+import { useProject } from "../../state/projectFunctions"
 import { LibrarySchemaDetail } from "./LibrarySchemaDetail"
 import { LibrarySchemaThumbnail } from "./LibrarySchemaThumbnail"
 import { LibrarySection } from "./LibrarySection"
@@ -63,6 +64,10 @@ export function LibraryPane({ }: {}) {
                                                 description: "",
                                                 tags: [],
                                                 creator: uid,
+                                                recipe: {
+                                                    id: generateId(),
+                                                    content: "",
+                                                }
                                             })}
                                             variant="filled"
                                             className="bg-slate-400 text-center"
@@ -115,11 +120,12 @@ const CopySchemaToLibraryButton = () => {
     const throttledCopyMapSchemaToLibrary = useThrottle(copyMapSchemaToLibrary, 1000)
     const uid = useUserId()
     const mapName = useMap(map => map.name)
+    const recipe = useProject(project => project.recipe)
 
     return (
         <Button
             onClick={() => uid ?
-                throttledCopyMapSchemaToLibrary(firestore, mapSchema, mapName, uid)
+                throttledCopyMapSchemaToLibrary(firestore, mapSchema, mapName, uid, recipe)
                 : showNotification({ message: "Oops! You're not logged in." })
             }
             variant="filled"

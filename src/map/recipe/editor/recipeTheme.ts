@@ -2,9 +2,8 @@ import { EditorView } from "codemirror";
 
 export const recipeTheme = EditorView.theme({
     "&": {
-        height: "275px",
-        borderRadius: "10px",
-        padding: "4px",
+        maxHeight: "275px",
+        padding: "4px 4px 0 4px",
     },
     "&.cm-editor.cm-focused": {
         outline: "none",
@@ -14,5 +13,8 @@ export const recipeTheme = EditorView.theme({
         fontSize: "14px",
         borderRadius: "5px",
         lineHeight: "1.5",
+    },
+    "&.cm-scroller": {
+        overflow: "auto",
     },
 })

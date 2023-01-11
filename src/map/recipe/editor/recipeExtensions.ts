@@ -1,11 +1,9 @@
 import { autocompletion } from "@codemirror/autocomplete";
+import { indentWithTab } from "@codemirror/commands";
 import { Extension } from "@codemirror/state";
-import { placeholder, keymap } from "@codemirror/view";
-import {indentWithTab} from "@codemirror/commands"
+import { keymap, placeholder } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { domEventHandlers } from "../../editor/domEventHandlers";
-import { exposeProperties, Property } from "../../editor/exposeProperties";
-import { dynamicHighlighting, PropertiesToHighlight } from "../../editor/syntaxHighlighting";
 import { recipelang } from "./recipeLanguage";
 import { recipeTheme } from "./recipeTheme";
 import { addCheckboxOnNewline, stepCheckboxPlugin } from "./stepCheckbox";
@@ -24,19 +22,10 @@ const staticRecipeExtensions: Extension[] = [
     stepCheckboxPlugin,
     addCheckboxOnNewline,
     keymap.of([indentWithTab]),
-    // autocomplete(),
-    // autocompleteTheme,
 ]
 
-export interface ExtensionParams {
-    onUpdateProperties: (properties: Property[]) => void
-    propertiesToHighlight: PropertiesToHighlight
-}
-
-export function recipeExtensions({onUpdateProperties, propertiesToHighlight} : ExtensionParams): Extension[] {
+export function recipeExtensions(): Extension[] {
     return [
         ...staticRecipeExtensions,
-        exposeProperties(onUpdateProperties),
-        dynamicHighlighting(propertiesToHighlight),
     ]
 }

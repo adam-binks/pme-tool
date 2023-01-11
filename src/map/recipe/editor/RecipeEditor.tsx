@@ -1,34 +1,34 @@
+import { clsx } from "@mantine/core"
 import { useMemo } from "react"
-import { useFirestore } from "react-redux-firebase"
 import Codemirror from "rodemirror"
+import { EditorState } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 import { useBatchedTextInput } from "../../../etc/batchedTextInput"
-import { useProjectId } from "../../../pages/ProjectView"
-import { updateProject, useProject } from "../../../state/projectFunctions"
 import { recipeExtensions } from "./recipeExtensions"
-import { recipeTheme } from "./recipeTheme"
 
 export function RecipeEditor({
-
+    content,
+    onUpdate,
+    inLibrary = false,
+    editable = true,
 }: {
-
-    }) {
-    const firestore = useFirestore()
-    const projectId = useProjectId()
-    const recipe = useProject(project => project.recipe)
-
-    const updateRecipe = (newContent: string) => {
-        updateProject(firestore, projectId, { recipe: { ...recipe, content: newContent } })
-    }
-
+    content: string
+    onUpdate: (newContent: string) => void
+    inLibrary?: boolean
+    editable?: boolean
+}) {
     const batched = useBatchedTextInput(
-        recipe.content,
-        updateRecipe,
+        content,
+        onUpdate,
     )
 
-    const ext = useMemo(() => recipeExtensions({onUpdateProperties: () => {}, propertiesToHighlight: []}), [])
+    const ext = useMemo(() => [
+        ...recipeExtensions(), 
+        ...(editable ? [] : [EditorState.readOnly.of(true), EditorView.editable.of(false)])
+    ], [])
 
     return (
-        <div className="flex-grow">
+        <div className={clsx(inLibrary && "flex-grow", "p-1")}>
             <Codemirror
                 key={"recipe"}
                 extensions={ext}
