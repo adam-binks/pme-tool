@@ -6,6 +6,7 @@ import { EditorView } from "codemirror";
 import { domEventHandlers } from "../../editor/domEventHandlers";
 import { recipelang } from "./recipeLanguage";
 import { recipeTheme } from "./recipeTheme";
+import { ExecuteCommandFunc, runCommandPlugin } from "./runCommandPlugin";
 import { addCheckboxOnNewline, stepCheckboxPlugin } from "./stepCheckbox";
 import { highlighting } from "./syntaxHighlighting";
 
@@ -24,8 +25,9 @@ const staticRecipeExtensions: Extension[] = [
     keymap.of([indentWithTab]),
 ]
 
-export function recipeExtensions(): Extension[] {
+export function recipeExtensions({ execute }: { execute: (execute: ExecuteCommandFunc) => void }): Extension[] {
     return [
         ...staticRecipeExtensions,
+        runCommandPlugin(execute),
     ]
 }

@@ -6,7 +6,6 @@ import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch } from "../../app/hooks";
 import { Arrow, Element, elementType } from "../../app/schema";
 import { Command, enact, enactAll } from "../../etc/firestoreHistory";
-import { truthyLog } from "../../etc/helpers";
 import { useClassProperties } from "../../state/localReducer";
 import { getPropertiesFromContent, updateElementCommand } from "../../state/mapFunctions";
 import { useConnectedArrows } from "../../state/mapSelectors";

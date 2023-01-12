@@ -3,6 +3,7 @@ import { IconDots, IconTrash } from "@tabler/icons"
 import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Node } from "../../app/schema"
+import { truthyLog } from "../../etc/helpers"
 import { deleteNode } from "../../state/mapFunctions"
 import { useMapId } from "../Map"
 
@@ -24,7 +25,8 @@ export function NodeOverFlowMenu({ node }: NodeOverFlowMenuProps) {
             <Menu.Dropdown>
                 <Menu.Item
                     onClick={() => {
-                        node && deleteNode(firestore, dispatch, mapId, node, arrows)
+                        console.log("delete node", node)
+                        node && truthyLog("del") && deleteNode(firestore, dispatch, mapId, node, arrows)
                     }}
                     icon={<IconTrash size={14} />}>
                     Delete

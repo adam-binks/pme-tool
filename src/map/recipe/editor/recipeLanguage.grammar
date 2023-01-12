@@ -7,13 +7,21 @@ line {
 }
 
 CommandLine {
-    Checkbox anything* endline
+    Checkbox anything* Command anything* endline
 }
 
 Checkbox {
     "![ ]!" |
     "![o]!" |
     "![x]!"
+}
+
+Command {
+    AddNodeCommand
+}
+
+AddNodeCommand {
+    "add" anything* "node"
 }
 
 CommentLine {

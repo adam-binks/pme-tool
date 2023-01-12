@@ -8,6 +8,7 @@ const parserWithMetadata = parser.configure({
             Checkbox: t.bool,
             CommandLine: t.attributeName,
             CommentLine: t.lineComment,
+            AddNodeCommand: t.controlKeyword,
         }),
         // indentNodeProp.add({
         //     Application: context => context.column(context.node.from) + context.unit

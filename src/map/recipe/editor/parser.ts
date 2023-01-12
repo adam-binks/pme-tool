@@ -2,14 +2,14 @@
 import {LRParser} from "@lezer/lr"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "!|QQOPOOOOOO'#C_'#C_OOOO'#Cb'#CbOcOPO'#C`OcOPO'#C^OOOO'#Cd'#CdOOOO'#Ca'#CaQQOPOOOOOO-E6`-E6`OOOO'#Ci'#CiOOOO,58z,58zOcOPO,58xOOOO,58x,58xOOOO-E6_-E6_OOOO1G.d1G.d",
-  stateData: "n~OXPOYPOZPO[QO^TO~O[QO^XO_XO~O",
-  goto: "!V^PP_c_gmPxPPPP|TTOVTSOVQVOR]VSROVSWRZRZSTUOVQYRQ[SR^Z",
-  nodeNames: "⚠ Content CommandLine Checkbox CommentLine",
-  maxTerm: 15,
+  states: "$[QQOPOOOOOO'#C_'#C_OOOO'#Cd'#CdOcOPO'#CbOnOPO'#C^OOOO'#Cf'#CfOOOO'#Cc'#CcQQOPOOOOOO-E6b-E6bOOOO'#Cm'#CmOOOO,58|,58|OnOPO,58xOvOPO'#CaOOOO'#C`'#C`OcOPO,58xOOOO-E6a-E6aOcOPO1G.dO!OOPO,58{OOOO,58{,58{OcOPO1G.dOOOO1G.d1G.dOcOPO7+$OOOOO7+$O7+$OOOOO1G.g1G.gOOOO<<Gj<<Gj",
+  stateData: "!W~OZPO[PO]PO^QObTO~O^QObXOcXO~O^QO_[O~O^QO`bO~O^QO`gO~O",
+  goto: "!ubPPcgkqcu{P!dPPPPPP!hTTOVTSOVQ^SR`ZT]SZQVOR_VSROVYWRZaceQZSQa[Qc^Re`TUOVQYRQd^Sf`cRhe",
+  nodeNames: "⚠ Content CommandLine Checkbox Command AddNodeCommand CommentLine",
+  maxTerm: 19,
   skippedNodes: [0],
   repeatNodeCount: 2,
-  tokenData: "#k~RWOYkYZpZ]k]^p^qkqr{r~k~~#f~pO[~~uQ^~YZp]^p~!QP[~!}#O!T~!WRpq!a#c#d!r#l#m#T~!dP#P#Q!g~!jPqr!m~!rOX~~!uP#P#Q!x~!{Pqr#O~#TOY~~#WP#P#Q#Z~#^Pqr#a~#fOZ~~#kO_~",
+  tokenData: "$u~R[OYwYZ|Z]w]^|^qwqr!Xr#Tw#T#U#r#U#bw#b#c$V#c~w~~$p~|O^~~!RQb~YZ|]^|~!^P^~!}#O!a~!dRpq!m#c#d#O#l#m#a~!pP#P#Q!s~!vPqr!y~#OOZ~~#RP#P#Q#U~#XPqr#[~#aO[~~#dP#P#Q#g~#jPqr#m~#rO]~~#wP^~#W#X#z~#}P#W#X$Q~$VO_~~$[P^~#c#d$_~$bP#W#X$e~$hP#X#Y$k~$pO`~~$uOc~",
   tokenizers: [0],
   topRules: {"Content":[0,1]},
   tokenPrec: 0

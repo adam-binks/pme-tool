@@ -45,9 +45,9 @@ export default function MapHeader({ map, paneIndex, isOnlyPane, divRef }: MapHea
                     onBlur={batchedNameInput.onBlur}
                     onFocus={batchedNameInput.onFocus}
                 />
-                {/* <Text size="xs" color="dimmed">
+                {/* <p className="text-xs text-slate-400">
                     Map ID: {map.id}
-                </Text> */}
+                </p> */}
                 <Group>
                     <ActionIcon
                         title="Undo"

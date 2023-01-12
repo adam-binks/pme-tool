@@ -27,7 +27,6 @@ export function enactAll(dispatch: any, mapId: string, commands: Command[]) {
         return
     }
 
-
     dispatch(addToUndoAndClearRedo({ mapId, commands }))
     commands.forEach(command => command.act())
 }
