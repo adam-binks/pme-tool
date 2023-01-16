@@ -1,11 +1,8 @@
-import { Button, Group, Paper, Title } from "@mantine/core"
-import { IconPlus } from "@tabler/icons"
+import { Group, Paper, Title } from "@mantine/core"
 import { useFirestore } from "react-redux-firebase"
 import { Link } from "react-router-dom"
 import { useAppDispatch } from "../app/hooks"
 import { Project } from "../app/schema"
-import { createMap } from "../state/mapFunctions"
-import { openPane } from "../state/paneReducer"
 import { AccountMenu } from "./AccountMenu"
 
 export default function Header({
@@ -26,7 +23,7 @@ export default function Header({
                 <div className="flex align-bottom">
                     <Link to="/">
                         <Title className="select-none hover:bg-violet-200 px-2 rounded-lg" order={4}>
-                            PME Tool
+                            Schematica
                         </Title>
                     </Link>
                     {project && <Title className="ml-2 select-none text-gray-500 font-medium" order={4}>

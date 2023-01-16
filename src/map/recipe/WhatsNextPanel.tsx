@@ -2,6 +2,7 @@ import { ActionIcon, clsx, Select } from "@mantine/core"
 import { IconCheck, IconChevronLeft, IconChevronRight } from "@tabler/icons"
 import { useEffect, useState } from "react"
 import { Project } from "../../app/schema"
+import { useProjectId } from "../../pages/ProjectView"
 import { useFirestoreData } from "../../state/mapSelectors"
 import { useProject } from "../../state/projectFunctions"
 import { AutoAdvanceCheck, whatsNextDecks } from "../../state/whatsNextDecks"
@@ -12,6 +13,7 @@ export function WhatsNextPanel({
 
     }) {
     const [deck, setDeck] = useState(whatsNextDecks[0])
+    const projectId = useProjectId()
 
     const [cardIndexByDeck, setCardIndexByDeck] = useState<{ [deck: string]: number }>(
         whatsNextDecks.reduce((acc, deck) => ({ ...acc, [deck.name]: 0 }), {}
@@ -24,7 +26,8 @@ export function WhatsNextPanel({
 
     const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<NodeJS.Timeout | undefined>(undefined)
 
-    const [timeOpened, _] = useState(new Date())
+    const [timeOpened, setTimeOpened] = useState(new Date())
+    useEffect(() => setTimeOpened(new Date()), [projectId]) // whenever projectId changes, reset timeOpened
 
     const moveToCard = (newIndex: number, setCardIndex = true) => {
         if (setCardIndex) {

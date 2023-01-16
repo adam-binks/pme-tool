@@ -22,7 +22,7 @@ export function ProjectsPage({
         <>
             <Header project={undefined} />
             <div className="text-center items-center m-auto my-8 flex flex-col space-y-6">
-                <h1 className="text-2xl">PME Tool</h1>
+                <h1 className="text-2xl">Schematica</h1>
                 <Button
                     className="bg-violet-600"
                     onClick={() => {

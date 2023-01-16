@@ -1,7 +1,7 @@
 {
-  "name": "pme-tool-client",
+  "name": "schematica",
   "version": "0.1.0",
-  "homepage": "https://adambinks.me/pme-tool",
+  "homepage": "https://adambinks.me/schematica",
   "private": true,
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.1",
