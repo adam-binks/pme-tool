@@ -7,7 +7,7 @@ import { Class, LibrarySchema } from "../../app/schema"
 import { BatchedTextArea } from "../../etc/BatchedTextArea"
 import { useBatchedTextInput } from "../../etc/batchedTextInput"
 import { enact } from "../../etc/firestoreHistory"
-import { generateId } from "../../etc/helpers"
+import { generateId, useUserId } from "../../etc/helpers"
 import { createLibraryClassAndAddToSchema, deleteLibrarySchema, updateLibrarySchema } from "../../state/libraryFunctions"
 import { createClassesCommand } from "../../state/mapFunctions"
 import { useSchema } from "../../state/mapSelectors"
@@ -28,8 +28,9 @@ export function LibrarySchemaDetail({
     const dispatch = useAppDispatch()
     const mapId = useMapId()
     const firestore = useFirestore()
+    const uid = useUserId()
 
-    const editable = false // TODO restrict to owner
+    const editable = librarySchema.creator === uid
 
     const thisLibrarySchemaClasses = librarySchema.classIds.map((classId) => classes[classId])
 
