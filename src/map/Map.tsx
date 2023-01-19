@@ -90,7 +90,7 @@ export default function Map({
         addNode(firestore, dispatch, mapId, node)
     }
 
-    const [{ isActive }, drop] = useDrop(
+    const [{ draggedSchemaClass }, drop] = useDrop(
         () => ({
             accept: [ItemTypes.NODE, ItemTypes.SCHEMA_CLASS],
             drop(item: DragItem, monitor) {
@@ -119,6 +119,11 @@ export default function Map({
 
                 return undefined
             },
+            collect: (monitor) => ({
+                draggedSchemaClass: monitor.canDrop() && (
+                    monitor.getItemType() === ItemTypes.SCHEMA_CLASS && monitor.getItem()?.mapId === mapId
+                ),
+            }),
         }),
         [dispatch, zoomLevel, map, mapId, firestore, panOffset],
     )
@@ -199,7 +204,10 @@ export default function Map({
                                     }}
                                 >
                                     <TransformComponent
-                                        wrapperStyle={{ height: "100%", width: "100%", backgroundColor: "#eee" }}
+                                        wrapperStyle={{
+                                            height: "100%", width: "100%",
+                                            backgroundColor: draggedSchemaClass ? "#eff6ff" : "#eee",
+                                        }}
                                     >
                                         {children}
                                     </TransformComponent>

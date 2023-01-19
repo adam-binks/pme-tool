@@ -179,9 +179,10 @@ export function MapTabs({
                     </ActionIcon>
                     <ActionIcon className="my-auto" title="Open split view"
                         onClick={() => {
+                            const newMapIndex = Math.min(mapIds.indexOf(activeMap) + 1, mapIds.length - 1)
                             dispatch(setPanes([
                                 ...panes.slice(0, paneIndex + 1),
-                                { ...defaultPane, id: activeMap },
+                                { ...defaultPane, id: mapIds[newMapIndex] },
                                 ...panes.slice(paneIndex + 1)
                             ]))
                         }}

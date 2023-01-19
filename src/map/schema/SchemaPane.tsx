@@ -1,4 +1,4 @@
-import { Paper, ScrollArea, Stack, Title } from "@mantine/core"
+import { clsx, Paper, ScrollArea, Stack, Title } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { MouseEvent } from "react"
 import { useDrop } from "react-dnd"
@@ -6,7 +6,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Class, Schema } from "../../app/schema"
 import { enact } from "../../etc/firestoreHistory"
-import { generateId } from "../../etc/helpers"
+import { generateId, truthyLog } from "../../etc/helpers"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { ItemTypes } from "../../ItemTypes"
 import { createClassesCommand } from "../../state/mapFunctions"
@@ -36,7 +36,6 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
             })
             return
         }
-        console.log("add class ", { classToAdd });
         // add a copy of the class to the schema
         enact(
             dispatch,
@@ -45,7 +44,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
         )
     }
 
-    const [, drop] = useDrop(
+    const [{ draggedItemCouldBeDroppedHere, dropItemOver }, drop] = useDrop(
         () => ({
             accept: [ItemTypes.LIBRARY_CLASS, ItemTypes.SCHEMA_CLASS],
             drop(item: DragItem, monitor) {
@@ -60,8 +59,6 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                 }
 
                 if (monitor.getItemType() === ItemTypes.SCHEMA_CLASS) {
-                    console.log("dropped schema class", { item, mapId });
-
                     if (item.mapId !== mapId && item.theClass) {
                         addCopyOfClassToSchema(item.theClass)
                     }
@@ -69,7 +66,10 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                 return undefined
             },
             collect: (monitor) => ({
-                isActive: monitor.canDrop() && monitor.isOver(),
+                draggedItemCouldBeDroppedHere: monitor.canDrop() && (
+                    monitor.getItemType() === ItemTypes.LIBRARY_CLASS || monitor.getItem()?.mapId !== mapId
+                ),
+                dropItemOver: monitor.isOver(),
             }),
         }),
         [dispatch, schema.classes, libraryClasses, addCopyOfClassToSchema],
@@ -85,7 +85,10 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     return (
         <Paper
-            className={"z-10 flex flex-col justify-between h-full"}
+            className={clsx("z-10 flex flex-col justify-between h-full",
+                draggedItemCouldBeDroppedHere && "bg-blue-50",
+                draggedItemCouldBeDroppedHere && dropItemOver && "bg-blue-200",
+            )}
             ref={(el: any) => drop(el)}
             p={5}
             radius={0}
