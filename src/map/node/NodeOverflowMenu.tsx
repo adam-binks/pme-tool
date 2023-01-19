@@ -25,8 +25,7 @@ export function NodeOverFlowMenu({ node }: NodeOverFlowMenuProps) {
             <Menu.Dropdown>
                 <Menu.Item
                     onClick={() => {
-                        console.log("delete node", node)
-                        node && truthyLog("del") && deleteNode(firestore, dispatch, mapId, node, arrows)
+                        node && deleteNode(firestore, dispatch, mapId, node, arrows)
                     }}
                     icon={<IconTrash size={14} />}>
                     Delete

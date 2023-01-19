@@ -34,7 +34,7 @@ export function ProjectsPage({
                         const projectName = window.prompt("Enter project name", "New project")
                         if (!projectName) { return }
 
-                        const mapId = createMap(firestore, `${projectName} map`)
+                        const mapId = createMap(firestore, `${projectName} map`, undefined)
                         const projectId = generateId()
                         addProject(firestore, {
                             name: projectName,

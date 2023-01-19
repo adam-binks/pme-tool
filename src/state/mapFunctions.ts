@@ -1,6 +1,6 @@
 import { sample } from "lodash"
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
-import { Arrow, Class, Element, elementType, getElementType, Map, Node } from "../app/schema"
+import { Arrow, Class, Element, elementType, getElementType, Map, Node, Project } from "../app/schema"
 import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
 import { getProperties, Property } from "../map/editor/exposeProperties"
@@ -10,7 +10,7 @@ import { DEFAULT_NODE_WIDTH } from "../map/node/Node"
 
 export type fs = ExtendedFirestoreInstance
 
-export function createMap(firestore: fs, title = "New map") {
+export function createMap(firestore: fs, title = "New map", project: Project | undefined) {
     const id = generateId()
     const newMap: Map = {
         id: id,
@@ -21,12 +21,21 @@ export function createMap(firestore: fs, title = "New map") {
             classes: [],
         },
     }
+
     firestore.set({ collection: 'maps', doc: id }, newMap)
+    if (project) {
+        firestore.update({ collection: 'projects', doc: project.id }, { mapIds: [...project.mapIds, id] })
+    }
     return id
 }
 
 export function renameMap(firestore: fs, dispatch: any, mapId: string, currentName: string, newName: string) {
     enact(dispatch, mapId, update(firestore, `maps/${mapId}`, { name: currentName }, { name: newName }))
+}
+
+export function deleteMap(firestore: fs, mapId: string, project: Project) {
+    firestore.update(`projects/${project.id}`, { mapIds: project.mapIds.filter(id => id !== mapId) })
+    firestore.delete(`maps/${mapId}`)
 }
 
 export function getBlankNode(x: number = 0, y: number = 0): Node {

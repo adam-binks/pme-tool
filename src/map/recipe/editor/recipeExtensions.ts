@@ -28,6 +28,6 @@ const staticRecipeExtensions: Extension[] = [
 export function recipeExtensions({ execute }: { execute: (execute: ExecuteCommandFunc) => void }): Extension[] {
     return [
         ...staticRecipeExtensions,
-        runCommandPlugin(execute),
+        // runCommandPlugin(execute), // TODO re-enable once this is ready
     ]
 }

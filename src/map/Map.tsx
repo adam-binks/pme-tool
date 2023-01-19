@@ -1,19 +1,19 @@
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 import { Skeleton } from "@mantine/core";
-import { shallowEqual, useMouse } from "@mantine/hooks";
+import { useMouse } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Arrow, Class, Node } from "../app/schema";
-import { useMemoisedState } from "../etc/helpers";
+import { generateId, useMemoisedState } from "../etc/helpers";
 import { emptySelection, Selection, SelectionContext } from "../etc/useSelectable";
 import { ItemTypes } from "../ItemTypes";
 import { addNode, getBlankNode, getBlankNodeOfClass, updateNode } from "../state/mapFunctions";
 import { Pane, setAddingArrowFrom } from "../state/paneReducer";
 import ArrowComponent from "./arrow/Arrow";
 import { LibraryPane } from "./library/LibraryPane";
-import MapHeader from "./MapHeader";
 import { useMapHotkeys } from "./mapHotkeys";
 import { MouseFollower } from "./node/MouseFollower";
 import NodeComponent from "./node/Node";
@@ -27,24 +27,22 @@ export const useZoomedOutMode = () => useContext(ZoomedOutMode)
 const zoomedOutModeThreshold = 0.3
 
 export interface DragItem {
-    type: string
     id: string
     x: number
     y: number
+    mapId: string
+    node?: Node
+    theClass?: Class
 }
 
 export default function Map({
     children,
     mapId,
-    paneIndex,
     showLibrary,
-    isOnlyPane,
 }: {
     children: React.ReactNode
     mapId: string
-    paneIndex: number
     showLibrary: boolean
-    isOnlyPane: boolean
 }) {
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
@@ -58,17 +56,17 @@ export default function Map({
 
     const hotkeysRef = useMapHotkeys(map?.id)
 
-    const mapHeaderDivRef = useRef<HTMLDivElement>(null)
+    const mapTopLeftRef = useRef<HTMLDivElement>(null)
 
     const [zoomLevel, setZoomLevel] = useState(1)
     const [panOffset, setPanOffset] = useMemoisedState({ x: 0, y: 0 })
 
-    const correctForMapOffset = (screenX: number, screenY: number, useHeightInstead = false) => {
-        const mapHeaderRect = mapHeaderDivRef.current?.getBoundingClientRect()
+    const correctForMapOffset = (screenX: number, screenY: number) => {
+        const mapTopLeftRect = mapTopLeftRef.current?.getBoundingClientRect()
 
         // correct for canvas element offset from topleft of screen
-        const xFromCanvasTopleft = screenX - (mapHeaderRect?.left || 0)
-        const yFromCanvasTopleft = screenY - ((useHeightInstead ? mapHeaderRect?.height : mapHeaderRect?.bottom) || 0)
+        const xFromCanvasTopleft = screenX - (mapTopLeftRect?.left || 0)
+        const yFromCanvasTopleft = screenY - (mapTopLeftRect?.top || 0)
 
         return { x: xFromCanvasTopleft, y: yFromCanvasTopleft }
     }
@@ -85,36 +83,44 @@ export default function Map({
 
     const createNodeAtLocation = ({ clientX, clientY }: { clientX: number, clientY: number }, node?: Node) => {
         const { x, y } = screenCoordsToMapCoords(clientX, clientY)
-        const offset = { x: -20, y: -50 } // to correct for naked nodes
+        const offset = { x: -20, y: -30 } // to display the new number under the cursor
         node = node || getBlankNode(x + offset.x, y + offset.y)
         node.x = x + offset.x
         node.y = y + offset.y
         addNode(firestore, dispatch, mapId, node)
     }
 
-    const [, drop] = useDrop(
+    const [{ isActive }, drop] = useDrop(
         () => ({
             accept: [ItemTypes.NODE, ItemTypes.SCHEMA_CLASS],
             drop(item: DragItem, monitor) {
                 if (monitor.getItemType() === ItemTypes.NODE) {
-                    const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-                    // correct for canvas zoom
-                    const x = Math.round(item.x + (delta.x / zoomLevel))
-                    const y = Math.round(item.y + (delta.y / zoomLevel))
-                    updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
+                    if (item.mapId === mapId) {
+                        const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+                        // correct for canvas zoom
+                        const x = Math.round(item.x + (delta.x / zoomLevel))
+                        const y = Math.round(item.y + (delta.y / zoomLevel))
+                        updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
+                    } else {
+                        item.node && addNode(firestore, dispatch, mapId, {
+                            ...item.node, id: generateId(), classId: null
+                        })
+                    }
                 }
                 if (monitor.getItemType() === ItemTypes.SCHEMA_CLASS) {
-                    const theClass = map?.schema?.classes.find((c: Class) => c.id === item.id)
-                    const node = theClass && getBlankNodeOfClass(theClass)
+                    if (item.mapId === mapId) {
+                        const theClass = map?.schema?.classes.find((c: Class) => c.id === item.id)
+                        const node = theClass && getBlankNodeOfClass(theClass)
 
-                    const coords = monitor.getClientOffset()
-                    coords && node && createNodeAtLocation({ clientX: coords.x, clientY: coords.y }, node)
+                        const coords = monitor.getClientOffset()
+                        coords && node && createNodeAtLocation({ clientX: coords.x, clientY: coords.y }, node)
+                    }
                 }
 
                 return undefined
             },
         }),
-        [dispatch, zoomLevel],
+        [dispatch, zoomLevel, map, mapId, firestore, panOffset],
     )
 
     if (!map) {
@@ -136,8 +142,7 @@ export default function Map({
                             ref={(el) => drop(el) && hotkeysRef}
                             tabIndex={-1} // make this focusable, so scoped hotkeys work
                         >
-                            <MapHeader map={map} paneIndex={paneIndex} isOnlyPane={isOnlyPane} divRef={mapHeaderDivRef} />
-
+                            <div className="absolute" ref={mapTopLeftRef} />
                             <div
                                 className={"flex flex-row flex-grow w-full h-full overflow-auto"}
                                 onClick={(e) => {

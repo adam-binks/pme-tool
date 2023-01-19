@@ -66,7 +66,7 @@ export function LibraryPane({ }: {}) {
                                                 creator: uid,
                                                 recipe: {
                                                     id: generateId(),
-                                                    content: "",
+                                                    content: "![ ]!First, ...\n![ ]!Then, ...",
                                                 }
                                             })}
                                             variant="filled"

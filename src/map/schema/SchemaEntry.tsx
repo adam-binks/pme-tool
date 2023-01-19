@@ -1,4 +1,4 @@
-import { Button, Card, clsx } from "@mantine/core";
+import { Card, clsx } from "@mantine/core";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -6,10 +6,9 @@ import { useDebounce } from "use-lodash-debounce-throttle";
 import { useAppDispatch } from "../../app/hooks";
 import { Class } from "../../app/schema";
 import { enact, enactAll } from "../../etc/firestoreHistory";
-import { generateId } from "../../etc/helpers";
 import { useSelectable } from "../../etc/useSelectable";
 import { ItemTypes } from "../../ItemTypes";
-import { addLibraryClass, updateLibraryClass } from "../../state/libraryFunctions";
+import { updateLibraryClass } from "../../state/libraryFunctions";
 import { setLocalClass, useLocalClass } from "../../state/localReducer";
 import { getPropertiesFromContent, updateClassCommand, updateSchemaPropertiesCommands } from "../../state/mapFunctions";
 import { useElementsWithClass, useFirestoreData, useSchema } from "../../state/mapSelectors";
@@ -51,7 +50,9 @@ export default function SchemaEntry({
         () => ({
             type: inLibrary ? ItemTypes.LIBRARY_CLASS : ItemTypes.SCHEMA_CLASS,
             item: {
-                id: theClass.id
+                id: theClass.id,
+                mapId,
+                theClass: theClass,
             },
             collect: (monitor) => ({
                 isDragging: monitor.isDragging(),

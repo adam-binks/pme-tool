@@ -6,6 +6,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Class, Schema } from "../../app/schema"
 import { enact } from "../../etc/firestoreHistory"
+import { generateId } from "../../etc/helpers"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { ItemTypes } from "../../ItemTypes"
 import { createClassesCommand } from "../../state/mapFunctions"
@@ -27,9 +28,26 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     const libraryClasses: { [key: string]: Class } = useFirestoreData(data => data.libraryClasses)
 
+    function addCopyOfClassToSchema(classToAdd: Class) {
+        if (schema.classes.some(c => c.name === classToAdd.name)) {
+            showNotification({
+                title: `You already have a class named ${classToAdd.name}`,
+                message: "Try renaming it first",
+            })
+            return
+        }
+        console.log("add class ", { classToAdd });
+        // add a copy of the class to the schema
+        enact(
+            dispatch,
+            mapId,
+            createClassesCommand(firestore, mapId, [{ ...classToAdd, id: generateId() }], schema.classes)
+        )
+    }
+
     const [, drop] = useDrop(
         () => ({
-            accept: [ItemTypes.LIBRARY_CLASS],
+            accept: [ItemTypes.LIBRARY_CLASS, ItemTypes.SCHEMA_CLASS],
             drop(item: DragItem, monitor) {
                 if (monitor.getItemType() === ItemTypes.LIBRARY_CLASS) {
                     if (!libraryClasses || !libraryClasses[item.id]) {
@@ -38,21 +56,23 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                     }
 
                     const libraryClass = libraryClasses[item.id]
-                    if (schema.classes.some(c => c.name === libraryClass?.name)) {
-                        showNotification({
-                            title: `You already have a class named ${libraryClass.name}`,
-                            message: "Try renaming it first",
-                        })
-                        return
-                    }
-                    // add a copy of the libraryClass to the schema
-                    enact(dispatch, mapId, createClassesCommand(firestore, mapId, [libraryClass], schema.classes))
+                    addCopyOfClassToSchema(libraryClass)
                 }
 
+                if (monitor.getItemType() === ItemTypes.SCHEMA_CLASS) {
+                    console.log("dropped schema class", { item, mapId });
+
+                    if (item.mapId !== mapId && item.theClass) {
+                        addCopyOfClassToSchema(item.theClass)
+                    }
+                }
                 return undefined
             },
+            collect: (monitor) => ({
+                isActive: monitor.canDrop() && monitor.isOver(),
+            }),
         }),
-        [dispatch, schema.classes, libraryClasses],
+        [dispatch, schema.classes, libraryClasses, addCopyOfClassToSchema],
     )
 
     if (!schema) {
@@ -87,12 +107,12 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "node")
                             .map((theClass) =>
-                                    <SchemaEntry
-                                        key={theClass.id}
-                                        theClass={theClass}
-                                        inLibrary={false}
-                                        editable={true}
-                                    />
+                                <SchemaEntry
+                                    key={theClass.id}
+                                    theClass={theClass}
+                                    inLibrary={false}
+                                    editable={true}
+                                />
                             )}
                     </Stack>
 
@@ -101,12 +121,12 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "arrow")
                             .map((theClass) =>
-                                    <SchemaEntry
-                                        key={theClass.id}
-                                        theClass={theClass}
-                                        inLibrary={false}
-                                        editable={true}
-                                    />
+                                <SchemaEntry
+                                    key={theClass.id}
+                                    theClass={theClass}
+                                    inLibrary={false}
+                                    editable={true}
+                                />
                             )}
                     </Stack>
                 </Stack>

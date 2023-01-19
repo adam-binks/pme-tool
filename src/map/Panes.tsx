@@ -6,6 +6,7 @@ import { Project } from "../app/schema";
 import SplitWrapper from "../lib/react-split";
 import { defaultPane, setPanes } from "../state/paneReducer";
 import Map, { MapContents } from "./Map";
+import { MapTabs } from "./MapTabs";
 import "./Panes.css";
 
 export default function Panes({
@@ -28,6 +29,7 @@ export default function Panes({
         }]))
     }, [project.id])
 
+    // subscribe to all maps in project
     useEffect(() => {
         const getListeners = (mapId: string) => [
             {
@@ -53,10 +55,10 @@ export default function Panes({
         ]
 
         // Add listeners for all open maps
-        for (let i = 0; i < panes.length; i++) {
-            const pane = panes[i]
-            if (!subscribedMaps.includes(pane.id)) {
-                firestore.setListeners(getListeners(pane.id))
+        for (let i = 0; i < project.mapIds.length; i++) {
+            const mapId = project.mapIds[i]
+            if (!subscribedMaps.includes(mapId)) {
+                firestore.setListeners(getListeners(mapId))
                 setTimeout(forceUpdate, 0)
             }
         }
@@ -64,19 +66,18 @@ export default function Panes({
         // Remove unused listeners
         for (let i = 0; i < subscribedMaps.length; i++) {
             const subscribedMap = subscribedMaps[i]
-            if (!panes.find((pane: any) => pane.id === subscribedMap)) {
-                firestore.setListeners(getListeners(subscribedMap))
+            if (!project.mapIds.find((mapId: string) => mapId === subscribedMap)) {
+                firestore.unsetListeners(getListeners(subscribedMap))
             }
         }
 
         // also listen to library stuff
         firestore.setListeners([{ collection: "libraryClasses" }, { collection: "librarySchemas" }])
 
-        const mapIds = panes.map((pane: any) => pane.id)
-        if (subscribedMaps !== mapIds) {
-            setSubscribedMaps(mapIds)
+        if (subscribedMaps !== project.mapIds) {
+            setSubscribedMaps(project.mapIds)
         }
-    }, [panes])
+    }, [project.mapIds])
 
     if (panes.length === 0) {
         return (<p>Open a map!</p>)
@@ -93,15 +94,21 @@ export default function Panes({
                 style={{ overflow: "auto" }}
             >
                 {panes.map((pane: any, paneIndex: number) =>
-                    <Map
-                        mapId={pane.id}
-                        key={pane.id}
-                        paneIndex={paneIndex}
-                        showLibrary={pane.libraryOpen}
-                        isOnlyPane={panes.length === 1}
-                    >
-                        <MapContents mapId={pane.id} />
-                    </Map>
+                    <div className="flex flex-col" key={paneIndex}>
+                        <MapTabs
+                            mapIds={project.mapIds}
+                            paneIndex={paneIndex}
+                            isOnlyPane={panes.length === 1}
+                            project={project}
+                        />
+                        <Map
+                            mapId={pane.id}
+                            key={pane.id}
+                            showLibrary={pane.libraryOpen}
+                        >
+                            <MapContents mapId={pane.id} />
+                        </Map>
+                    </div>
                 )}
             </SplitWrapper>
         </>

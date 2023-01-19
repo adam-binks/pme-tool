@@ -11,7 +11,7 @@ import { useClass } from "../../state/mapSelectors";
 import { ElementHeader } from "../element/ElementHeader";
 import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
-import { useMapId, useZoomedOutMode } from "../Map";
+import { DragItem, useMapId, useZoomedOutMode } from "../Map";
 import { ElementContext } from "../properties/useElementId";
 import styles from "./Node.module.css";
 
@@ -30,17 +30,22 @@ export default function Node({ node }: NodeProps) {
     }
 
     const [{ isDragging }, drag] = useDrag(
-        () => ({
-            type: ItemTypes.NODE,
-            item: {
+        () => {
+            const item: DragItem = {
+                mapId,
                 id: node.id,
                 x: node.x,
-                y: node.y
-            },
-            collect: (monitor) => ({
-                isDragging: monitor.isDragging(),
-            }),
-        }),
+                y: node.y,
+                node,
+            }
+            return {
+                type: ItemTypes.NODE,
+                item,
+                collect: (monitor) => ({
+                    isDragging: monitor.isDragging(),
+                }),
+            }
+        },
         [node],
     )
 
@@ -87,7 +92,7 @@ export default function Node({ node }: NodeProps) {
                     className={clsx(
                         styles.nodeCard,
                         isDragging && styles.isDragging,
-                        "doNotPan group-hover/element:bg-gray-100 overflow-visible border-inherit"
+                        "doNotPan group-hover/element:bg-gray-50 overflow-visible border-inherit"
                     )}
                     ref={drag}
                     onClick={(e: MouseEvent) => {
