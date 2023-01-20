@@ -35,11 +35,4 @@ export const dynamicHighlighting = (propertiesToHighlight: PropertiesToHighlight
     }, {
         decorations: instance => instance.decorations,
     }),
-    EditorView.baseTheme({
-        ".cm-property": {
-            color: "#0000cc", fontWeight: "bold", backgroundColor: "#bbbbbb80", padding: "1px 3px",
-            borderRadius: "5px"
-        },
-        ".cm-in-schema .cm-property": { backgroundColor: "#4baa4b80" },
-    })
 ]

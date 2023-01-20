@@ -27,6 +27,7 @@ export function Editor({
     const ext = useMemo(() => extensions(extensionParams), [extensionParams])
 
     return (
+        // <></>
         <Codemirror
             key="element editor"
             extensions={ext}

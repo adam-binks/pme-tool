@@ -91,8 +91,8 @@ export default function Node({ node }: NodeProps) {
                     withBorder={!isNaked}
                     className={clsx(
                         styles.nodeCard,
-                        isDragging && styles.isDragging,
-                        "doNotPan group-hover/element:bg-gray-50 overflow-visible border-inherit"
+                        isDragging && "opacity-20",
+                        "doNotPan group-hover/element:bg-gray-50 overflow-visible border-inherit transition-opacity"
                     )}
                     ref={drag}
                     onClick={(e: MouseEvent) => {

@@ -16,4 +16,11 @@ export const theme = EditorView.theme({
     ".schema-entry .cm-content": {
         fontStyle: "italic",
     },
+    ".cm-property": {
+        color: "#0000cc", fontWeight: "bold", backgroundColor: "#bbbbbb80", padding: "1px 3px",
+        borderRadius: "5px"
+    },
+    ".cm-in-schema .cm-property": {
+        backgroundColor: "#4baa4b80"
+    },
 })

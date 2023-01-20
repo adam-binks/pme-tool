@@ -54,7 +54,7 @@ export function useBatchedTextInput(
                 lastFocused === "current"
                 // show local if it's been less than a second since element was focused
                 // because otherwise the firebase value overwrites the local value if connection is slow
-                || new Date().getTime() - (lastFocused as Date).getTime() < 1500
+                || (new Date().getTime() - (lastFocused as Date).getTime() < 1500)
             )
         ) ? local : firebaseValue,
     }
