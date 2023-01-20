@@ -79,7 +79,7 @@ export const whatsNextDecks: WhatsNextDeck[] = [
         cards: [
             {
                 title: "Rubber duck debugging",
-                description: "Record a voice note where you explain your current problem aloud, using words anyone could understand.",
+                description: "Record a voice note where you explain your current problem aloud, using words anyone could understand. The duck is listening 🦆",
             }
         ]
     }

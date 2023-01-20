@@ -1,7 +1,7 @@
 {
   "name": "schematica",
   "version": "1.0.0",
-  "homepage": "https://adambinks.me/schematica",
+  "homepage": "https://schematica.app",
   "private": true,
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.1",

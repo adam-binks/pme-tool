@@ -11,8 +11,9 @@ interface AddClassSelectProps {
     elementType: elementType
     element: Element | Class
     inSchema?: boolean
+    showWhileEmpty: boolean
 }
-export function AddClassSelect({ elementType, element, inSchema }: AddClassSelectProps) {
+export function AddClassSelect({ elementType, element, inSchema, showWhileEmpty }: AddClassSelectProps) {
     const firestore = useFirestore()
     const dispatch = useAppDispatch()
     const mapId = useMapId()
@@ -66,7 +67,14 @@ export function AddClassSelect({ elementType, element, inSchema }: AddClassSelec
                     backgroundColor: theClass ? "white" : "",
                     fontWeight: "bold",
                     outline: theClass ? `2px solid ${theClass.colour}` : "",
-                    fontSize: `${(elementType === "arrow" ? 10 : 14)}px`,
+                    fontSize: `${((elementType === "arrow" || !theClass) ? 10 : 14)}px`,
+                    ...(theClass === undefined ? {
+                        minHeight: "10px",
+                        lineHeight: "10px",
+                        height: "20px",
+                        marginBottom: "-5px",
+                    } : {}),
+                    visibility: (theClass || showWhileEmpty) ? "visible" : "hidden",
                 },
                 rightSection: {
                     display: "none",

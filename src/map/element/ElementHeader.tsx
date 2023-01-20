@@ -18,8 +18,8 @@ export function ElementHeader({
             {/* <div className="absolute -translate-x-1/2 -translate-y-1/2 z-10"> */}
                 <ArrowDot element={element} property={undefined} />
             {/* </div> */}
-            {element && (element.classId || showClassSelectIfEmpty) &&
-                <AddClassSelect element={element} elementType={elementType} />}
+            {element &&
+                <AddClassSelect element={element} elementType={elementType} showWhileEmpty={showClassSelectIfEmpty} />}
 
             {/* <Group className={styles.nodeControls} my={-8} position="right" spacing="xs"> */}
             {elementType === "node" && <NodeOverFlowMenu node={element as Node} />}
