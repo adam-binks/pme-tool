@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/schematica/static/css/main.2550e7d9.css",
-    "main.js": "/schematica/static/js/main.b224528c.js",
-    "static/js/787.e647fa0b.chunk.js": "/schematica/static/js/787.e647fa0b.chunk.js",
-    "index.html": "/schematica/index.html",
-    "main.2550e7d9.css.map": "/schematica/static/css/main.2550e7d9.css.map",
-    "main.b224528c.js.map": "/schematica/static/js/main.b224528c.js.map",
-    "787.e647fa0b.chunk.js.map": "/schematica/static/js/787.e647fa0b.chunk.js.map"
+    "main.css": "/static/css/main.04996f0c.css",
+    "main.js": "/static/js/main.9c2d2861.js",
+    "static/js/787.e647fa0b.chunk.js": "/static/js/787.e647fa0b.chunk.js",
+    "index.html": "/index.html",
+    "main.04996f0c.css.map": "/static/css/main.04996f0c.css.map",
+    "main.9c2d2861.js.map": "/static/js/main.9c2d2861.js.map",
+    "787.e647fa0b.chunk.js.map": "/static/js/787.e647fa0b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2550e7d9.css",
-    "static/js/main.b224528c.js"
+    "static/css/main.04996f0c.css",
+    "static/js/main.9c2d2861.js"
   ]
 }
