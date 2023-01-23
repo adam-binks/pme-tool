@@ -8,7 +8,7 @@ export const highlighting = syntaxHighlighting(HighlightStyle.define([
     {
         tag: tags.className, class: "cm-property"
     },
-    { tag: tagEquals, fontSize: "smaller", color: "#aaa", padding: "0 2px" },
+    { tag: tagEquals, class: "cm-equals" },
 ]))
 
 export type PropertiesToHighlight = { name: string, highlight: "in schema" }[]

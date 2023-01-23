@@ -17,10 +17,17 @@ export const theme = EditorView.theme({
         fontStyle: "italic",
     },
     ".cm-property": {
-        color: "#0000cc", fontWeight: "bold", backgroundColor: "#bbbbbb80", padding: "1px 3px",
-        borderRadius: "5px"
+        color: "white", fontWeight: "bold", backgroundColor: "#c084fc", padding: "1px 3px",
+        borderRadius: "5px",
+        opacity: "0.8",
     },
     ".cm-in-schema .cm-property": {
-        backgroundColor: "#4baa4b80"
+        backgroundColor: "var(--element-colour, #4baa4b80)",
     },
+    ".cm-equals": {
+        fontSize: "smaller", color: "#aaa", padding: "0 2px"
+    },
+    ".cm-equals:first-of-type": {
+        marginLeft: "8px",
+    }
 })

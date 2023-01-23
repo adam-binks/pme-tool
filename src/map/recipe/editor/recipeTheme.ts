@@ -10,7 +10,7 @@ export const recipeTheme = EditorView.theme({
     },
     ".cm-content": {
         fontFamily: "sans-serif",
-        fontSize: "14px",
+        fontSize: "12px",
         borderRadius: "5px",
         lineHeight: "1.5",
     },

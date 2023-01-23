@@ -1,26 +1,14 @@
 import { cursorCharBackward, insertBlankLine, selectCharLeft } from "@codemirror/commands"
-import { StateEffect, StateField } from "@codemirror/state"
 import { EditorView, showPanel } from "@codemirror/view"
 
-const togglePanel = StateEffect.define<boolean>()
-
-const panelState = StateField.define<boolean>({
-    create: () => true,
-    update(value, tr) {
-        for (let e of tr.effects) if (e.is(togglePanel)) value = e.value
-        return value
-    },
-    provide: f => showPanel.from(f, on => on ? createPanel : null)
-})
-
-
-
 function createPanel(view: EditorView) {
-    let dom = document.createElement("div")
-    dom.className = "cm-help-panel"
-    let btn = dom.appendChild(document.createElement("button"))
-    btn.className = "cm-button"
-    btn.textContent = "Add a =property="
+    let div = document.createElement("div")
+    div.className = "cm-btn-panel absolute -mt-2 right-0 -mr-1 p-2 text-xs hidden"
+    let btn = div.appendChild(document.createElement("button"))
+    btn.className = "text-white px-2 py-1 rounded-md hover:opacity-90 shadow-lg"
+    btn.setAttribute("style", "background-color: var(--element-colour, #475569)")
+    btn.textContent = "Add =property="
+
     btn.addEventListener("click", () => {
         insertBlankLine({state: view.state, dispatch: view.dispatch})
         view.dispatch(view.state.replaceSelection("= ="))
@@ -29,30 +17,19 @@ function createPanel(view: EditorView) {
             selectCharLeft(view)
         })
     })
-    return { top: false, dom }
+    return { top: false, dom: div }
 }
 
-const helpTheme = EditorView.baseTheme({
-    ".cm-help-panel": {
-        border: "none",
-        display: "none",
-    },
-    "&.cm-focused .cm-help-panel": {
+const panelTheme = EditorView.baseTheme({
+    "&.cm-focused .cm-btn-panel": {
         display: "block",
-        padding: "5px 10px",
-        fontSize: "small"
     },
     ".cm-panels": {
         border: "none",
         background: "none",
-    },
-    ".cm-button": {
-        borderRadius: "5px",
-        bottom: "0px",
-        position: "relative",
     }
 })
 
 export function panel() {
-    return [showPanel.of(createPanel), helpTheme]
+    return [showPanel.of(createPanel), panelTheme]
 }

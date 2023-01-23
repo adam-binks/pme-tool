@@ -1,5 +1,6 @@
 import { clsx } from "@mantine/core"
 import { IconPencil } from "@tabler/icons"
+import React from "react"
 import { Arrow, ArrowEnd } from "../../app/schema"
 import { useSelectable } from "../../etc/useSelectable"
 import { LocalElement, useLocalElement } from "../../state/localReducer"
@@ -48,7 +49,7 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
     }
 
     const emptyMode = !arrow.content && !arrow.classId && !isSelected
-    const colour = isSelected ? "indigo" : (theClass ? theClass.colour : "#BE90D4")
+    const colour = theClass ? theClass.colour : "#BE90D4"
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
@@ -64,8 +65,9 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                     )}
                     style={{
                         borderColor: colour,
-                        ...(!emptyMode ? { width: arrow.width } : {})
-                    }}
+                        ...(!emptyMode ? { width: arrow.width } : {}),
+                        "--element-colour": theClass?.colour || "#BE90D4",
+                    } as React.CSSProperties}
                     onMouseDown={onMousedownSelectable}
                     onDoubleClick={e => e.stopPropagation()}
                 >

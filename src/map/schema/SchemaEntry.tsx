@@ -1,5 +1,5 @@
 import { Card, clsx } from "@mantine/core";
-import { MouseEvent, useEffect, useState } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
 import { useDebounce } from "use-lodash-debounce-throttle";
@@ -113,7 +113,10 @@ export default function SchemaEntry({
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
                 )}
-                style={{ borderColor: theClass.colour }}
+                style={{
+                    borderColor: theClass.colour,
+                    "--element-colour": theClass.colour,
+                } as React.CSSProperties}
                 id={`class.${theClass.id}`}
             >
                 <Card

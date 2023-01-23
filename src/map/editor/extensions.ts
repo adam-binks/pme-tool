@@ -20,7 +20,7 @@ const staticExtensions: Extension[] = [
     pmeLanguage.data.of({ closeBrackets: { brackets: ["="] } }),
     highlighting,
     arrowDotPlugin,
-    placeholder("Type = to add a property"),
+    placeholder("Type something..."),
     domEventHandlers,
     autocompletion({
         closeOnBlur: false,

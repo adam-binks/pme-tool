@@ -1,7 +1,7 @@
 import { clsx } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { useEffect } from "react"
-import { useFirebase, useFirestore } from "react-redux-firebase"
+import { useFirestore } from "react-redux-firebase"
 import { useThrottle } from "use-lodash-debounce-throttle"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { ArrowEnd, ArrowEndProperty, Element, getElementType } from "../../app/schema"
@@ -65,16 +65,17 @@ export function ArrowDot({
             title={addingFromThis ? "Cancel adding arrow" : "Add arrow"}
             className={clsx(
                 "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full doNotPan group/dot",
-                addingFromThis ?
-                    "bg-yellow-600" :
+                addingFromThis &&
+                    "bg-yellow-600",
                     connectedArrows?.length > 0 ? 
-                        "bg-purple-600" :
-                        property ? "bg-purple-400" : "bg-purple-500",
+                        "opacity-100" :
+                        property ? "opacity-70" : "opacity-80",
                 "inline-flex items-center justify-center text-white",
                 "hover:opacity-100 hover:scale-125",
                 addingArrowFrom && !addingFromThis && "scale-150 opacity-80",
+                property && "absolute left-0"
             )}
-            style={{ fontSize: "0.6rem" }}
+            style={{ fontSize: "0.6rem", backgroundColor: "#c084fc" }}
             onClick={(e) => {
                 if (addingArrowFrom && !(addingArrowFrom.elementId === element.id)) {
                     addArrow(firestore, dispatch, mapId, {

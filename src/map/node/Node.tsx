@@ -1,4 +1,4 @@
-import { Card, clsx } from "@mantine/core";
+import { clsx } from "@mantine/core";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -70,8 +70,6 @@ export default function Node({ node }: NodeProps) {
     //     (pane: Pane) => pane.id === mapId)?.addingArrowFrom
     // )
 
-    // naked nodes are styled differently
-    const isNaked = node && !node.classId
     const zoomedOutMode = useZoomedOutMode() && node !== undefined
 
     return (
@@ -79,26 +77,23 @@ export default function Node({ node }: NodeProps) {
             <div
                 className={clsx("group/element absolute element-container",
                     isSelected && styles.isSelected,
-                    isHovered && styles.isHovered,
+                    isHovered && styles.isHovered
                 )}
                 id={`node.${node.id}`}
-                style={{ left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour }}
+                style={{
+                    left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour, "--element-colour": theClass?.colour
+                } as React.CSSProperties}
             >
-                <Card
-                    shadow={isSelected ? "xl" : "xs"}
-                    radius="md"
-                    p="xs"
-                    withBorder={!isNaked}
+                <div
                     className={clsx(
+                        "doNotPan bg-white border group-hover/element:bg-gray-50 overflow-visible border-inherit transition-opacity rounded-lg",
                         styles.nodeCard,
+                        isSelected ? "border-2 p-[7px] shadow-xl" : "p-[8px] shadow-md",
                         isDragging && "opacity-20",
-                        "doNotPan group-hover/element:bg-gray-50 overflow-visible border-inherit transition-opacity"
                     )}
                     ref={drag}
                     onClick={(e: MouseEvent) => {
-                        // if (!addingArrowFrom) {
                         onMousedownSelectable(e)
-                        // }
                         e.stopPropagation()
                     }}
                     onDoubleClick={(e: MouseEvent) => e.stopPropagation()} // prevent this bubbling to map
@@ -110,7 +105,7 @@ export default function Node({ node }: NodeProps) {
                     <TextElement element={node} elementType={"node"} />
 
                     <ResizeElement element={{ id: node.id, width: node.width }} elementType={"node"} />
-                </Card>
+                </div>
             </div>
         </ElementContext.Provider >
     )

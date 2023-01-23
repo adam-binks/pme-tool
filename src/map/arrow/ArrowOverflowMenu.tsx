@@ -18,7 +18,7 @@ export function ArrowOverFlowMenu({ arrow }: ArrowOverFlowMenuProps) {
     return (
         <Menu shadow="md" width={200} position="left-start">
             <Menu.Target>
-                <ActionIcon radius="xl" style={{}} size="sm">
+                <ActionIcon radius="xl" size="xs">
                     <IconDots />
                 </ActionIcon>
             </Menu.Target>
