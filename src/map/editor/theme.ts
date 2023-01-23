@@ -17,7 +17,7 @@ export const theme = EditorView.theme({
         fontStyle: "italic",
     },
     ".cm-property": {
-        color: "white", fontWeight: "bold", backgroundColor: "#c084fc", padding: "1px 3px",
+        color: "#222", fontWeight: "bold", backgroundColor: "#c084fc", padding: "1px 3px",
         borderRadius: "5px",
         opacity: "0.8",
     },
