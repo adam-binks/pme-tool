@@ -86,7 +86,7 @@ export default function Node({ node }: NodeProps) {
             >
                 <div
                     className={clsx(
-                        "doNotPan bg-white border group-hover/element:bg-gray-50 overflow-visible border-inherit transition-opacity rounded-lg",
+                        "doNotPan bg-seashell border group-hover/element:bg-mistyrose overflow-visible border-inherit transition-opacity rounded-lg",
                         styles.nodeCard,
                         isSelected ? "border-2 p-[7px] shadow-xl" : "p-[8px] shadow-md",
                         isDragging && "opacity-20",

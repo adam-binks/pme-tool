@@ -125,7 +125,7 @@ export default function SchemaEntry({
                     p="xs"
                     withBorder={true}
                     className={clsx(
-                        `doNotPan border-inherit`,
+                        `doNotPan border-inherit bg-seashell`,
                         isDragging && styles.isDragging,
                         theClass.element === "node" && "w-48",
                         theClass.element === "arrow" && "w-40 overflow-visible",

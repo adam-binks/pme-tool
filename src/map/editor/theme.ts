@@ -8,7 +8,8 @@ export const theme = EditorView.theme({
         outline: "none",
     },
     ".cm-content": {
-        backgroundColor: "white",
+        backgroundColor: "#f8edeb",
+        color: "black",
         fontFamily: "sans-serif",
         fontSize: "12px",
         borderRadius: "5px",
@@ -17,9 +18,9 @@ export const theme = EditorView.theme({
         fontStyle: "italic",
     },
     ".cm-property": {
-        color: "#222", fontWeight: "bold", backgroundColor: "#c084fc", padding: "1px 3px",
         borderRadius: "5px",
-        opacity: "0.8",
+        padding: "0 4px",
+        backgroundColor: "#fcd5ce",
     },
     ".cm-in-schema .cm-property": {
         backgroundColor: "var(--element-colour, #4baa4b80)",

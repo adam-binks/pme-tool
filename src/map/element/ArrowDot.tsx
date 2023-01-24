@@ -70,12 +70,12 @@ export function ArrowDot({
                     connectedArrows?.length > 0 ? 
                         "opacity-100" :
                         property ? "opacity-70" : "opacity-80",
-                "inline-flex items-center justify-center text-white",
+                "inline-flex items-center justify-center text-darkplatinum",
                 "hover:opacity-100 hover:scale-125",
                 addingArrowFrom && !addingFromThis && "scale-150 opacity-80",
                 property && "absolute left-0"
             )}
-            style={{ fontSize: "0.6rem", backgroundColor: "#c084fc" }}
+            style={{ fontSize: "0.6rem", backgroundColor: "#FEC89A" }}
             onClick={(e) => {
                 if (addingArrowFrom && !(addingArrowFrom.elementId === element.id)) {
                     addArrow(firestore, dispatch, mapId, {

@@ -2,8 +2,8 @@ import { ColorInput } from "@mantine/core"
 import { elementType } from "../../app/schema"
 
 export const ELEMENT_COLOURS : {[key in elementType]: string[]} = {
-    "node": ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff", "#bdb2ff", "#ffc6ff"],
-    "arrow": ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff", "#bdb2ff", "#ffc6ff"],
+    "node": ["#fec5bb","#fcd5ce","#fae1dd","#f8edeb","#e8e8e4","#d8e2dc","#ece4db","#ffe5d9","#ffd7ba","#fec89a"],
+    "arrow": ["#fec5bb","#fcd5ce","#fae1dd","#f8edeb","#e8e8e4","#d8e2dc","#ece4db","#ffe5d9","#ffd7ba","#fec89a"],
 }
 
 export function ColourPicker({

@@ -85,7 +85,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     return (
         <Paper
-            className={clsx("z-10 flex flex-col justify-between h-full",
+            className={clsx("z-10 flex flex-col justify-between h-full bg-[#FDFAFA]",
                 draggedItemCouldBeDroppedHere && "bg-blue-50",
                 draggedItemCouldBeDroppedHere && dropItemOver && "bg-blue-200",
             )}

@@ -206,7 +206,7 @@ export default function Map({
                                     <TransformComponent
                                         wrapperStyle={{
                                             height: "100%", width: "100%",
-                                            backgroundColor: draggedSchemaClass ? "#eff6ff" : "#eee",
+                                            backgroundColor: draggedSchemaClass ? "#eff6ff" : "white",
                                         }}
                                     >
                                         {children}
