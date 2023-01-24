@@ -1,7 +1,5 @@
 import { useMemo } from "react";
 import Codemirror, { CodeMirrorProps } from "rodemirror";
-// import ReactCodeMirror, { ReactCodeMirrorProps } from "@uiw/react-codemirror";
-import { Class, Element } from "../../app/schema";
 import { useBatchedTextInput } from "../../etc/batchedTextInput";
 import { ExtensionParams, extensions } from "./extensions";
 

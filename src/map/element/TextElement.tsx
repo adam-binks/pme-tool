@@ -1,8 +1,8 @@
 import { useForceUpdate } from "@mantine/hooks";
-import { ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import { useFirestore } from "react-redux-firebase";
+import { CodeMirrorProps } from "rodemirror";
 import { useAppDispatch } from "../../app/hooks";
 import { Arrow, Element, elementType } from "../../app/schema";
 import { Command, enact, enactAll } from "../../etc/firestoreHistory";
@@ -24,7 +24,7 @@ export function TextElement({
     {
         element: Element,
         elementType: elementType,
-        codemirrorProps?: Partial<ReactCodeMirrorProps>
+        codemirrorProps?: Partial<CodeMirrorProps>
     }) {
     const mapId = useMapId()
     const dispatch = useAppDispatch()

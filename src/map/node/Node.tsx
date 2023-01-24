@@ -81,12 +81,12 @@ export default function Node({ node }: NodeProps) {
                 )}
                 id={`node.${node.id}`}
                 style={{
-                    left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour, "--element-colour": theClass?.colour
+                    left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour || "#fae6dd", "--element-colour": theClass?.colour || "#fae6dd"
                 } as React.CSSProperties}
             >
                 <div
                     className={clsx(
-                        "doNotPan bg-seashell border group-hover/element:bg-mistyrose overflow-visible border-inherit transition-opacity rounded-lg",
+                        "doNotPan bg-seashell border shadow-seashell group-hover/element:shadow-lg overflow-visible border-inherit transition-opacity rounded-lg cursor-grab",
                         styles.nodeCard,
                         isSelected ? "border-2 p-[7px] shadow-xl" : "p-[8px] shadow-md",
                         isDragging && "opacity-20",

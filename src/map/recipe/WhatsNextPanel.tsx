@@ -42,7 +42,7 @@ export function WhatsNextPanel({
     }
 
     return (
-        <div className="bg-slate-400 rounded-t-lg text-white p-2">
+        <div className="bg-palepink rounded-t-lg text-white p-2">
             <Select
                 data={whatsNextDecks.map(deck => deck.name)}
                 value={deck.name}
@@ -60,14 +60,14 @@ export function WhatsNextPanel({
                 }}
             />
             <div className={clsx("flex   text-left py-2  m-1 mb-2 rounded-lg",
-                cardIsCompleted && "bg-green-100",
+                cardIsCompleted && "bg-mistyrose",
                 cardIndex === deck.cards.length ?
-                    "bg-slate-500 text-white shadow-none"
-                    : "text-black shadow-lg bg-white")}>
+                    "bg-peachpuff text-black shadow-none"
+                    : "text-black shadow-lg bg-seashell")}>
                 <ActionIcon
                     onClick={() => moveToCard(cardIndex - 1)}
                     disabled={cardIndex === 0}
-                    className={clsx("bg-white -ml-2 mr-2 my-auto")} size={18} color={"white"} radius={100}>
+                    className={clsx("-ml-2 mr-2 my-auto bg-seashellpale")} size={18} color={"white"} radius={100}>
                     <IconChevronLeft size={16} className={clsx(cardIndex !== 0 && "stroke-slate-500")} />
                 </ActionIcon>
                 <div className="flex-grow">
@@ -83,7 +83,7 @@ export function WhatsNextPanel({
                 </div>
                 <ActionIcon
                     onClick={() => moveToCard(cardIndex + 1)}
-                    className={clsx("bg-white ml-2 -mr-2 my-auto", cardIndex === deck.cards.length && "hidden")}
+                    className={clsx("bg-seashellpale ml-2 -mr-2 my-auto", cardIndex === deck.cards.length && "hidden")}
                     size={18} color={"white"} radius={100}>
                     <IconChevronRight size={16} className="stroke-slate-500" />
                 </ActionIcon>

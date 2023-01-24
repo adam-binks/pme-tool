@@ -19,12 +19,11 @@ export function ProjectsPage({
     const projects: { [key: string]: Project } = useAppSelector(state => state.firestore.data.projects)
 
     return (
-        <>
+        <div className="bg-silk h-[100vh]">
             <Header project={undefined} />
             <div className="text-center items-center m-auto my-8 flex flex-col space-y-6">
-                <h1 className="text-2xl">Schematica</h1>
                 <Button
-                    className="bg-violet-600"
+                    className="bg-melon text-black"
                     onClick={() => {
                         if (!uid) {
                             showNotification({ title: "Can't create project", message: "Sign in to create a project" })
@@ -55,14 +54,14 @@ export function ProjectsPage({
                     Create project
                 </Button>
                 <div>
-                    <h2 className="text-xl mt-2">Your projects</h2>
+                    <h2 className="text-xl mt-2 text-darkplatinum font-semibold">Your projects</h2>
                     <div className="flex flex-wrap justify-around gap-2 mt-2 max-w-prose">
                         {projects && Object.values(projects).map((project) => (
                             project &&
-                            <Card className="w-60 px-6 py-4 flex flex-col space-y-2" withBorder shadow={"md"} key={project.id}>
+                            <Card className="w-60 px-6 py-4 flex flex-col space-y-2 bg-seashell" withBorder shadow={"md"} key={project.id}>
                                 <h3 className="text-lg font-semibold">{project.name}</h3>
                                 <Link to={`/project/${project.id}`}>
-                                    <Button className="bg-indigo-400 w-full">Open</Button>
+                                    <Button className="bg-melon text-black w-full">Open</Button>
                                 </Link>
                                 <Button
                                     onClick={() => {
@@ -72,7 +71,7 @@ export function ProjectsPage({
                                                 doc: project.id,
                                             })
                                     }}
-                                    className="bg-slate-400"
+                                    className="bg-mistyrose text-black"
                                 >
                                     Delete
                                 </Button>
@@ -81,6 +80,6 @@ export function ProjectsPage({
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

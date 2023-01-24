@@ -35,10 +35,10 @@ export function SchemaEntryTitle({
         <input
             type="text"
             className={clsx("flex-1 min-w-0 text-center text-sm font-semibold rounded-full",
-                "hover:bg-slate-100 focus:bg-slate-100",
+                `hover:bg-seashell focus:bg-seashell`,
                 theClass.element === "arrow" && "text-xs",
             )}
-            style={{ outline: `2px solid ${theClass.colour}` }}
+            style={{ backgroundColor: theClass.colour }}
             {...{ value, onChange, onBlur, onFocus }}
         />
     )

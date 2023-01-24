@@ -8,11 +8,12 @@ export const theme = EditorView.theme({
         outline: "none",
     },
     ".cm-content": {
-        backgroundColor: "#f8edeb",
+        // backgroundColor: "#f8f2eb",
         color: "black",
         fontFamily: "sans-serif",
         fontSize: "12px",
         borderRadius: "5px",
+        cursor: "text",
     },
     ".schema-entry .cm-content": {
         fontStyle: "italic",
@@ -20,10 +21,10 @@ export const theme = EditorView.theme({
     ".cm-property": {
         borderRadius: "5px",
         padding: "0 4px",
-        backgroundColor: "#fcd5ce",
+        backgroundColor: "#fae6dd",
     },
     ".cm-in-schema .cm-property": {
-        backgroundColor: "var(--element-colour, #4baa4b80)",
+        backgroundColor: "var(--element-colour)",
     },
     ".cm-equals": {
         fontSize: "smaller", color: "#aaa", padding: "0 2px"

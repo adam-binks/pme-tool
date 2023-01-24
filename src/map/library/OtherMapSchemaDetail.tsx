@@ -28,7 +28,7 @@ export function OtherMapSchemaDetail({
     const classesNotAdded: Class[] = thisLibrarySchemaClasses.filter(cls => !classesInMapSchema.some(c => c.name === cls.name))
 
     return (
-        <div className="absolute right-10 top-20 z-40 bg-slate-400 w-60 m-auto 
+        <div className="absolute right-10 top-20 z-40 bg-melon w-60 m-auto 
             text-white rounded-lg py-6 px-4 text-left text-sm flex flex-col overflow-auto"
             style={{maxHeight: "calc(100% - 90px)"}}>
             

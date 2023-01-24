@@ -1,6 +1,6 @@
 import { Button, Overlay, ScrollArea, Skeleton, Stack, Title } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
-import { IconPlus, IconScriptPlus, IconSquarePlus } from "@tabler/icons"
+import { IconScriptPlus } from "@tabler/icons"
 import { useState } from "react"
 import { isLoaded, useFirestore } from "react-redux-firebase"
 import { useThrottle } from "use-lodash-debounce-throttle"
@@ -37,7 +37,7 @@ export function LibraryPane({ }: {}) {
 
     return (
         <div
-            className={"z-10 bg-slate-500 text-white shadow-inner-lg max-h-full"}
+            className={"z-10 bg-silk text-black shadow-inner-lg max-h-full"}
             onClick={(e: any) => {
                 setSelection(emptySelection)
                 e.stopPropagation()
@@ -45,15 +45,15 @@ export function LibraryPane({ }: {}) {
         >
             <ScrollArea style={{ height: "100%" }} offsetScrollbars>
                 <Stack className="w-80" p={"md"}>
-                    <Title className="select-none" order={3}>Library</Title>
+                    <Title className="select-none opacity-60" order={3}>Library</Title>
                     {(!isLoaded(libraryClasses) || !isLoaded(librarySchemas)) ?
                         <Skeleton />
                         :
                         <>
                             {
                                 <LibrarySection title="Your custom schemas" key="custom">
-                                    <div className="my-auto flex flex-col gap-2 bg-slate-600 py-6 px-3 rounded-lg">
-                                        <IconScriptPlus className="m-auto -mt-4" color="lightgrey" />
+                                    <div className="my-auto flex flex-col gap-2 bg-palepink py-6 px-3 rounded-lg">
+                                        <IconScriptPlus className="m-auto -mt-4" color="black" />
                                         <CopySchemaToLibraryButton />
                                         <Button
                                             onClick={() => addLibrarySchema(firestore, {
@@ -70,7 +70,7 @@ export function LibraryPane({ }: {}) {
                                                 }
                                             })}
                                             variant="filled"
-                                            className="bg-slate-400 text-center"
+                                            className="bg-peachcrayon text-black text-center"
                                         >
                                             New schema
                                         </Button>
@@ -129,7 +129,7 @@ const CopySchemaToLibraryButton = () => {
                 : showNotification({ message: "Oops! You're not logged in." })
             }
             variant="filled"
-            className="bg-slate-400 text-center"
+            className="bg-peachcrayon text-black text-center"
         >
             Save your<br />map schema
         </Button>

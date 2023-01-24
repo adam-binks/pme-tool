@@ -62,8 +62,8 @@ export function LibrarySchemaDetail({
     const arrowTypes = thisLibrarySchemaClasses.filter((theClass) => theClass.element === "arrow")
 
     return (
-        <div className="absolute right-9 top-20 z-40 bg-slate-400 w-64 m-auto 
-            text-white rounded-lg py-6 px-4 text-left text-sm flex flex-col overflow-auto"
+        <div className="absolute right-9 top-20 z-40 bg-peachpuff w-64 m-auto 
+            text-black rounded-lg py-6 px-4 text-left text-sm flex flex-col overflow-auto"
             style={{ maxHeight: "calc(100% - 90px)" }}>
             {editable ?
                 <Textarea
@@ -74,7 +74,7 @@ export function LibrarySchemaDetail({
                         input: {
                             background: "transparent",
                             border: "none",
-                            color: "white",
+                            color: "black",
                             padding: 0,
                             fontWeight: "bolder",
                         },
@@ -97,6 +97,9 @@ export function LibrarySchemaDetail({
                     onUpdate={(newDescription) =>
                         updateLibrarySchema(firestore, { id: librarySchema.id, description: newDescription })
                     }
+                    textareaProps={{
+                        className: "bg-seashell",
+                    }}
                 />
                 :
                 <p className="opacity-80">{librarySchema.description}</p>
@@ -105,7 +108,7 @@ export function LibrarySchemaDetail({
             {(editable || librarySchema.recipe?.content) &&
                 <div className="mt-4 flex flex-col">
                     <h4 className="font-bold text-center m-1" key="recipelabel">Recipe</h4>
-                    <div className="bg-blue-50 rounded-t-md text-black">
+                    <div className="bg-seashell border-melon border-x border-t rounded-t-md text-black">
                         <RecipeEditor
                             content={librarySchema.recipe?.content || ""}
                             onUpdate={(newRecipe) => updateLibrarySchema(firestore, {
@@ -120,8 +123,8 @@ export function LibrarySchemaDetail({
                     <CopyButton value={"\n" + (librarySchema.recipe?.content || "")}>
                         {({ copied, copy }) => (
                             <Button
-                                className={clsx("rounded-t-none",
-                                    copied ? "bg-green-400" : "bg-slate-500")}
+                                className={clsx("rounded-t-none text-black",
+                                    copied ? "bg-darkplatinum" : "bg-peachcrayon")}
                                 onClick={copy}
                                 color={copied ? "green" : "grey"}
                             >
@@ -132,7 +135,7 @@ export function LibrarySchemaDetail({
                 </div>
             }
 
-            <div className="flex flex-col space-y-2 mt-4">
+            {(editable || thisLibrarySchemaClasses.length > 0) && <div className="flex flex-col space-y-2 mt-4">
                 <h4 className="font-bold text-center" key="schema">Schema</h4>
                 {[["node", nodeTypes], ["arrow", arrowTypes]].map(([elementType, elementTypes]) =>
                     elementTypes && <div className="flex flex-col gap-2" key={elementType as string}>
@@ -143,24 +146,24 @@ export function LibrarySchemaDetail({
                             (theClass && theClass.element === elementType) &&
                             <div key={theClass.id} className="m-auto flex">
                                 <SchemaEntry key={theClass.id} inLibrary={true} theClass={theClass} editable={editable} />
-                                {editable && <ActionIcon color="white" onClick={() =>
+                                {editable && <ActionIcon onClick={() =>
                                     updateLibrarySchema(firestore, {
                                         id: librarySchema.id,
                                         classIds: librarySchema.classIds.filter(id => id !== theClass.id)
                                     })
                                 }>
-                                    <IconTrash size={16} color="white" />
+                                    <IconTrash size={16} />
                                 </ActionIcon>}
                             </div>
                         )}
                     </div>
                 )}
-            </div>
+            </div>}
 
             {classesNotAdded.length > 0 ?
                 <>
                     <Button
-                        className="bg-blue-500 m-auto mt-4"
+                        className="bg-peachcrayon text-black m-auto mt-4"
                         variant="filled"
                         onClick={() => {
                             enact(dispatch, mapId, createClassesCommand(firestore, mapId,
@@ -171,7 +174,7 @@ export function LibrarySchemaDetail({
                     >
                         Add all to schema
                     </Button>
-                    <p className="mx-4 mt-2 italic text-xs text-slate-200 text-center">Or drag individual classes into your schema</p>
+                    <p className="mx-4 mt-2 italic text-xs text-darkplatinum text-center">Or drag individual classes into your schema</p>
                 </>
                 :
                 librarySchema.classIds && librarySchema.classIds.length > 0 &&
@@ -180,7 +183,7 @@ export function LibrarySchemaDetail({
 
             {editable &&
                 <>
-                    <Button className="bg-slate-500 m-auto mt-4" variant="filled" size="xs" onClick={() =>
+                    <Button className="bg-peachcrayon text-black m-auto mt-4" variant="filled" size="xs" onClick={() =>
                         createLibraryClassAndAddToSchema(firestore, librarySchema.id,
                             {
                                 id: generateId(),
@@ -192,7 +195,7 @@ export function LibrarySchemaDetail({
                     }>
                         Add node type
                     </Button>
-                    <Button className="bg-slate-500 m-auto mt-4" variant="filled" size="xs" onClick={() =>
+                    <Button className="bg-peachcrayon text-black m-auto mt-4" variant="filled" size="xs" onClick={() =>
                         createLibraryClassAndAddToSchema(firestore, librarySchema.id,
                             {
                                 id: generateId(),
@@ -205,7 +208,7 @@ export function LibrarySchemaDetail({
                         Add arrow type
                     </Button>
                     <Button
-                        className="bg-red-500 m-auto mt-4"
+                        className="bg-peachcrayon text-black m-auto mt-4"
                         variant="filled"
                         size="xs"
                         onClick={() => {

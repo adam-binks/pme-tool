@@ -17,7 +17,7 @@ export function LibrarySection({
 
     return (
         <div>
-            <Title order={5} align="left" className="mb-2 text-slate-200 select-none">
+            <Title order={5} align="left" className="mb-2 text-darkplatinum select-none">
                 {title}
             </Title>
             <div className="flex">
@@ -28,10 +28,10 @@ export function LibrarySection({
                 </ScrollArea>
                 {React.Children.count(children) > 1 &&
                     <ActionIcon
-                        className="bg-slate-700 rounded-full -mx-2 my-auto"
+                        className="bg-peachcrayon rounded-full -mx-2 my-auto"
                         onClick={() => scroll(120)}
                     >
-                        <IconArrowRight />
+                        <IconArrowRight className="stroke-darkplatinum" />
                     </ActionIcon>
                 }
             </div>

@@ -64,7 +64,7 @@ export function ArrowDot({
             ref={ref}
             title={addingFromThis ? "Cancel adding arrow" : "Add arrow"}
             className={clsx(
-                "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full doNotPan group/dot",
+                "basis-3 flex-shrink-0 flex-grow-0 w-3 h-3 opacity-70 rounded-full doNotPan group/dot cursor-pointer",
                 addingFromThis &&
                     "bg-yellow-600",
                     connectedArrows?.length > 0 ? 

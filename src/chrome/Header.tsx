@@ -17,12 +17,12 @@ export default function Header({
     return (
         <Paper
             p={5}
-            className="bg-zinc-200 z-40"
+            className="bg-mistyrose z-40"
         >
             <Group mx="lg" position="apart">
                 <div className="flex align-bottom">
                     <Link to="/">
-                        <Title className="select-none hover:bg-violet-200 px-2 rounded-lg" order={4}>
+                        <Title className="select-none hover:bg-violet-200 px-2 rounded-lg text-darkplatinum" order={4}>
                             Schematica
                         </Title>
                     </Link>

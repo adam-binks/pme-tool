@@ -85,14 +85,14 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     return (
         <Paper
-            className={clsx("z-10 flex flex-col justify-between h-full bg-[#FDFAFA]",
+            className={clsx("z-10 flex flex-col justify-between h-full bg-seashellpale border-l border-seashell shadow-seashell",
                 draggedItemCouldBeDroppedHere && "bg-blue-50",
                 draggedItemCouldBeDroppedHere && dropItemOver && "bg-blue-200",
             )}
             ref={(el: any) => drop(el)}
             p={5}
             radius={0}
-            shadow={"lg"}
+            shadow={"xs"}
             onClick={(e: MouseEvent) => {
                 setSelection(emptySelection)
                 e.stopPropagation()
@@ -103,9 +103,9 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
         >
             <ScrollArea offsetScrollbars>
                 <Stack className="w-52" p={"md"}>
-                    <Title className="select-none" order={3}>Schema</Title>
+                    <Title className="select-none opacity-60" order={3}>Schema</Title>
 
-                    <Title className="select-none" order={5}>Node types</Title>
+                    <Title className="select-none text-darkplatinum" order={5}>Node types</Title>
                     <Stack mt={-10} spacing={10}>
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "node")
@@ -119,7 +119,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
                             )}
                     </Stack>
 
-                    <Title className="select-none" order={5}>Arrow types</Title>
+                    <Title className="select-none text-darkplatinum" order={5}>Arrow types</Title>
                     <Stack mt={-10} spacing={10}>
                         {schema.classes && schema.classes
                             .filter(cls => cls.element === "arrow")

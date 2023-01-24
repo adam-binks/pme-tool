@@ -15,9 +15,8 @@ export function ToggleLibraryButton({
     const libraryOpen = useAppSelector(state => state.panes?.find((p: Pane) => p.id === mapId)?.libraryOpen)
     return (
         <Button
-            className="-mr-2 text-right bg-slate-500 rounded-l-full mb-2"
+            className="-mr-2 text-right bg-silk text-black rounded-l-full mb-2"
             variant="filled"
-            color={"cyan"}
             onClick={() => dispatch(toggleLibrary(mapId))}
             rightIcon={libraryOpen ? <IconBook /> : <IconBook2 />}
         >

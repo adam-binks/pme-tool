@@ -25,20 +25,20 @@ export function RecipePane({
 
     return (
         <div className={clsx(
-            "bg-slate-100 w-64 absolute left-4 z-20 bottom-0 rounded-t-lg shadow-xl"
+            "bg-seashell w-64 absolute left-4 z-20 bottom-0 rounded-t-lg shadow-xl"
         )}>
             <div
-                className="bg-slate-500 rounded-t-lg p-1 flex justify-center relative cursor-pointer"
+                className="bg-peachpuff rounded-t-lg p-1 flex justify-center relative cursor-pointer"
                 onClick={() => setCollapsed(!collapsed)}
             >
-                <Title order={3} className="text-white opacity-90 justify-self-center select-none">
+                <Title order={3} className="text-black opacity-60 justify-self-center select-none">
                     Recipe
                 </Title>
                 <ActionIcon className="absolute right-2" variant="transparent">
                     {collapsed ?
-                        <IconChevronUp color="white" size={24} className="opacity-70 hover:opacity-100" />
+                        <IconChevronUp color="black" size={24} className="opacity-60 hover:opacity-100" />
                         :
-                        <IconChevronDown color="white" size={24} className="opacity-70 hover:opacity-100" />
+                        <IconChevronDown color="black" size={24} className="opacity-60 hover:opacity-100" />
                     }
                 </ActionIcon>
             </div>

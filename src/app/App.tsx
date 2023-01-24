@@ -9,6 +9,8 @@ import { ProjectView } from '../pages/ProjectView';
 import './App.css';
 import { useAppSelector } from './hooks';
 
+export const APP_FONT = "Ubuntu"
+
 export default function App() {
     const auth = useAppSelector(state => state.firebase.auth)
     const firestore = useFirestore()
@@ -31,7 +33,14 @@ export default function App() {
     if (!isLoaded(auth)) { return <Skeleton /> }
 
     return (
-        <MantineProvider>
+        <MantineProvider theme={{
+            white: "#fef5f4",
+            primaryColor: "orange",
+            fontFamily: APP_FONT,
+            headings: {
+                fontFamily: APP_FONT,
+            },
+        }}>
             <NotificationsProvider>
                 <RouterProvider router={router} />
             </NotificationsProvider>

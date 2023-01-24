@@ -49,7 +49,7 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
     }
 
     const emptyMode = !arrow.content && !arrow.classId && !isSelected
-    const colour = theClass ? theClass.colour : "#BE90D4"
+    const colour = theClass ? theClass.colour : "#ffd7ba"
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: arrow.id }}>
             <SvgArrow
@@ -59,14 +59,15 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                 colour={colour}
             >
                 <div
-                    className={clsx(`z-100 bg-white border-4 rounded-2xl hover:border-opacity-100 element-container p-0.5`,
+                    className={clsx(`z-100 bg-white border-4 rounded-xl hover:border-opacity-100 element-container p-0.5`,
                         emptyMode && "w-8 h-8 rounded-full opacity-80 hover:opacity-100",
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                     )}
                     style={{
+                        backgroundColor: colour,
                         borderColor: colour,
                         ...(!emptyMode ? { width: arrow.width } : {}),
-                        "--element-colour": theClass?.colour || "#BE90D4",
+                        "--element-colour": colour,
                     } as React.CSSProperties}
                     onMouseDown={onMousedownSelectable}
                     onDoubleClick={e => e.stopPropagation()}
@@ -85,14 +86,13 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                     </>}
                     <div>
                         {emptyMode ?
-                            <IconPencil size={20} className={`m-auto stroke-${colour}-500 opacity-70 hover:opacity-100`} />
+                            <IconPencil size={20} className={`m-auto stroke-black opacity-70 hover:opacity-100`} />
                             :
                             <>
                                 <ElementHeader element={arrow} showClassSelectIfEmpty={isSelected} />
                                 {(arrow.content || isSelected) && <TextElement
                                     element={arrow}
                                     elementType="arrow"
-                                    codemirrorProps={(isSelected && !arrow.content) ? { placeholder: "Content..." } : {}}
                                 />}
                                 <ResizeElement element={{ id: arrow.id, width: arrow.width }} elementType={"arrow"} />
                             </>

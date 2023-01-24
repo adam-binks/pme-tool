@@ -53,7 +53,12 @@ export function MapTabs({
                         setEditingActiveTab(false)
                         value && setActiveMap(value)
                     }}
-                    color="blue"
+                    color="orange"
+                    styles={{
+                        root: {
+                            backgroundColor: "#f8f2eb",
+                        }
+                    }}
                     className="z-10"
                 >
                     <Tabs.List>
@@ -130,7 +135,7 @@ export function MapTabs({
             </div>
 
             <div
-                className="flex h-full gap-6 px-2"
+                className="flex h-full gap-6 px-2 bg-seashell"
                 style={{
                     borderBottom: '2px solid #dee2e6' // copy of Tabs bottom border
                 }}
@@ -139,20 +144,18 @@ export function MapTabs({
                     <ActionIcon
                         title="Undo"
                         onClick={() => dispatch(undo(activeMap))}
-                        className="my-auto border-none"
-                        style={{ backgroundColor: "white" }}
+                        className="my-auto border-none bg-seashell"
                         disabled={!history || (history.undo.length === 0)}
                     >
-                        <IconCornerUpLeft className="bg-white  border-none outline-none border-0" />
+                        <IconCornerUpLeft className="bg-seashell hover:bg-white border-none outline-none border-0" />
                     </ActionIcon>
                     <ActionIcon
                         title="Redo"
                         onClick={() => dispatch(redo(activeMap))}
-                        className="my-auto border-none"
-                        style={{ backgroundColor: "white" }}
+                        className="my-auto border-none bg-seashell"
                         disabled={!history || (history.redo.length === 0)}
                     >
-                        <IconCornerUpRight className="bg-white  border-none outline-none border-0" />
+                        <IconCornerUpRight className="bg-seashell hover:bg-white border-none outline-none border-0" />
                     </ActionIcon>
                     {!isOnlyPane &&
                         <ActionIcon

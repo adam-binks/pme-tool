@@ -4,13 +4,14 @@ module.exports = {
   theme: {
     extend: {
       boxShadow: {
-        "inner-lg": "inset 0 10px 40px 0 rgba(0, 0, 0, 0.15)",
+        "inner-lg": "inset 0 5px 20px 0 rgba(0, 0, 0, 0.03)",
       },
       colors: {
         melon: "#fec5bb",
-        palepink: "#fcd5ce",
-        mistyrose: "#fae1dd",
-        seashell: "#f8edeb",
+        palepink: "#fcdece",
+        mistyrose: "#fae6dd",
+        seashell: "#f8f2eb",
+        seashellpale: "#fef5f4",
         platinum: "#e8e8e4",
         platchrome: "#d8e2dc",
         linen: "#ece4db",

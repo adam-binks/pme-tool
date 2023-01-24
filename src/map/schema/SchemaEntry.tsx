@@ -109,7 +109,7 @@ export default function SchemaEntry({
             <div
                 className={clsx(
                     "m-auto schema-entry",
-                    theClass.element === "arrow" && "border-4 border-opacity-50 rounded-xl",
+                    theClass.element === "arrow" && "rounded-xl",
                     isSelected && styles.isSelected,
                     isHovered && styles.isHovered,
                 )}
@@ -120,16 +120,19 @@ export default function SchemaEntry({
                 id={`class.${theClass.id}`}
             >
                 <Card
-                    shadow={isSelected ? "xl" : "xs"}
+                    shadow={isSelected ? "md" : "xs"}
                     radius="md"
                     p="xs"
                     withBorder={true}
                     className={clsx(
-                        `doNotPan border-inherit bg-seashell`,
+                        `doNotPan border-inherit bg-seashell overflow-visible shadow-[mistyrose]`,
                         isDragging && styles.isDragging,
                         theClass.element === "node" && "w-48",
-                        theClass.element === "arrow" && "w-40 overflow-visible",
+                        theClass.element === "arrow" && "w-40",
                     )}
+                    style={{
+                        ...(theClass.element === "arrow" ? { backgroundColor: theClass.colour } : {})
+                    }}
                     ref={drag}
                     onClick={(e: MouseEvent) => {
                         onMousedownSelectable(e)

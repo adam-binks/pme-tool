@@ -5,7 +5,7 @@ function createPanel(view: EditorView) {
     let div = document.createElement("div")
     div.className = "cm-btn-panel absolute -mt-2 right-0 -mr-1 p-2 text-xs hidden"
     let btn = div.appendChild(document.createElement("button"))
-    btn.className = "text-white px-2 py-1 rounded-md hover:opacity-90 shadow-lg"
+    btn.className = "text-black px-2 py-1 rounded-md hover:opacity-90 shadow-lg"
     btn.setAttribute("style", "background-color: var(--element-colour, #475569)")
     btn.textContent = "Add =property="
 
