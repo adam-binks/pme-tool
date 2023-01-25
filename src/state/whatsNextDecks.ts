@@ -53,7 +53,7 @@ export const whatsNextDecks: WhatsNextDeck[] = [
             },
             {
                 title: "Add a property to a node",
-                description: "Record structured information on your nodes. For example: =Confidence= 80%.",
+                description: "Record structured information on your nodes. For example: =Confidence= 80%",
                 autoAdvance: (data) => data.maps.some(
                     map => map?.nodes && Object.values(map.nodes).some(node => node?.content.match(/\=.*\=/))
                 )
