@@ -57,6 +57,10 @@ export function MapTabs({
                     styles={{
                         root: {
                             backgroundColor: "#F8EDEB",
+                        },
+                        tabsList: {
+                            borderBottomWidth: 1,
+                            borderColor: "#fae6dd",
                         }
                     }}
                     className="z-10"
@@ -137,7 +141,7 @@ export function MapTabs({
             <div
                 className="flex h-full gap-6 px-2 bg-seashell"
                 style={{
-                    borderBottom: '2px solid #dee2e6' // copy of Tabs bottom border
+                    borderBottom: '1px solid #fae6dd' // copy of Tabs bottom border
                 }}
             >
                 <div className="flex gap-2">

@@ -1,7 +1,6 @@
 import { ActionIcon, Menu } from "@mantine/core"
 import { IconLogout, IconUserCircle } from "@tabler/icons"
-import { isEmpty } from "lodash"
-import { useFirebase } from "react-redux-firebase"
+import { useFirebase, isEmpty } from "react-redux-firebase"
 import { redirect } from "react-router-dom"
 import { useAppSelector } from "../app/hooks"
 

@@ -8,7 +8,8 @@ export const highlighting = syntaxHighlighting(HighlightStyle.define([
     { 
         tag: tags.lineComment, fontSize: "10px", fontStyle: "italic", color: "#5E806C", display: "inline-block", margin: "0px 16px"
     },
-    {
-        tag: tags.controlKeyword, color: "#da4a8a", fontWeight: "bold", backgroundColor: "#bbbbbb51", padding: "1px 3px",
-    }
+    // temporarily disabled
+    // {
+    //     tag: tags.controlKeyword, color: "#da4a8a", fontWeight: "bold", backgroundColor: "#bbbbbb51", padding: "1px 3px",
+    // }
 ]))

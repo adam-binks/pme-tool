@@ -6,7 +6,7 @@ import { useFirestore } from "react-redux-firebase"
 import { useAppDispatch } from "../../app/hooks"
 import { Class, Schema } from "../../app/schema"
 import { enact } from "../../etc/firestoreHistory"
-import { generateId, truthyLog } from "../../etc/helpers"
+import { generateId } from "../../etc/helpers"
 import { emptySelection, useSelection } from "../../etc/useSelectable"
 import { ItemTypes } from "../../ItemTypes"
 import { createClassesCommand } from "../../state/mapFunctions"
@@ -85,7 +85,7 @@ export function SchemaPane({ schema }: SchemaPaneProps) {
 
     return (
         <Paper
-            className={clsx("z-10 flex flex-col justify-between h-full bg-seashellpale border-l border-seashell shadow-seashell",
+            className={clsx("z-10 flex flex-col justify-between bg-seashellpale border-l border-seashell shadow-seashell",
                 draggedItemCouldBeDroppedHere && "bg-blue-50",
                 draggedItemCouldBeDroppedHere && dropItemOver && "bg-blue-200",
             )}

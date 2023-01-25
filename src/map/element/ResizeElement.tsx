@@ -45,7 +45,7 @@ export function ResizeElement({
                 e.stopPropagation()
             }}
         >
-            <IconChevronDownRight className="pointer-events-none" size={16} color={"#bbb"} />
+            <IconChevronDownRight className="pointer-events-none" size={16} color={"#fdba83"} />
         </div>
     )
 }

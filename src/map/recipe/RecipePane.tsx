@@ -25,7 +25,7 @@ export function RecipePane({
 
     return (
         <div className={clsx(
-            "bg-seashell w-64 absolute left-4 z-20 bottom-0 rounded-t-lg shadow-xl"
+            "bg-seashell w-64 absolute left-4 z-20 bottom-0 rounded-t-lg shadow-md border border-mistyrose"
         )}>
             <div
                 className="bg-peachpuff rounded-t-lg p-1 flex justify-center relative cursor-pointer"

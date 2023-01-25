@@ -19,8 +19,7 @@ export function ProjectsPage({
     const projects: { [key: string]: Project } = useAppSelector(state => state.firestore.data.projects)
 
     return (
-        <div className="bg-silk h-[100vh]">
-            <Header project={undefined} />
+        <div className="">
             <div className="text-center items-center m-auto my-8 flex flex-col space-y-6">
                 <Button
                     className="bg-melon text-black"

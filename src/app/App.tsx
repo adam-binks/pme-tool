@@ -11,6 +11,7 @@ import { useAppSelector } from './hooks';
 
 // add custom colors to theme
 import { DefaultMantineColor, Tuple } from '@mantine/core';
+import { LandingPage } from '../pages/LandingPage';
 type ExtendedCustomColors = 'mistyrose' | DefaultMantineColor;
 declare module '@mantine/core' {
     export interface MantineThemeColorsOverride {
@@ -25,7 +26,7 @@ export default function App() {
     const firestore = useFirestore()
 
     const router = createHashRouter([
-        { path: "/", element: !isEmpty(auth) ? <ProjectsPage /> : <LoginPage /> },
+        { path: "/", element: <LandingPage /> },
         { path: "/project/:projectId", element: !isEmpty(auth) ? <ProjectView /> : <LoginPage /> },
     ])
 

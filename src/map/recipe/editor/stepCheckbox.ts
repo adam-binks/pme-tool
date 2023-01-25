@@ -48,7 +48,7 @@ class CheckboxWidget extends WidgetType {
         box.type = "checkbox"
         box.checked = this.checked === true
         box.indeterminate = this.checked === "in progress"
-        box.className = "accent-melon"
+        box.className = "accent-peachcrayon"
         return wrap
     }
 

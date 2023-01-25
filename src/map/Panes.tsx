@@ -91,7 +91,7 @@ export default function Panes({
                 direction="horizontal"
                 aria-roledescription={`Split screen into ${panes.length}`}
                 key={panes.length}
-                style={{ overflow: "auto" }}
+                style={{ overflow: "auto", flexGrow: 1 }}
             >
                 {panes.map((pane: any, paneIndex: number) =>
                     <div className="flex flex-col" key={paneIndex}>

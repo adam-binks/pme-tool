@@ -1,7 +1,6 @@
 import { TransformComponent, TransformWrapper } from "@kokarn/react-zoom-pan-pinch";
 import { Skeleton } from "@mantine/core";
 import { useMouse } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 import React, { useContext, useRef, useState } from "react";
 import { useDrop, XYCoord } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
