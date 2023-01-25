@@ -1,6 +1,5 @@
 import { Skeleton } from '@mantine/core';
-import React, { useContext } from 'react';
-import { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useFirestore } from 'react-redux-firebase';
 import { useParams } from "react-router-dom";
 import { useAppSelector } from '../app/hooks';
@@ -27,7 +26,7 @@ export function ProjectView() {
 
     return (
         <ProjectContext.Provider value={project?.id}>
-            <div className="App">
+            <div className="App text-center max-h-screen h-screen w-full flex flex-col">
                 <Header project={project} />
                 <Panes project={project} />
                 <RecipePane />

@@ -44,8 +44,8 @@ export function MapTabs({
     )
 
     return (
-        <div className="flex overflow-x-auto-auto flex-nowrap">
-            <div className="flex-grow overflow-x-auto">
+        <div className="flex flex-nowrap">
+            <div className="flex-grow overflow-x-auto overflow-y-clip">
                 <Tabs
                     keepMounted={false}
                     value={activeMap}

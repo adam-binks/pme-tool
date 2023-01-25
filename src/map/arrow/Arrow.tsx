@@ -1,4 +1,4 @@
-import { clsx } from "@mantine/core"
+import { clsx, useMantineTheme } from "@mantine/core"
 import { IconPencil } from "@tabler/icons"
 import React from "react"
 import { Arrow, ArrowEnd } from "../../app/schema"
@@ -22,6 +22,7 @@ interface ArrowProps {
 export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps) {
     const { isSelected, onMousedownSelectable } = useSelectable(arrow.id, "arrow")
     const mapId = useMapId()
+    const theme = useMantineTheme()
 
     function getCoords(arrowEnd: ArrowEnd, localElement: LocalElement): { x: number, y: number } | undefined {
         if (localElement) {
@@ -64,8 +65,8 @@ export default function ArrowComponent({ arrow, strokeWidthScaler }: ArrowProps)
                         isSelected ? "border-opacity-100" : "border-opacity-50",
                     )}
                     style={{
-                        backgroundColor: colour,
-                        borderColor: colour,
+                        backgroundColor: theme.fn.lighten(colour, 0.4),
+                        borderColor: theme.fn.lighten(colour, 0.4),
                         ...(!emptyMode ? { width: arrow.width } : {}),
                         "--element-colour": colour,
                     } as React.CSSProperties}

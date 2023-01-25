@@ -1,4 +1,4 @@
-import { Card, clsx } from "@mantine/core";
+import { Card, clsx, useMantineTheme } from "@mantine/core";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useFirestore } from "react-redux-firebase";
@@ -33,6 +33,7 @@ export default function SchemaEntry({
     const mapId = useMapId()
     const dispatch = useAppDispatch()
     const firestore = useFirestore()
+    const theme = useMantineTheme()
 
     const mapClasses: Class[] = useSchema((schema) => !inLibrary && schema.classes)
     const libraryClasses: Class[] = useFirestoreData((state) => inLibrary && state.libraryClasses)
@@ -127,7 +128,7 @@ export default function SchemaEntry({
                         theClass.element === "arrow" && "w-40",
                     )}
                     style={{
-                        ...(theClass.element === "arrow" ? { backgroundColor: theClass.colour } : {})
+                        ...(theClass.element === "arrow" ? { backgroundColor: theme.fn.lighten(theClass.colour, 0.4) } : {})
                     }}
                     ref={drag}
                     onClick={(e: MouseEvent) => {

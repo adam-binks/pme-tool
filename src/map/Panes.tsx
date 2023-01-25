@@ -87,11 +87,10 @@ export default function Panes({
         // for some reason 🤷
         <>
             <SplitWrapper
-                className="split-flex"
+                className="flex flex-row flex-grow box-border max-h-full overflow-auto"
                 direction="horizontal"
                 aria-roledescription={`Split screen into ${panes.length}`}
                 key={panes.length}
-                style={{ overflow: "auto", flexGrow: 1 }}
             >
                 {panes.map((pane: any, paneIndex: number) =>
                     <div className="flex flex-col" key={paneIndex}>
@@ -101,6 +100,12 @@ export default function Panes({
                             isOnlyPane={panes.length === 1}
                             project={project}
                         />
+                        {/* <div className="bg-red-300" >
+                            <div className="h-96 bg-blue-300"></div>
+                            <div className="h-96 bg-red-300"></div>
+                            <div className="h-96 bg-indigo-300"></div>
+                            <div className="h-96 bg-green-300"></div>
+                        </div> */}
                         <Map
                             mapId={pane.id}
                             key={pane.id}
