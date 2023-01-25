@@ -56,7 +56,7 @@ export function MapTabs({
                     color="orange"
                     styles={{
                         root: {
-                            backgroundColor: "#f8f2eb",
+                            backgroundColor: "#F8EDEB",
                         }
                     }}
                     className="z-10"

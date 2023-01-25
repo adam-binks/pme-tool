@@ -10,7 +10,7 @@ module.exports = {
         melon: "#fec5bb",
         palepink: "#fcdece",
         mistyrose: "#fae6dd",
-        seashell: "#f8f2eb",
+        seashell: "#F8EDEB",
         seashellpale: "#fef5f4",
         platinum: "#e8e8e4",
         platchrome: "#d8e2dc",

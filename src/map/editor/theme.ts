@@ -8,7 +8,7 @@ export const theme = EditorView.theme({
         outline: "none",
     },
     ".cm-content": {
-        // backgroundColor: "#f8f2eb",
+        // backgroundColor: "#F8EDEB",
         color: "black",
         fontFamily: "sans-serif",
         fontSize: "12px",

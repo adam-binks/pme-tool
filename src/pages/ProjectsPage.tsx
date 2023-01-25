@@ -61,7 +61,7 @@ export function ProjectsPage({
                             <Card className="w-60 px-6 py-4 flex flex-col space-y-2 bg-seashell" withBorder shadow={"md"} key={project.id}>
                                 <h3 className="text-lg font-semibold">{project.name}</h3>
                                 <Link to={`/project/${project.id}`}>
-                                    <Button className="bg-melon text-black w-full">Open</Button>
+                                    <Button color="mistyrose" className="bg-melon text-black w-full">Open</Button>
                                 </Link>
                                 <Button
                                     onClick={() => {

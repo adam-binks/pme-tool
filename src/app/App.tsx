@@ -44,7 +44,7 @@ export default function App() {
     return (
         <MantineProvider theme={{
             white: "#fef5f4",
-            primaryColor: "orange",
+            primaryColor: "mistyrose",
             fontFamily: APP_FONT,
             headings: {
                 fontFamily: APP_FONT,

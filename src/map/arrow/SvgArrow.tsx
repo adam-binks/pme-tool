@@ -62,9 +62,9 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
         strokeWidth: 5,
     }
 
-    function getPath(arrowHead: ArrowHead, start: { x: number, y: number }, end: { x: number, y: number }) {
+    function getPath(arrowHead: ArrowHead, otherArrowHead: ArrowHead, start: { x: number, y: number }, end: { x: number, y: number }) {
         var arrowheads = undefined
-        if (arrowHead === "arrow") {
+        if (arrowHead === "arrow" || otherArrowHead === "arrow") {
             const ARROW_SPACING = 15
             const distance = Math.sqrt((end.x - start.x) ** 2 + (end.y - start.y) ** 2)
             const numArrows = distance / ARROW_SPACING
@@ -74,9 +74,10 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
                 const y = start.y + (end.y - start.y) * i / numArrows
                 return `${x},${y}`
             }).join(" ")
+            const reversed = (arrowHead !== "arrow") ? "-reversed" : "" 
             arrowheads = <polyline
                 points={points}
-                markerMid={`url(#arrowhead-${colour})`}
+                markerMid={`url(#arrowhead${reversed}-${colour})`}
                 className={clsx(
                     "hover:opacity-100",
                 )}
@@ -96,15 +97,19 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
 
     return (
         <div className="absolute -z-10" style={{ left: x, top: y }}>
-            <svg width={w} height={h} pointerEvents="stroke" className="opacity-60">
+            <svg width={w} height={h} pointerEvents="stroke" className="opacity-90">
                 <defs>
-                    <marker id={`arrowhead-${colour}`} markerWidth="4" markerHeight="4"
+                    <marker id={`arrowhead-${colour}`} markerWidth="4" markerHeight="6"
                         orient="auto" refY="2">
-                        <path d="M0,0 L4,2 0,4" fill={colour} />
+                        <path d="M2,0 L4,2 2,4" stroke={colour} fill="none" />
+                    </marker>
+                    <marker id={`arrowhead-reversed-${colour}`} markerWidth="4" markerHeight="6"
+                        orient="auto" refY="2">
+                        <path d="M2,4 L0,2 2,0" stroke={colour} fill="none" />
                     </marker>
                 </defs>
-                {getPath(source.arrowHead, { x: localMidpointX, y: localMidpointY }, { x: sX, y: sY })}
-                {getPath(dest.arrowHead, { x: localMidpointX, y: localMidpointY }, { x: dX, y: dY })}
+                {getPath(source.arrowHead, dest.arrowHead, { x: localMidpointX, y: localMidpointY }, { x: sX, y: sY })}
+                {getPath(dest.arrowHead, source.arrowHead, { x: localMidpointX, y: localMidpointY }, { x: dX, y: dY })}
             </svg>
             <div
                 onClick={(e) => e.stopPropagation()}

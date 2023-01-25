@@ -11,9 +11,6 @@ export default function Header({
     {
         project: Project | undefined
     }) {
-    const dispatch = useAppDispatch()
-    const firestore = useFirestore()
-
     return (
         <Paper
             p={5}
@@ -22,7 +19,7 @@ export default function Header({
             <Group mx="lg" position="apart">
                 <div className="flex align-bottom">
                     <Link to="/">
-                        <Title className="select-none hover:bg-violet-200 px-2 rounded-lg text-darkplatinum" order={4}>
+                        <Title className="select-none hover:bg-melon px-2 rounded-lg text-darkplatinum" order={4}>
                             Schematica
                         </Title>
                     </Link>
@@ -31,16 +28,6 @@ export default function Header({
                     </Title>}
                 </div>
                 <Group>
-                    {/* <Button
-                        onClick={async () => {
-                            const id = createMap(firestore)
-                            dispatch(openPane({ id, addingArrowFrom: undefined }))
-                        }}
-                        variant="light"
-                        leftIcon={<IconPlus />}
-                    >
-                        Create map
-                    </Button> */}
                     <AccountMenu />
                 </Group>
             </Group>
