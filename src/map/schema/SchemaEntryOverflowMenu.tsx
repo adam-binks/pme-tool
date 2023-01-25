@@ -21,7 +21,7 @@ export function SchemaEntryOverFlowMenu({ theClass }: SchemaEntryOverFlowMenuPro
     return (
         <Menu shadow="md" width={200} position="left-start">
             <Menu.Target>
-                <ActionIcon radius="xl" size="xs" className="-mt-2">
+                <ActionIcon color="mistyrose" radius="xl" size="xs" className="-mt-2">
                     <IconDots />
                 </ActionIcon>
             </Menu.Target>

@@ -13,7 +13,6 @@ import { ResizeElement } from "../element/ResizeElement";
 import { TextElement } from "../element/TextElement";
 import { DragItem, useMapId, useZoomedOutMode } from "../Map";
 import { ElementContext } from "../properties/useElementId";
-import styles from "./Node.module.css";
 
 export const DEFAULT_NODE_WIDTH = 200 // px
 
@@ -75,10 +74,7 @@ export default function Node({ node }: NodeProps) {
     return (
         <ElementContext.Provider value={{ elementType: "node", elementId: node.id }}>
             <div
-                className={clsx("group/element absolute element-container",
-                    isSelected && styles.isSelected,
-                    isHovered && styles.isHovered
-                )}
+                className={clsx("group/element absolute element-container shadow-seashell")}
                 id={`node.${node.id}`}
                 style={{
                     left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour || "#fae6dd", "--element-colour": theClass?.colour || "#fae6dd"
@@ -87,8 +83,7 @@ export default function Node({ node }: NodeProps) {
                 <div
                     className={clsx(
                         "doNotPan bg-seashell border shadow-seashell group-hover/element:shadow-lg overflow-visible border-inherit transition-opacity rounded-lg cursor-grab",
-                        styles.nodeCard,
-                        isSelected ? "border-2 p-[7px] shadow-xl" : "p-[8px] shadow-md",
+                        isSelected ? "border-2 p-[7px] shadow-lg" : "p-[8px] shadow-md",
                         isDragging && "opacity-20",
                     )}
                     ref={drag}
@@ -100,7 +95,7 @@ export default function Node({ node }: NodeProps) {
                     onMouseEnter={() => { setIsHovered(true) }}
                     onMouseLeave={() => { setIsHovered(false) }}
                 >
-                    <ElementHeader element={node} showClassSelectIfEmpty={isSelected} />
+                    <ElementHeader element={node} showClassSelectIfEmpty={(isSelected || isHovered) && !isDragging} />
 
                     <TextElement element={node} elementType={"node"} />
 

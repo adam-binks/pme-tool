@@ -101,7 +101,7 @@ export function LibraryPane({ }: {}) {
                         // (librarySchema) =>
                         // </LibrarySection>
                     }
-                    {viewingSchemaId && <Overlay className="z-20" color={"#444"} blur={2} onClick={() => setViewingSchemaId(undefined)} />}
+                    {viewingSchemaId && <Overlay className="z-20" color={"#ad835f"} blur={2} onClick={() => setViewingSchemaId(undefined)} />}
                 </Stack>
             </ScrollArea>
             {(viewingSchemaId && librarySchemas[viewingSchemaId]) &&

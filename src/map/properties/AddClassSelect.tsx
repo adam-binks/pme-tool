@@ -64,7 +64,7 @@ export function AddClassSelect({ elementType, element, inSchema, showWhileEmpty 
                 input: {
                     textAlign: "center",
                     padding: "0",
-                    backgroundColor: theClass ? theClass.colour : "",
+                    backgroundColor: theClass ? theClass.colour : "#fae6dd",
                     fontWeight: "bold",
                     outline: theClass ? `2px solid ${theClass.colour}` : "",
                     fontSize: `${((elementType === "arrow" || !theClass) ? 10 : 14)}px`,

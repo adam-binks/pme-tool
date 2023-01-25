@@ -38,8 +38,8 @@ export const whatsNextDecks: WhatsNextDeck[] = [
                 )
             },
             {
-                title: "Add your first arrow",
-                description: "Click two purple dots to add an arrow connecting them.",
+                title: "Add your first connection",
+                description: "Click two orange '+' dots to add a line connecting them.",
                 autoAdvance: (data) => data.maps.some(
                     map => map?.arrows && Object.values(map.arrows).length > 0
                 )

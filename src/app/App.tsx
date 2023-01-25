@@ -9,6 +9,15 @@ import { ProjectView } from '../pages/ProjectView';
 import './App.css';
 import { useAppSelector } from './hooks';
 
+// add custom colors to theme
+import { DefaultMantineColor, Tuple } from '@mantine/core';
+type ExtendedCustomColors = 'mistyrose' | DefaultMantineColor;
+declare module '@mantine/core' {
+    export interface MantineThemeColorsOverride {
+        colors: Record<ExtendedCustomColors, Tuple<string, 10>>;
+    }
+}
+
 export const APP_FONT = "Ubuntu"
 
 export default function App() {
@@ -40,6 +49,9 @@ export default function App() {
             headings: {
                 fontFamily: APP_FONT,
             },
+            colors: {
+                mistyrose: ['#fff0e1', '#fff0e1', '#fff0e1', '#fff0e1', '#fed6b3', '#fdba83', '#fba052', '#fb8424', '#e16c0e', '#af5309'],
+            }
         }}>
             <NotificationsProvider>
                 <RouterProvider router={router} />

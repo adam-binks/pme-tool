@@ -16,7 +16,6 @@ import { Editor } from "../editor/Editor";
 import { Property } from "../editor/exposeProperties";
 import { ColourPicker } from "../element/ColourPicker";
 import { useMapId } from "../Map";
-import styles from "../node/Node.module.css";
 import { PropertyStack } from "./PropertyStack";
 import { SchemaEntryOverFlowMenu } from "./SchemaEntryOverflowMenu";
 import { SchemaEntryTitle } from "./SchemaEntryTitle";
@@ -110,8 +109,6 @@ export default function SchemaEntry({
                 className={clsx(
                     "m-auto schema-entry",
                     theClass.element === "arrow" && "rounded-xl",
-                    isSelected && styles.isSelected,
-                    isHovered && styles.isHovered,
                 )}
                 style={{
                     borderColor: theClass.colour,
@@ -126,7 +123,6 @@ export default function SchemaEntry({
                     withBorder={true}
                     className={clsx(
                         `doNotPan border-inherit bg-seashell overflow-visible shadow-[mistyrose]`,
-                        isDragging && styles.isDragging,
                         theClass.element === "node" && "w-48",
                         theClass.element === "arrow" && "w-40",
                     )}
