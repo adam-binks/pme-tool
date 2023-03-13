@@ -96,7 +96,7 @@ export function SvgArrow({ children, arrowId, source, dest, colour }: SvgArrowPr
     }
 
     return (
-        <div className="absolute -z-10" style={{ left: x, top: y }}>
+        <div className="absolute " style={{ left: x, top: y , backgroundColor: 'none'}}>
             <svg width={w} height={h} pointerEvents="stroke" className="opacity-90">
                 <defs>
                     <marker id={`arrowhead-${colour}`} markerWidth="4" markerHeight="6"

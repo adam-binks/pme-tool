@@ -77,7 +77,7 @@ export default function Node({ node }: NodeProps) {
                 className={clsx("group/element absolute element-container shadow-seashell")}
                 id={`node.${node.id}`}
                 style={{
-                    left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour || "#fae6dd", "--element-colour": theClass?.colour || "#fae6dd"
+                    zIndex:100, left: node.x, top: node.y, width: node.width, borderColor: theClass?.colour || "#fae6dd", "--element-colour": theClass?.colour || "#fae6dd"
                 } as React.CSSProperties}
             >
                 <div
