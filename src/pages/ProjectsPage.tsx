@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { Project } from "../app/schema";
 import Header from "../chrome/Header";
+import { getActionsAndReplay } from "../etc/actionLogging";
 import { generateId, useUserId } from "../etc/helpers";
 import { createMap } from "../state/mapFunctions";
 import { addProject } from "../state/projectFunctions";
@@ -78,6 +79,17 @@ export function ProjectsPage({
                         ))}
                     </div>
                 </div>
+                {}
+                <Button onClick={async () => {
+                    const mapId = "a2d814e86d2f985fbc6d9c2b"
+                    const localMachineId = "ic613AivAqesvtSGUW0iU"
+                    const startDate = new Date("2021-08-15T18:00:00.000Z")
+                    const endDate = new Date()
+                    await getActionsAndReplay(firestore, mapId, localMachineId, startDate, endDate)
+                    console.log("replay done")
+                }}>
+                    Replay
+                </Button>
             </div>
         </div>
     )

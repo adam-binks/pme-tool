@@ -1,6 +1,7 @@
 import { sample } from "lodash"
 import { ExtendedFirestoreInstance } from "react-redux-firebase"
 import { Arrow, Class, Element, elementType, getElementType, Map, Node, Project } from "../app/schema"
+import { executeAndLogAction } from "../etc/actionLogging"
 import { add, Command, deleteDoc, enact, enactAll, update } from "../etc/firestoreHistory"
 import { generateId } from "../etc/helpers"
 import { getProperties, Property } from "../map/editor/exposeProperties"
@@ -22,9 +23,9 @@ export function createMap(firestore: fs, title = "New map", project: Project | u
         },
     }
 
-    firestore.set({ collection: 'maps', doc: id }, newMap)
+    executeAndLogAction(firestore, "set", `maps/${id}`, newMap)
     if (project) {
-        firestore.update({ collection: 'projects', doc: project.id }, { mapIds: [...project.mapIds, id] })
+        executeAndLogAction(firestore, "update", `projects/${project.id}`, { mapIds: [...project.mapIds, id] })
     }
     return id
 }
@@ -34,8 +35,8 @@ export function renameMap(firestore: fs, dispatch: any, mapId: string, currentNa
 }
 
 export function deleteMap(firestore: fs, mapId: string, project: Project) {
-    firestore.update(`projects/${project.id}`, { mapIds: project.mapIds.filter(id => id !== mapId) })
-    firestore.delete(`maps/${mapId}`)
+    executeAndLogAction(firestore, "update", `projects/${project.id}`, { mapIds: project.mapIds.filter(id => id !== mapId) })
+    executeAndLogAction(firestore, "delete", `maps/${mapId}`)
 }
 
 export function getBlankNode(x: number = 0, y: number = 0): Node {

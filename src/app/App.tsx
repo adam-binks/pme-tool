@@ -4,13 +4,13 @@ import { useEffect } from 'react';
 import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import LoginPage from '../pages/LoginPage';
-import { ProjectsPage } from '../pages/ProjectsPage';
 import { ProjectView } from '../pages/ProjectView';
 import './App.css';
 import { useAppSelector } from './hooks';
 
 // add custom colors to theme
 import { DefaultMantineColor, Tuple } from '@mantine/core';
+import { getReplaySuffix } from '../etc/actionLogging';
 import { LandingPage } from '../pages/LandingPage';
 type ExtendedCustomColors = 'mistyrose' | DefaultMantineColor;
 declare module '@mantine/core' {

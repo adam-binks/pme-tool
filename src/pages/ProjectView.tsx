@@ -10,9 +10,10 @@ import { RecipePane } from '../map/recipe/RecipePane';
 const ProjectContext = React.createContext<string>("")
 export const useProjectId = () => useContext(ProjectContext)
 
-export function ProjectView() {
+export function ProjectView({passedProjectId}: {passedProjectId?: string}) {
     const firestore = useFirestore();
-    const projectId = useParams<{ projectId: string; }>().projectId;
+    const paramsId = useParams<{ projectId: string; }>().projectId;
+    const projectId = passedProjectId || paramsId;
     const project = useAppSelector(state => projectId && state.firestore.data.projects?.[projectId]);
 
     useEffect(() => {

@@ -1,31 +1,32 @@
 import { map } from "lodash";
 import { Class, LibrarySchema, Recipe, Schema } from "../app/schema";
+import { executeAndLogAction } from '../etc/actionLogging';
 import { generateId, prettyPrintDate } from "../etc/helpers";
 import { fs } from "./mapFunctions";
 
 export function addLibraryClass(firestore: fs, libraryClass: Class) {
-    firestore.set({ collection: 'libraryClasses', doc: libraryClass.id }, libraryClass)
+    executeAndLogAction(firestore, "set", `libraryClasses/${libraryClass.id}`, libraryClass)
 }
 
 export function updateLibraryClass(firestore: fs, libraryClass: Partial<Class>) {
-    firestore.update({ collection: 'libraryClasses', doc: libraryClass.id }, libraryClass)
+    executeAndLogAction(firestore, "update", `libraryClasses/${libraryClass.id}`, libraryClass)
 }
 
 export function addLibrarySchema(firestore: fs, librarySchema: LibrarySchema) {
-    firestore.set({ collection: 'librarySchemas', doc: librarySchema.id }, librarySchema)
+    executeAndLogAction(firestore, "set", `librarySchemas/${librarySchema.id}`, librarySchema)
 }
 
 export function updateLibrarySchema(firestore: fs, librarySchema: Partial<LibrarySchema>) {
-    firestore.update({ collection: 'librarySchemas', doc: librarySchema.id }, librarySchema)
+    executeAndLogAction(firestore, "update", `librarySchemas/${librarySchema.id}`, librarySchema)
 }
 
 export function deleteLibrarySchema(firestore: fs, librarySchemaId: string) {
-    firestore.delete({ collection: 'librarySchemas', doc: librarySchemaId })
+    executeAndLogAction(firestore, "delete", `librarySchemas/${librarySchemaId}`)
 }
 
 export function createLibraryClassAndAddToSchema(firestore: fs, librarySchemaId: string, libraryClass: Class) {
     addLibraryClass(firestore, libraryClass)
-    firestore.update({ collection: 'librarySchemas', doc: librarySchemaId }, { classIds: firestore.FieldValue.arrayUnion(libraryClass.id) })
+    executeAndLogAction(firestore, "update", `librarySchemas/${libraryClass.id}`, { classIds: firestore.FieldValue.arrayUnion(libraryClass.id) })
 }
 
 export function copyMapSchemaToLibrary(firestore: fs, mapSchema: Schema, mapName: string, uid: string, recipe: Recipe) {

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Project } from "../app/schema";
+import { getReplaySuffix } from "../etc/actionLogging";
 import SplitWrapper from "../lib/react-split";
 import { defaultPane, setPanes } from "../state/paneReducer";
 import Map, { MapContents } from "./Map";
@@ -34,11 +35,11 @@ export default function Panes({
         const getListeners = (mapId: string) => [
             {
                 doc: mapId,
-                collection: 'maps',
+                collection: `maps${getReplaySuffix()}`,
             },
             {
                 doc: mapId,
-                collection: 'maps',
+                collection: `maps${getReplaySuffix()}`,
                 subcollections: [
                     { collection: 'nodes' }
                 ],
@@ -46,7 +47,7 @@ export default function Panes({
             },
             {
                 doc: mapId,
-                collection: 'maps',
+                collection: `maps${getReplaySuffix()}`,
                 subcollections: [
                     { collection: 'arrows' }
                 ],
@@ -72,7 +73,7 @@ export default function Panes({
         }
 
         // also listen to library stuff
-        firestore.setListeners([{ collection: "libraryClasses" }, { collection: "librarySchemas" }])
+        firestore.setListeners([{ collection: `libraryClasses${getReplaySuffix()}` }, { collection: "librarySchemas" }])
 
         if (subscribedMaps !== project.mapIds) {
             setSubscribedMaps(project.mapIds)
