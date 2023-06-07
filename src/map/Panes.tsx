@@ -108,7 +108,6 @@ export default function Panes({
                             <div className="h-96 bg-indigo-300"></div>
                             <div className="h-96 bg-green-300"></div>
                         </div> */}
-                        <div>mapId: {pane.id}</div>
                         <Map
                             mapId={pane.id}
                             key={pane.id}
