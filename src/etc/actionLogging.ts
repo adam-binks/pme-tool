@@ -34,10 +34,29 @@ export function executeAndLogAction(firestore: fs, firestoreAction: "set" | "upd
     }
 }
 
-function replayAction(firestore: fs, replaySession: string, action: { firestoreAction: "set" | "update" | "delete", path: string, param?: any }) {
+function replayAction(firestore: fs, replaySession: string, projectId: string, mapId: string, action: { firestoreAction: "set" | "update" | "delete", path: string, param?: any }) {
     console.log(action.path)
-    const [firstPart, ...rest] = action.path.split("/")
-    const newPath = firstPart + "_replay" + "/" + rest.join("/")
+    // const [firstPart, ...rest] = action.path.split("/")
+    // const newPath = firstPart + "_replay" + "/" + rest.join("/")
+
+    const replacePaths = (old: any) =>
+    {
+        return old.replace(projectId, `REPLAY_PROJECT_${replaySession}_${projectId}`)
+                    .replace(mapId, `REPLAY_MAP_${replaySession}_${mapId}`)
+    }
+
+    const newPath = replacePaths(action.path)
+    
+    if (action.param && action.param.mapIds) {
+        action.param.mapIds = action.param.mapIds.map((id: string) => replacePaths(id))
+    }
+
+    console.log({newPath, param: action.param})
+    if (newPath === action.path) {
+        console.warn(`Skipping: Replay path not changed ${JSON.stringify({original: action.path, mapId, newPath})}`)
+        return
+    }
+
     switch (action.firestoreAction) {
         case "set":
             return firestore.set(newPath, action.param)
@@ -48,36 +67,34 @@ function replayAction(firestore: fs, replaySession: string, action: { firestoreA
     }
 }
 
-export async function getActionsAndReplay(firestore: fs, mapId: string, localMachineId: string, start: Date, end: Date) {
+export async function getActionsAndReplay(firestore: fs, projectId: string, mapId: string, localMachineId: string, start: Date, end: Date, replaySession: string) {
     localStorage.setItem("SKIP_LOGGING", "true")
 
     console.log("waiting to start replay")
     await new Promise(resolve => setTimeout(resolve, 1000))
     console.log("waiting over")
     
-    const replaySession = nanoid()
     console.log(`Starting replay session ${replaySession}`)
     localStorage.setItem("replaySession", replaySession)
 
     const snapshot = await firestore.get({ collection: 'actionLog', where: [['timestamp', '>=', start], ['timestamp', '<=', end], ['localMachineId', '==', localMachineId]] })
     const data = snapshot as any
     console.log({data})
-    data.forEach((doc: any) => {
+
+    data.forEach(async (doc: any) => {
         const action = doc.data()
         console.log({action}    )
-        replayAction(firestore, replaySession, action)
+        replayAction(firestore, replaySession, projectId, mapId, action)
     })
-
-    localStorage.removeItem("SKIP_LOGGING")
-    localStorage.removeItem("replaySession")
 }
 
 export function getReplaySuffix() {
-    const replaySession = localStorage.getItem("replaySession")
-    if (replaySession) {
-        console.log("replay suffix")
-        return `_replay`
-    } else {
-        return ""
-    }
+    return ""
+    // const replaySession = localStorage.getItem("replaySession")
+    // if (replaySession) {
+    //     console.log("replay suffix")
+    //     return `_replay`
+    // } else {
+    //     return ""
+    // }
 }

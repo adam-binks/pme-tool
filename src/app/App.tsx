@@ -10,8 +10,8 @@ import { useAppSelector } from './hooks';
 
 // add custom colors to theme
 import { DefaultMantineColor, Tuple } from '@mantine/core';
-import { getReplaySuffix } from '../etc/actionLogging';
 import { LandingPage } from '../pages/LandingPage';
+import { ReplayPage } from '../pages/ReplayPage';
 type ExtendedCustomColors = 'mistyrose' | DefaultMantineColor;
 declare module '@mantine/core' {
     export interface MantineThemeColorsOverride {
@@ -28,10 +28,11 @@ export default function App() {
     const router = createHashRouter([
         { path: "/", element: <LandingPage /> },
         { path: "/project/:projectId", element: !isEmpty(auth) ? <ProjectView /> : <LoginPage /> },
+        { path: "/replay", element: <ReplayPage /> }
     ])
 
     useEffect(() => {
-        if (!auth?.uid) { return }
+        if (!auth?.uid) { console.log("not authed"); return }
 
         firestore.setListener({
             collection: "projects",

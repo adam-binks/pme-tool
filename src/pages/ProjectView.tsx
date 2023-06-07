@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { useFirestore } from 'react-redux-firebase';
 import { useParams } from "react-router-dom";
 import { useAppSelector } from '../app/hooks';
+import {Project, Recipe} from '../app/schema';
 import Header from '../chrome/Header';
 import Panes from '../map/Panes';
 import { RecipePane } from '../map/recipe/RecipePane';
@@ -26,7 +27,7 @@ export function ProjectView({passedProjectId}: {passedProjectId?: string}) {
     if (!project) { return <Skeleton />; }
 
     return (
-        <ProjectContext.Provider value={project?.id}>
+        <ProjectContext.Provider value={passedProjectId || project?.id}>
             <div className="App text-center max-h-screen h-screen w-full flex flex-col">
                 <Header project={project} />
                 <Panes project={project} />
