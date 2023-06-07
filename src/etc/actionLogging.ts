@@ -2,13 +2,13 @@ import { nanoid } from "nanoid"
 import { fs } from "../state/mapFunctions"
 
 export function logAction(firestore: fs, firestoreAction: "set" | "update" | "delete", path: string, param?: any) {
-    // if (localStorage.getItem("SKIP_LOGGING")) {
-    //     console.log("skipping logging")
-    //     return
-    // }
-    // console.log({firestoreAction, path, param})
-    // const localMachineId = getLocalMachineId()
-    // firestore.set({ collection: 'actionLog', doc: nanoid() }, { firestoreAction, path, param, localMachineId, timestamp: new Date() })
+    if (localStorage.getItem("SKIP_LOGGING")) {
+        console.log("skipping logging")
+        return
+    }
+    console.log({firestoreAction, path, param})
+    const localMachineId = getLocalMachineId()
+    firestore.set({ collection: 'actionLog', doc: nanoid() }, { firestoreAction, path, param, localMachineId, timestamp: new Date() })
 }
 
 function getLocalMachineId() {
