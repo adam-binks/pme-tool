@@ -34,7 +34,7 @@ export function executeAndLogAction(firestore: fs, firestoreAction: "set" | "upd
     }
 }
 
-function replayAction(firestore: fs, replaySession: string, projectId: string, mapId: string, action: { firestoreAction: "set" | "update" | "delete", path: string, param?: any }) {
+export function replayAction(firestore: fs, replaySession: string, projectId: string, mapId: string, action: { firestoreAction: "set" | "update" | "delete", path: string, param?: any }) {
     console.log(action.path)
     // const [firstPart, ...rest] = action.path.split("/")
     // const newPath = firstPart + "_replay" + "/" + rest.join("/")
@@ -81,11 +81,7 @@ export async function getActionsAndReplay(firestore: fs, projectId: string, mapI
     const data = snapshot as any
     console.log({data})
 
-    for (const doc of data.docs) {
-        const action = doc.data()
-        console.log({action}    )
-        await replayAction(firestore, replaySession, projectId, mapId, action)
-    }
+    return data.docs
 }
 
 export function getReplaySuffix() {
