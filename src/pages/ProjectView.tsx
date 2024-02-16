@@ -24,6 +24,8 @@ export function ProjectView({passedProjectId}: {passedProjectId?: string}) {
         });
     }, [projectId]);
 
+    console.log("rendering project", {projectId, project})
+
     if (!project) { return <Skeleton />; }
 
     return (

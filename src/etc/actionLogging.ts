@@ -81,11 +81,11 @@ export async function getActionsAndReplay(firestore: fs, projectId: string, mapI
     const data = snapshot as any
     console.log({data})
 
-    data.forEach(async (doc: any) => {
+    for (const doc of data.docs) {
         const action = doc.data()
         console.log({action}    )
-        replayAction(firestore, replaySession, projectId, mapId, action)
-    })
+        await replayAction(firestore, replaySession, projectId, mapId, action)
+    }
 }
 
 export function getReplaySuffix() {
