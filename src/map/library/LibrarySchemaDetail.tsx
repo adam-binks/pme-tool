@@ -166,8 +166,9 @@ export function LibrarySchemaDetail({
                         className="bg-peachcrayon text-black m-auto mt-4"
                         variant="filled"
                         onClick={() => {
+                            console.log("classes not added: ", classesNotAdded)
                             enact(dispatch, mapId, createClassesCommand(firestore, mapId,
-                                classesNotAdded.map(cls => ({ ...cls, id: generateId() })),
+                                classesNotAdded.map(cls => ({ ...cls})),
                                 classesInMapSchema
                             ))
                         }}

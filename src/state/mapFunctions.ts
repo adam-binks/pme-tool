@@ -175,17 +175,19 @@ export function getPropertiesFromContent(content: string) {
 export function updateSchemaPropertiesCommands(firestore: fs, mapId: string, elementsOfClass: Element[],
     oldProperties: Property[], newProperties: Property[]) {
     const commands: Command[] = []
-    elementsOfClass.forEach(element => {
-        const properties = getPropertiesFromContent(element.content)
-        let content = element.content
-        content = removeValuelessOldPropertiesNotInSchemaProperties(oldProperties, newProperties, properties, content)
-        content = addSchemaPropertiesNotAlreadyInContent(content, newProperties, properties)
+    if (elementsOfClass){
+        elementsOfClass.forEach(element => {
+            const properties = getPropertiesFromContent(element.content)
+            let content = element.content
+            content = removeValuelessOldPropertiesNotInSchemaProperties(oldProperties, newProperties, properties, content)
+            content = addSchemaPropertiesNotAlreadyInContent(content, newProperties, properties)
 
-        commands.push(updateElementCommand(firestore, mapId, element.id, getElementType(element),
-            { content: element.content },
-            { content }
-        ))
-    })
+            commands.push(updateElementCommand(firestore, mapId, element.id, getElementType(element),
+                { content: element.content },
+                { content }
+            ))
+        })
+    }
 
     return commands
 }

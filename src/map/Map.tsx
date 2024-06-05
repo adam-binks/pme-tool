@@ -101,9 +101,22 @@ export default function Map({
                         const y = Math.round(item.y + (delta.y / zoomLevel))
                         updateNode(firestore, dispatch, mapId, item.id, { x: item.x, y: item.y }, { x, y })
                     } else {
-                        item.node && addNode(firestore, dispatch, mapId, {
-                            ...item.node, id: generateId(), classId: null
-                        })
+                        var idFound = false;
+                        console.log("here are the classes: " , map?.schema?.classes)
+                        for (var i = 0; i < map?.schema?.classes.length; i++){
+                            if (map?.schema?.classes[i].id === item.node?.classId){
+                                idFound = true
+                            }
+                        }
+                        if (idFound){
+                            item.node && addNode(firestore, dispatch, mapId, {
+                                ...item.node, id: generateId(), classId: item.node?.classId
+                            })
+                        } else {
+                            item.node && addNode(firestore, dispatch, mapId, {
+                                ...item.node, id: generateId(), classId: null
+                            })
+                        }
                     }
                 }
                 if (monitor.getItemType() === ItemTypes.SCHEMA_CLASS) {

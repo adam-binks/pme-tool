@@ -32,7 +32,8 @@ export function createLibraryClassAndAddToSchema(firestore: fs, librarySchemaId:
 export function copyMapSchemaToLibrary(firestore: fs, mapSchema: Schema, mapName: string, uid: string, recipe: Recipe) {
     const classIds = mapSchema.classes.map(
         (theClass) => {
-            const id = generateId()
+            // const id = generateId()
+            const id = theClass.id
             addLibraryClass(firestore, {...theClass, id})
             return id
         }

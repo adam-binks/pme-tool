@@ -12,8 +12,8 @@ export function ReplayPage() {
   // ============================================================
   // SET THESE PARAMETERS TO CHOOSE WHAT TO REPLAY
   // ============================================================
-  const projectId = "7c4cf87031ce43877b3a32fb" // find this in the firestore console, projects collection
-  const mapId = "71b1d5db044d5f9ff4794649" // find the map id in the firestore console, listed under the project
+  const projectId = "d8e1265b45b038a82c317880" // find this in the firestore console, projects collection
+  const mapId = "9b106e8278977666b79d24de" // find the map id in the firestore console, listed under the project
 
   const localMachineId = "nqPgKT9Xe97UBlpySlGNv" // this is listed in firestore console > actionLog. Find an entry from this replay and get the localMachineId (this avoids mixing actions from other users' projects)
 
