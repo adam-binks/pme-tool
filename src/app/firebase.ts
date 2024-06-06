@@ -1,5 +1,5 @@
 export const firebaseConfig = {
-    apiKey: "AIzaSyB12r9VgxPIQLLauHll-J_MqTPPVuPzYGE",
+    apiKey: "AIzaSyBTe3zTenOb2w_yM9UQJH3wxeb9_pP6lBo",
     authDomain: "pme-tool.firebaseapp.com",
     projectId: "pme-tool",
     storageBucket: "pme-tool.appspot.com",
