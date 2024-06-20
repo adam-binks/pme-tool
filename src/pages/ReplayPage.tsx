@@ -5,6 +5,8 @@ import { useFirestore } from "react-redux-firebase"
 import { Link } from "react-router-dom"
 import { getActionsAndReplay, replayAction } from "../etc/actionLogging"
 import { ProjectView } from "./ProjectView"
+import { writeFile } from 'fs';
+
 
 export function ReplayPage() {
   const firestore = useFirestore()
@@ -12,13 +14,13 @@ export function ReplayPage() {
   // ============================================================
   // SET THESE PARAMETERS TO CHOOSE WHAT TO REPLAY
   // ============================================================
-  const projectId = "d8e1265b45b038a82c317880" // find this in the firestore console, projects collection
-  const mapId = "9b106e8278977666b79d24de" // find the map id in the firestore console, listed under the project
+  const projectId = "d2844c16059c56e28d7bb899" // find this in the firestore console, projects collection
+  const mapId = "86ffe6a35b99cbf386141b66" // find the map id in the firestore console, listed under the project
 
-  const localMachineId = "nqPgKT9Xe97UBlpySlGNv" // this is listed in firestore console > actionLog. Find an entry from this replay and get the localMachineId (this avoids mixing actions from other users' projects)
+  const localMachineId = "Jy28_7bFWJoXWH7uZQwjp" // this is listed in firestore console > actionLog. Find an entry from this replay and get the localMachineId (this avoids mixing actions from other users' projects)
 
   // you can set these to be super wide. Make sure the creation of the project and map are >startDate and <endDate
-  const startDate = new Date("2023-06-15T12:15:00.000Z") // start date to look for logged actions to replay
+  const startDate = new Date("2024-06-12T00:00:00.000Z") // start date to look for logged actions to replay
   const endDate = new Date() // latest date to look for logged actions to replay
 
   // ============================================================
@@ -51,6 +53,8 @@ export function ReplayPage() {
 
   const [show, setShow] = useState(false)
 
+  var jsonObj = ""
+
   const [isPlaying, setIsPlaying] = useState(false)
   const replaySession = localStorage.getItem("replaySession")
   const [nextActionIndex, setNextActionIndex] = useState(0)
@@ -70,6 +74,26 @@ export function ReplayPage() {
     }
     setNextActionIndex(nextActionIndex + n)
     setIsPlaying(false)
+  }
+
+  async function saveDataToJSON() {
+    console.log("here is the length of docs: " , docs.length)
+    for (let i = 0; i < docs.length; i++) {
+      const action = docs[i]?.data()
+      if (action) {
+        console.log("replaying action ", { action })
+        jsonObj += JSON.stringify(action) + ","
+      }
+    }
+    const fileData = jsonObj;
+    console.log(jsonObj)
+    const blob = new Blob([fileData], {type: "text/plain"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'jsonData.json';
+    link.href = url;
+    link.click();
+    // fs.writeFile('myjsonfile.json', "jsonObj");
   }
 
   if (!show) {
@@ -110,6 +134,17 @@ export function ReplayPage() {
       >
         Play next 200 actions
       </Button>
+
+      <Button
+        className="bg-blue-500 mr-2"
+        onClick={() => {
+          saveDataToJSON()
+        }}
+      >
+        Download JSON Data
+      </Button>
+
+
       <Link to={`/`}>
         <Button
           className="bg-blue-500"
